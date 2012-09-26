@@ -104,9 +104,12 @@ namespace Server.Items
 			{
 				if ( mobile is BaseCreature )
 				{
-					BaseCreature mon = (BaseCreature) mobile;
+                    BaseCreature mon = (BaseCreature)mobile;
 
-					mon.Pacify( from, DateTime.Now + TimeSpan.FromSeconds( 5.0 ) ); // TODO check
+                    if (mon.Controlled || mon.Summoned)
+                        continue;
+
+                    mon.Pacify(from, DateTime.Now + TimeSpan.FromSeconds(5.0)); // TODO check
 				}
 			}
 		}

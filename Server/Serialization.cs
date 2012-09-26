@@ -23,12 +23,10 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using System.Reflection;
 using System.Threading;
 using System.Net;
-
-using Server;
 using Server.Guilds;
+using CustomsFramework;
 
 namespace Server
 {
@@ -38,9 +36,7 @@ namespace Server
 
 		public abstract string ReadString();
 		public abstract DateTime ReadDateTime();
-#if Framework_4_0
 		public abstract DateTimeOffset ReadDateTimeOffset();
-#endif
 		public abstract TimeSpan ReadTimeSpan();
 		public abstract DateTime ReadDeltaTime();
 		public abstract decimal ReadDecimal();
@@ -69,13 +65,25 @@ namespace Server
 		public abstract Mobile ReadMobile();
 		public abstract BaseGuild ReadGuild();
 
+        public abstract BaseCore ReadCore();
+        public abstract BaseModule ReadModule();
+        public abstract BaseService ReadService();
+
 		public abstract T ReadItem<T>() where T : Item;
 		public abstract T ReadMobile<T>() where T : Mobile;
 		public abstract T ReadGuild<T>() where T : BaseGuild;
 
+        public abstract T ReadCore<T>() where T : BaseCore;
+        public abstract T ReadModule<T>() where T : BaseModule;
+        public abstract T ReadService<T>() where T : BaseService;
+
 		public abstract ArrayList ReadItemList();
 		public abstract ArrayList ReadMobileList();
 		public abstract ArrayList ReadGuildList();
+
+        public abstract ArrayList ReadCoreList();
+        public abstract ArrayList ReadModuleList();
+        public abstract ArrayList ReadServiceList();
 
 		public abstract List<Item> ReadStrongItemList();
 		public abstract List<T> ReadStrongItemList<T>() where T : Item;
@@ -85,16 +93,34 @@ namespace Server
 
 		public abstract List<BaseGuild> ReadStrongGuildList();
 		public abstract List<T> ReadStrongGuildList<T>() where T : BaseGuild;
-#if Framework_4_0
+
+        public abstract List<BaseCore> ReadStrongCoreList();
+        public abstract List<T> ReadStrongCoreList<T>() where T : BaseCore;
+
+        public abstract List<BaseModule> ReadStrongModuleList();
+        public abstract List<T> ReadStrongModuleList<T>() where T : BaseModule;
+
+        public abstract List<BaseService> ReadStrongServiceList();
+        public abstract List<T> ReadStrongServiceList<T>() where T : BaseService;
+
 		public abstract HashSet<Item> ReadItemSet();
-		public abstract HashSet<T> ReadItemSet<T>() where T: Item;
+		public abstract HashSet<T> ReadItemSet<T>() where T : Item;
 
 		public abstract HashSet<Mobile> ReadMobileSet();
 		public abstract HashSet<T> ReadMobileSet<T>() where T : Mobile;
 
 		public abstract HashSet<BaseGuild> ReadGuildSet();
 		public abstract HashSet<T> ReadGuildSet<T>() where T : BaseGuild;
-#endif
+
+        public abstract HashSet<BaseCore> ReadCoreSet();
+        public abstract HashSet<T> ReadCoreSet<T>() where T : BaseCore;
+
+        public abstract HashSet<BaseModule> ReadModuleSet();
+        public abstract HashSet<T> ReadModuleSet<T>() where T : BaseModule;
+
+        public abstract HashSet<BaseService> ReadServiceSet();
+        public abstract HashSet<T> ReadServiceSet<T>() where T : BaseService;
+
 		public abstract Race ReadRace();
 
 		public abstract bool End();
@@ -105,14 +131,11 @@ namespace Server
 		protected GenericWriter() { }
 
 		public abstract void Close();
-
 		public abstract long Position { get; }
 
 		public abstract void Write( string value );
 		public abstract void Write( DateTime value );
-#if Framework_4_0
 		public abstract void Write( DateTimeOffset value );
-#endif
 		public abstract void Write( TimeSpan value );
 		public abstract void Write( decimal value );
 		public abstract void Write( long value );
@@ -142,9 +165,17 @@ namespace Server
 		public abstract void Write( Mobile value );
 		public abstract void Write( BaseGuild value );
 
+        public abstract void Write(BaseCore value);
+        public abstract void Write(BaseModule value);
+        public abstract void Write(BaseService value);
+
 		public abstract void WriteItem<T>( T value ) where T : Item;
 		public abstract void WriteMobile<T>( T value ) where T : Mobile;
 		public abstract void WriteGuild<T>( T value ) where T : BaseGuild;
+
+        public abstract void WriteCore<T>(T value) where T : BaseCore;
+        public abstract void WriteModule<T>(T value) where T : BaseModule;
+        public abstract void WriteService<T>(T value) where T : BaseService;
 
 		public abstract void Write( Race value );
 
@@ -157,42 +188,81 @@ namespace Server
 		public abstract void WriteGuildList( ArrayList list );
 		public abstract void WriteGuildList( ArrayList list, bool tidy );
 
+        public abstract void WriteCoreList(ArrayList list);
+        public abstract void WriteCoreList(ArrayList list, bool tidy);
+
+        public abstract void WriteModuleList(ArrayList list);
+        public abstract void WriteModuleList(ArrayList list, bool tidy);
+
+        public abstract void WriteServiceList(ArrayList list);
+
 		public abstract void Write( List<Item> list );
 		public abstract void Write( List<Item> list, bool tidy );
 
 		public abstract void WriteItemList<T>( List<T> list ) where T : Item;
 		public abstract void WriteItemList<T>( List<T> list, bool tidy ) where T : Item;
-#if Framework_4_0
+
 		public abstract void Write( HashSet<Item> list );
 		public abstract void Write( HashSet<Item> list, bool tidy );
 
 		public abstract void WriteItemSet<T>( HashSet<T> set ) where T : Item;
 		public abstract void WriteItemSet<T>( HashSet<T> set, bool tidy ) where T : Item;
-#endif
+
 		public abstract void Write( List<Mobile> list );
 		public abstract void Write( List<Mobile> list, bool tidy );
 
 		public abstract void WriteMobileList<T>( List<T> list ) where T : Mobile;
 		public abstract void WriteMobileList<T>( List<T> list, bool tidy ) where T : Mobile;
-#if Framework_4_0
+
 		public abstract void Write( HashSet<Mobile> list );
 		public abstract void Write( HashSet<Mobile> list, bool tidy );
 
 		public abstract void WriteMobileSet<T>( HashSet<T> set ) where T : Mobile;
 		public abstract void WriteMobileSet<T>( HashSet<T> set, bool tidy ) where T : Mobile;
-#endif
+
 		public abstract void Write( List<BaseGuild> list );
 		public abstract void Write( List<BaseGuild> list, bool tidy );
 
 		public abstract void WriteGuildList<T>( List<T> list ) where T : BaseGuild;
 		public abstract void WriteGuildList<T>( List<T> list, bool tidy ) where T : BaseGuild;
-#if Framework_4_0
+
 		public abstract void Write( HashSet<BaseGuild> list );
 		public abstract void Write( HashSet<BaseGuild> list, bool tidy );
 
 		public abstract void WriteGuildSet<T>( HashSet<T> set ) where T : BaseGuild;
 		public abstract void WriteGuildSet<T>( HashSet<T> set, bool tidy ) where T : BaseGuild;
-#endif
+
+        public abstract void Write(List<BaseCore> list);
+        public abstract void Write(List<BaseCore> list, bool tidy);
+
+        public abstract void WriteCoreList<T>(List<T> list) where T : BaseCore;
+        public abstract void WriteCoreList<T>(List<T> list, bool tidy) where T : BaseCore;
+
+        public abstract void Write(HashSet<BaseCore> set);
+        public abstract void Write(HashSet<BaseCore> set, bool tidy);
+
+        public abstract void WriteCoreSet<T>(HashSet<T> set) where T : BaseCore;
+        public abstract void WriteCoreSet<T>(HashSet<T> set, bool tidy) where T : BaseCore;
+
+        public abstract void Write(List<BaseModule> list);
+        public abstract void Write(List<BaseModule> list, bool tidy);
+
+        public abstract void WriteModuleList<T>(List<T> list) where T : BaseModule;
+        public abstract void WriteModuleList<T>(List<T> list, bool tidy) where T : BaseModule;
+
+        public abstract void Write(HashSet<BaseModule> set);
+        public abstract void Write(HashSet<BaseModule> set, bool tidy);
+
+        public abstract void WriteModuleSet<T>(HashSet<T> set) where T : BaseModule;
+        public abstract void WriteModuleSet<T>(HashSet<T> set, bool tidy) where T : BaseModule;
+
+        public abstract void Write(List<BaseService> list);
+
+        public abstract void WriteServiceList<T>(List<T> list) where T : BaseService;
+
+        public abstract void Write(HashSet<BaseService> set);
+
+        public abstract void WriteServiceSet<T>(HashSet<T> set) where T : BaseService;
 		//Stupid compiler won't notice there 'where' to differentiate the generic methods.
 	}
 
@@ -369,13 +439,13 @@ namespace Server
 		{
 			Write( value.Ticks );
 		}
-#if Framework_4_0
+
 		public override void Write( DateTimeOffset value )
 		{
 			Write( value.Ticks );
 			Write( value.Offset.Ticks );
 		}
-#endif
+
 		public override void WriteDeltaTime( DateTime value )
 		{
 			long ticks = value.Ticks;
@@ -607,6 +677,30 @@ namespace Server
 				Write( value.Id );
 		}
 
+        public override void Write(BaseCore value)
+        {
+            if (value == null || value.Deleted)
+                Write(CustomSerial.MinusOne);
+            else
+                Write(value.Serial);
+        }
+
+        public override void Write(BaseModule value)
+        {
+            if (value == null || value.Deleted)
+                Write(CustomSerial.MinusOne);
+            else
+                Write(value.Serial);
+        }
+
+        public override void Write(BaseService value)
+        {
+            if (value == null)
+                Write(CustomSerial.MinusOne);
+            else
+                Write(value.Serial);
+        }
+
 		public override void WriteItem<T>( T value )
 		{
 			Write( value );
@@ -621,6 +715,21 @@ namespace Server
 		{
 			Write( value );
 		}
+
+        public override void WriteCore<T>(T value)
+        {
+            Write(value);
+        }
+
+        public override void WriteModule<T>(T value)
+        {
+            Write(value);
+        }
+
+        public override void WriteService<T>(T value)
+        {
+            Write(value);
+        }
 
 		public override void WriteMobileList( ArrayList list )
 		{
@@ -691,7 +800,63 @@ namespace Server
 				Write( (BaseGuild)list[i] );
 		}
 
-		public override void Write( List<Item> list )
+        public override void WriteCoreList(ArrayList list)
+        {
+            WriteCoreList(list, false);
+        }
+
+        public override void WriteCoreList(ArrayList list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (((BaseCore)list[i]).Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write((BaseCore)list[i]);
+        }
+
+        public override void WriteModuleList(ArrayList list)
+        {
+            WriteModuleList(list, false);
+        }
+
+        public override void WriteModuleList(ArrayList list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (((BaseModule)list[i]).Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write((BaseModule)list[i]);
+        }
+
+        public override void WriteServiceList(ArrayList list)
+        {
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write((BaseService)list[i]);
+        }
+
+        public override void Write(List<Item> list)
 		{
 			Write( list, false );
 		}
@@ -736,7 +901,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<Item> set )
 		{
 			Write( set, false );
@@ -774,7 +939,7 @@ namespace Server
 				Write( item );
 			}
 		}
-#endif
+
 		public override void Write( List<Mobile> list )
 		{
 			Write( list, false );
@@ -820,7 +985,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<Mobile> set )
 		{
 			Write( set, false );
@@ -858,7 +1023,7 @@ namespace Server
 				Write( mob );
 			}
 		}
-#endif
+
 		public override void Write( List<BaseGuild> list )
 		{
 			Write( list, false );
@@ -904,7 +1069,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<BaseGuild> set )
 		{
 			Write( set, false );
@@ -942,7 +1107,198 @@ namespace Server
 				Write( guild );
 			}
 		}
-#endif
+
+        public override void Write(List<BaseCore> list)
+        {
+            Write(list, false);
+        }
+
+        public override void  Write(List<BaseCore> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void WriteCoreList<T>(List<T> list)
+        {
+            WriteCoreList<T>(list, false);
+        }
+
+        public override void WriteCoreList<T>(List<T> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void Write(HashSet<BaseCore> set)
+        {
+            Write(set, false);
+        }
+
+        public override void Write(HashSet<BaseCore> set, bool tidy)
+        {
+            if (tidy)
+                set.RemoveWhere(core => core.Deleted);
+
+            Write(set.Count);
+
+            foreach (BaseCore core in set)
+                Write(core);
+        }
+
+        public override void WriteCoreSet<T>(HashSet<T> set)
+        {
+            WriteCoreSet(set, false);
+        }
+
+        public override void WriteCoreSet<T>(HashSet<T> set, bool tidy)
+        {
+            if (tidy)
+                set.RemoveWhere(core => core.Deleted);
+
+            Write(set.Count);
+
+            foreach (BaseCore core in set)
+                Write(core);
+        }
+
+        public override void Write(List<BaseModule> list)
+        {
+            Write(list, false);
+        }
+
+        public override void Write(List<BaseModule> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void WriteModuleList<T>(List<T> list)
+        {
+            WriteModuleList<T>(list, false);
+        }
+
+        public override void WriteModuleList<T>(List<T> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void Write(HashSet<BaseModule> set)
+        {
+            Write(set, false);
+        }
+
+        public override void Write(HashSet<BaseModule> set, bool tidy)
+        {
+            if (tidy)
+                set.RemoveWhere(module => module.Deleted);
+
+            Write(set.Count);
+
+            foreach (BaseModule module in set)
+                Write(module);
+        }
+
+        public override void WriteModuleSet<T>(HashSet<T> set)
+        {
+            WriteModuleSet(set, false);
+        }
+
+        public override void WriteModuleSet<T>(HashSet<T> set, bool tidy)
+        {
+            if (tidy)
+                set.RemoveWhere(module => module.Deleted);
+
+            Write(set.Count);
+
+            foreach (BaseModule module in set)
+                Write(module);
+        }
+
+        public override void Write(List<BaseService> list)
+        {
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void WriteServiceList<T>(List<T> list)
+        {
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void Write(HashSet<BaseService> set)
+        {
+            Write(set.Count);
+
+            foreach (BaseService service in set)
+                Write(service);
+        }
+
+        public override void WriteServiceSet<T>(HashSet<T> set)
+        {
+            Write(set.Count);
+
+            foreach (BaseService service in set)
+                Write(service);
+        }
 	}
 
 	public sealed class BinaryFileReader : GenericReader
@@ -1015,7 +1371,7 @@ namespace Server
 		{
 			return new DateTime( m_File.ReadInt64() );
 		}
-#if Framework_4_0
+
 		public override DateTimeOffset ReadDateTimeOffset()
 		{
 			long ticks = m_File.ReadInt64();
@@ -1023,7 +1379,7 @@ namespace Server
 
 			return new DateTimeOffset( ticks, offset );
 		}
-#endif
+
 		public override TimeSpan ReadTimeSpan()
 		{
 			return new TimeSpan( m_File.ReadInt64() );
@@ -1134,6 +1490,21 @@ namespace Server
 			return BaseGuild.Find( ReadInt() );
 		}
 
+        public override BaseCore ReadCore()
+        {
+            return World.GetCore(ReadInt());
+        }
+
+        public override BaseModule ReadModule()
+        {
+            return World.GetModule(ReadInt());
+        }
+
+        public override BaseService ReadService()
+        {
+            return World.GetService(ReadInt());
+        }
+
 		public override T ReadItem<T>()
 		{
 			return ReadItem() as T;
@@ -1148,6 +1519,21 @@ namespace Server
 		{
 			return ReadGuild() as T;
 		}
+
+        public override T ReadCore<T>()
+        {
+            return ReadCore() as T;
+        }
+
+        public override T ReadModule<T>()
+        {
+            return ReadModule() as T;
+        }
+
+        public override T ReadService<T>()
+        {
+            return ReadService() as T;
+        }
 
 		public override ArrayList ReadItemList()
 		{
@@ -1212,6 +1598,72 @@ namespace Server
 			}
 		}
 
+        public override ArrayList ReadCoreList()
+        {
+            int count = ReadInt();
+
+            if (count > 0)
+            {
+                ArrayList list = new ArrayList(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    BaseCore core = ReadCore();
+
+                    if (core != null)
+                        list.Add(core);
+                }
+
+                return list;
+            }
+            else
+                return new ArrayList();
+        }
+
+        public override ArrayList ReadModuleList()
+        {
+            int count = ReadInt();
+
+            if (count > 0)
+            {
+                ArrayList list = new ArrayList(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    BaseModule module = ReadModule();
+
+                    if (module != null)
+                        list.Add(module);
+                }
+
+                return list;
+            }
+            else
+                return new ArrayList();
+        }
+
+        public override ArrayList ReadServiceList()
+        {
+            int count = ReadInt();
+
+            if (count > 0)
+            {
+                ArrayList list = new ArrayList(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    BaseService service = ReadService();
+
+                    if (service != null)
+                        list.Add(service);
+                }
+
+                return list;
+            }
+            else
+                return new ArrayList();
+        }
+
 		public override List<Item> ReadStrongItemList()
 		{
 			return ReadStrongItemList<Item>();
@@ -1237,7 +1689,7 @@ namespace Server
 				return new List<T>();
 			}
 		}
-#if Framework_4_0
+
 		public override HashSet<Item> ReadItemSet()
 		{
 			return ReadItemSet<Item>();
@@ -1268,7 +1720,7 @@ namespace Server
 				return new HashSet<T>();
 			}
 		}
-#endif
+
 		public override List<Mobile> ReadStrongMobileList()
 		{
 			return ReadStrongMobileList<Mobile>();
@@ -1294,7 +1746,7 @@ namespace Server
 				return new List<T>();
 			}
 		}
-#if Framework_4_0
+
 		public override HashSet<Mobile> ReadMobileSet()
 		{
 			return ReadMobileSet<Mobile>();
@@ -1325,7 +1777,7 @@ namespace Server
 				return new HashSet<T>();
 			}
 		}
-#endif
+
 		public override List<BaseGuild> ReadStrongGuildList()
 		{
 			return ReadStrongGuildList<BaseGuild>();
@@ -1351,7 +1803,7 @@ namespace Server
 				return new List<T>();
 			}
 		}
-#if Framework_4_0
+
 		public override HashSet<BaseGuild> ReadGuildSet()
 		{
 			return ReadGuildSet<BaseGuild>();
@@ -1382,7 +1834,169 @@ namespace Server
 				return new HashSet<T>();
 			}
 		}
-#endif
+
+        public override List<BaseCore> ReadStrongCoreList()
+        {
+            return ReadStrongCoreList<BaseCore>();
+        }
+
+        public override List<T> ReadStrongCoreList<T>()
+        {
+            int count = ReadInt();
+
+            if (count > 0)
+            {
+                List<T> list = new List<T>(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T core = ReadCore() as T;
+
+                    if (core != null)
+                        list.Add(core);
+                }
+
+                return list;
+            }
+            else
+                return new List<T>();
+        }
+
+        public override HashSet<BaseCore> ReadCoreSet()
+        {
+            return ReadCoreSet<BaseCore>();
+        }
+
+        public override HashSet<T> ReadCoreSet<T>()
+        {
+            int count = ReadInt();
+
+            if (count > 0)
+            {
+                HashSet<T> set = new HashSet<T>();
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T core = ReadCore() as T;
+
+                    if (core != null)
+                        set.Add(core);
+                }
+
+                return set;
+            }
+            else
+                return new HashSet<T>();
+        }
+
+        public override List<BaseModule> ReadStrongModuleList()
+        {
+            return ReadStrongModuleList<BaseModule>();
+        }
+
+        public override List<T> ReadStrongModuleList<T>()
+        {
+            int count = ReadInt();
+
+            if (count > 0)
+            {
+                List<T> list = new List<T>(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T module = ReadModule() as T;
+
+                    if (module != null)
+                        list.Add(module);
+                }
+
+                return list;
+            }
+            else
+                return new List<T>();
+        }
+
+        public override HashSet<BaseModule> ReadModuleSet()
+        {
+            return ReadModuleSet<BaseModule>();
+        }
+
+        public override HashSet<T> ReadModuleSet<T>()
+        {
+            int count = ReadInt();
+
+            if (count > 0)
+            {
+                HashSet<T> set = new HashSet<T>();
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T module = ReadModule() as T;
+
+                    if (module != null)
+                        set.Add(module);
+                }
+
+                return set;
+            }
+            else
+                return new HashSet<T>();
+        }
+
+        public override List<BaseService> ReadStrongServiceList()
+        {
+            return ReadStrongServiceList<BaseService>();
+        }
+
+        public override List<T> ReadStrongServiceList<T>()
+        {
+            int count = ReadInt();
+
+            if (count > 0)
+            {
+                List<T> list = new List<T>(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T service = ReadService() as T;
+
+                    if (service != null)
+                        list.Add(service);
+                }
+
+                return list;
+            }
+            else
+                return new List<T>();
+        }
+
+        public override HashSet<BaseService> ReadServiceSet()
+        {
+            return ReadServiceSet<BaseService>();
+        }
+
+        public override HashSet<T> ReadServiceSet<T>()
+        {
+            int count = ReadInt();
+
+            if (count > 0)
+            {
+                HashSet<T> set = new HashSet<T>();
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T service = ReadService() as T;
+
+                    if (service != null)
+                        set.Add(service);
+                }
+                
+                return set;
+            }
+            else
+                return new HashSet<T>();
+        }
+
 		public override Race ReadRace()
 		{
 			return Race.Races[ReadByte()];
@@ -1564,14 +2178,14 @@ namespace Server
 			m_Bin.Write( value.Ticks );
 			OnWrite();
 		}
-#if Framework_4_0
+
 		public override void Write( DateTimeOffset value )
 		{
 			m_Bin.Write( value.Ticks );
 			m_Bin.Write( value.Offset.Ticks );
 			OnWrite();
 		}
-#endif
+
 		public override void Write( TimeSpan value )
 		{
 			m_Bin.Write( value.Ticks );
@@ -1735,6 +2349,30 @@ namespace Server
 				Write( value.Id );
 		}
 
+        public override void Write(BaseCore value)
+        {
+            if (value == null || value.Deleted)
+                Write(CustomSerial.MinusOne);
+            else
+                Write(value.Serial);
+        }
+
+        public override void Write(BaseModule value)
+        {
+            if (value == null || value.Deleted)
+                Write(CustomSerial.MinusOne);
+            else
+                Write(value.Serial);
+        }
+
+        public override void Write(BaseService value)
+        {
+            if (value == null)
+                Write(CustomSerial.MinusOne);
+            else
+                Write(value.Serial);
+        }
+
 		public override void WriteItem<T>( T value )
 		{
 			Write( value );
@@ -1749,6 +2387,21 @@ namespace Server
 		{
 			Write( value );
 		}
+
+        public override void WriteCore<T>(T value)
+        {
+            Write(value);
+        }
+
+        public override void WriteModule<T>(T value)
+        {
+            Write(value);
+        }
+
+        public override void WriteService<T>(T value)
+        {
+            Write(value);
+        }
 
 		public override void WriteMobileList( ArrayList list )
 		{
@@ -1819,7 +2472,63 @@ namespace Server
 				Write( (BaseGuild)list[i] );
 		}
 
-		public override void Write( List<Item> list )
+        public override void WriteCoreList(ArrayList list)
+        {
+            WriteCoreList(list, false);
+        }
+
+        public override void WriteCoreList(ArrayList list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (((BaseCore)list[i]).Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write((BaseCore)list[i]);
+        }
+
+        public override void WriteModuleList(ArrayList list)
+        {
+            WriteModuleList(list, false);
+        }
+
+        public override void WriteModuleList(ArrayList list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (((BaseModule)list[i]).Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write((BaseModule)list[i]);
+        }
+
+        public override void WriteServiceList(ArrayList list)
+        {
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write((BaseService)list[i]);
+        }
+
+        public override void Write(List<Item> list)
 		{
 			Write( list, false );
 		}
@@ -1864,7 +2573,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<Item> set )
 		{
 			Write( set, false );
@@ -1902,7 +2611,7 @@ namespace Server
 				Write( item );
 			}
 		}
-#endif
+
 		public override void Write( List<Mobile> list )
 		{
 			Write( list, false );
@@ -1948,7 +2657,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<Mobile> set )
 		{
 			Write( set, false );
@@ -1986,7 +2695,7 @@ namespace Server
 				Write( mob );
 			}
 		}
-#endif
+
 		public override void Write( List<BaseGuild> list )
 		{
 			Write( list, false );
@@ -2032,7 +2741,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<BaseGuild> set )
 		{
 			Write( set, false );
@@ -2070,7 +2779,199 @@ namespace Server
 				Write( guild );
 			}
 		}
-#endif
+
+
+        public override void Write(List<BaseCore> list)
+        {
+            Write(list, false);
+        }
+
+        public override void Write(List<BaseCore> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void WriteCoreList<T>(List<T> list)
+        {
+            WriteCoreList<T>(list, false);
+        }
+
+        public override void WriteCoreList<T>(List<T> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void Write(HashSet<BaseCore> set)
+        {
+            Write(set, false);
+        }
+
+        public override void Write(HashSet<BaseCore> set, bool tidy)
+        {
+            if (tidy)
+                set.RemoveWhere(core => core.Deleted);
+
+            Write(set.Count);
+
+            foreach (BaseCore core in set)
+                Write(core);
+        }
+
+        public override void WriteCoreSet<T>(HashSet<T> set)
+        {
+            WriteCoreSet(set, false);
+        }
+
+        public override void WriteCoreSet<T>(HashSet<T> set, bool tidy)
+        {
+            if (tidy)
+                set.RemoveWhere(core => core.Deleted);
+
+            Write(set.Count);
+
+            foreach (BaseCore core in set)
+                Write(core);
+        }
+
+        public override void Write(List<BaseModule> list)
+        {
+            Write(list, false);
+        }
+
+        public override void Write(List<BaseModule> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void WriteModuleList<T>(List<T> list)
+        {
+            WriteModuleList<T>(list, false);
+        }
+
+        public override void WriteModuleList<T>(List<T> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count; )
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void Write(HashSet<BaseModule> set)
+        {
+            Write(set, false);
+        }
+
+        public override void Write(HashSet<BaseModule> set, bool tidy)
+        {
+            if (tidy)
+                set.RemoveWhere(module => module.Deleted);
+
+            Write(set.Count);
+
+            foreach (BaseModule module in set)
+                Write(module);
+        }
+
+        public override void WriteModuleSet<T>(HashSet<T> set)
+        {
+            WriteModuleSet(set, false);
+        }
+
+        public override void WriteModuleSet<T>(HashSet<T> set, bool tidy)
+        {
+            if (tidy)
+                set.RemoveWhere(module => module.Deleted);
+
+            Write(set.Count);
+
+            foreach (BaseModule module in set)
+                Write(module);
+        }
+
+        public override void Write(List<BaseService> list)
+        {
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void WriteServiceList<T>(List<T> list)
+        {
+            Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                Write(list[i]);
+        }
+
+        public override void Write(HashSet<BaseService> set)
+        {
+            Write(set.Count);
+
+            foreach (BaseService service in set)
+                Write(service);
+        }
+
+        public override void WriteServiceSet<T>(HashSet<T> set)
+        {
+            Write(set.Count);
+
+            foreach (BaseService service in set)
+                Write(service);
+        }
 	}
 
 	public interface ISerializable

@@ -1,29 +1,7 @@
-/***************************************************************************
- *                                Mobile.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: Mobile.cs 892 2012-07-29 02:41:00Z eos $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using Server;
 using Server.Accounting;
 using Server.Commands;
 using Server.ContextMenus;
@@ -438,11 +416,15 @@ namespace Server
 	public enum AccessLevel
 	{
 		Player,
+        VIP,
 		Counselor,
+        Decorator,
+        Spawner,
 		GameMaster,
 		Seer,
 		Administrator,
 		Developer,
+        CoOwner,
 		Owner
 	}
 

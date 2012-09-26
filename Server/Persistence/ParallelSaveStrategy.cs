@@ -28,6 +28,7 @@ using System.Diagnostics;
 
 using Server;
 using Server.Guilds;
+using CustomsFramework;
 
 namespace Server {
 	public sealed class ParallelSaveStrategy : SaveStrategy {
@@ -52,6 +53,9 @@ namespace Server {
 		private SequentialFileWriter itemData, itemIndex;
 		private SequentialFileWriter mobileData, mobileIndex;
 		private SequentialFileWriter guildData, guildIndex;
+        private SequentialFileWriter coreData, coreIndex;
+        private SequentialFileWriter moduleData, moduleIndex;
+        private SequentialFileWriter serviceData, serviceIndex;
 
 		private Queue<Item> _decayQueue;
 
@@ -113,6 +117,9 @@ namespace Server {
 		private void SaveTypeDatabases() {
 			SaveTypeDatabase( World.ItemTypesPath, World.m_ItemTypes );
 			SaveTypeDatabase( World.MobileTypesPath, World.m_MobileTypes );
+            SaveTypeDatabase(World.CoreTypesPath, World._CoreTypes);
+            SaveTypeDatabase(World.ModuleTypesPath, World._ModuleTypes);
+            SaveTypeDatabase(World.ServiceTypesPath, World._ServiceTypes);
 		}
 
 		private void SaveTypeDatabase( string path, List<Type> types ) {
@@ -139,9 +146,21 @@ namespace Server {
 			guildData = new SequentialFileWriter( World.GuildDataPath, metrics );
 			guildIndex = new SequentialFileWriter( World.GuildIndexPath, metrics );
 
+            coreData = new SequentialFileWriter(World.CoresDataPath, metrics);
+            coreIndex = new SequentialFileWriter(World.CoreIndexPath, metrics);
+
+            moduleData = new SequentialFileWriter(World.ModulesDataPath, metrics);
+            moduleIndex = new SequentialFileWriter(World.ModuleIndexPath, metrics);
+
+            serviceData = new SequentialFileWriter(World.ServicesDataPath, metrics);
+            serviceIndex = new SequentialFileWriter(World.ServiceIndexPath, metrics);
+
 			WriteCount( itemIndex, World.Items.Count );
 			WriteCount( mobileIndex, World.Mobiles.Count );
 			WriteCount( guildIndex, BaseGuild.List.Count );
+            WriteCount(coreIndex, World.Cores.Count);
+            WriteCount(moduleIndex, World.Modules.Count);
+            WriteCount(serviceIndex, World.Services.Count);
 		}
 
 		private void WriteCount( SequentialFileWriter indexFile, int count ) {
@@ -165,31 +184,63 @@ namespace Server {
 			guildData.Close();
 			guildIndex.Close();
 
+            coreData.Close();
+            coreIndex.Close();
+
+            moduleData.Close();
+            moduleIndex.Close();
+
+            serviceData.Close();
+            serviceIndex.Close();
+
 			World.NotifyDiskWriteComplete();
 		}
 
-		private void OnSerialized( ConsumableEntry entry ) {
-			ISerializable value = entry.value;
-			BinaryMemoryWriter writer = entry.writer;
+        private void OnSerialized(ConsumableEntry entry)
+        {
+            ISerializable value = entry.value;
+            BinaryMemoryWriter writer = entry.writer;
 
-			Item item = value as Item;
+            Item item = value as Item;
 
-			if ( item != null ) {
-				Save( item, writer );
-			} else {
-				Mobile mob = value as Mobile;
+            if (item != null)
+                Save(item, writer);
+            else
+            {
+                Mobile mob = value as Mobile;
 
-				if ( mob != null ) {
-					Save( mob, writer );
-				} else {
-					BaseGuild guild = value as BaseGuild;
+                if (mob != null)
+                    Save(mob, writer);
+                else
+                {
+                    BaseGuild guild = value as BaseGuild;
 
-					if ( guild != null ) {
-						Save( guild, writer );
-					}
-				}
-			}
-		}
+                    if (guild != null)
+                        Save(guild, writer);
+                    else
+                    {
+                        BaseCore core = value as BaseCore;
+
+                        if (core != null)
+                            Save(core, writer);
+                        else
+                        {
+                            BaseModule module = value as BaseModule;
+
+                            if (module != null)
+                                Save(module, writer);
+                            else
+                            {
+                                BaseService service = value as BaseService;
+
+                                if (service != null)
+                                    Save(service, writer);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
 		private void Save( Item item, BinaryMemoryWriter writer ) {
 			int length = writer.CommitTo( itemData, itemIndex, item.m_TypeRef, item.Serial );
@@ -218,6 +269,30 @@ namespace Server {
 				metrics.OnGuildSaved( length );
 			}
 		}
+
+        private void Save(BaseCore core, BinaryMemoryWriter writer)
+        {
+            int length = writer.CommitTo(coreData, coreIndex, core._TypeID, core.Serial);
+
+            if (metrics != null)
+                metrics.OnCoreSaved(length);
+        }
+
+        private void Save(BaseModule module, BinaryMemoryWriter writer)
+        {
+            int length = writer.CommitTo(moduleData, moduleIndex, module._TypeID, module.Serial);
+
+            if (metrics != null)
+                metrics.OnModuleSaved(length);
+        }
+
+        private void Save(BaseService service, BinaryMemoryWriter writer)
+        {
+            int length = writer.CommitTo(serviceData, serviceIndex, service._TypeID, service.Serial);
+
+            if (metrics != null)
+                metrics.OnServiceSaved(length);
+        }
 
 		private bool Enqueue( ISerializable value ) {
 			for ( int i = 0; i < consumers.Length; ++i ) {
@@ -255,25 +330,37 @@ namespace Server {
 			private IEnumerable<Item> items;
 			private IEnumerable<Mobile> mobiles;
 			private IEnumerable<BaseGuild> guilds;
+            private IEnumerable<BaseCore> cores;
+            private IEnumerable<BaseModule> modules;
+            private IEnumerable<BaseService> services;
 
 			public Producer() {
 				items = World.Items.Values;
 				mobiles = World.Mobiles.Values;
 				guilds = BaseGuild.List.Values;
+                cores = World.Cores.Values;
+                modules = World.Modules.Values;
+                services = World.Services.Values;
 			}
 
 			public IEnumerator<ISerializable> GetEnumerator() {
-				foreach ( Item item in items ) {
+				foreach ( Item item in items )
 					yield return item;
-				}
 
-				foreach ( Mobile mob in mobiles ) {
+				foreach ( Mobile mob in mobiles )
 					yield return mob;
-				}
 
-				foreach ( BaseGuild guild in guilds ) {
+				foreach ( BaseGuild guild in guilds )
 					yield return guild;
-				}
+
+                foreach (BaseCore core in cores)
+                    yield return core;
+
+                foreach (BaseModule module in modules)
+                    yield return module;
+
+                foreach (BaseService service in services)
+                    yield return service;
 			}
 
 			IEnumerator IEnumerable.GetEnumerator() {
