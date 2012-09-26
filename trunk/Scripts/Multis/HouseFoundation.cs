@@ -10,6 +10,7 @@ using Server.Items;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
+using CustomsFramework.Systems.VIPSystem;
 
 namespace Server.Multis
 {
@@ -944,13 +945,20 @@ namespace Server.Multis
 		{
 			int oldPrice = Price;
 			int newPrice = oldPrice + CustomizationCost + ((DesignState.Components.List.Length - ( CurrentState.Components.List.Length + CurrentState.Fixtures.Length )) * 500);
-			int cost = newPrice - oldPrice;
+            int cost = newPrice - oldPrice;
 
-			if ( !this.Deleted ) { // Temporary Fix. We should be booting a client out of customization mode in the delete handler.
-				if ( from.AccessLevel >= AccessLevel.GameMaster && cost != 0 )
-				{
-					from.SendMessage( "{0} gold would have been {1} your bank if you were not a GM.", cost.ToString(), ((cost > 0 )? "withdrawn from" : "deposited into" ) );
-				}
+            VIPModule module = from.GetModule(typeof(VIPModule)) as VIPModule;
+
+            if (!this.Deleted)
+            { // Temporary Fix. We should be booting a client out of customization mode in the delete handler.
+                if (from.AccessLevel >= AccessLevel.GameMaster && cost != 0)
+                {
+                    from.SendMessage("{0} gold would have been {1} your bank if you were not a GM.", cost.ToString(), ((cost > 0) ? "withdrawn from" : "deposited into"));
+                }
+                else if (module != null && module.Bonuses.FreeHouseDecoration.Enabled && cost != 0)
+                {
+                    from.SendMessage("{0} gold would have been {1} your bank if you were not a VIP player, thanks for donating!", cost, ((cost > 0) ? "withdrawn from" : "deposited into"));
+                }
 				else
 				{
 					if ( cost > 0 )

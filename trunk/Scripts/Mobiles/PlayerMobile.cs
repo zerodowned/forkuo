@@ -6,7 +6,6 @@ using Server.Items;
 using Server.Gumps;
 using Server.Multis;
 using Server.Engines.Help;
-using Server.Engines.ConPVP;
 using Server.ContextMenus;
 using Server.Network;
 using Server.Spells;
@@ -24,6 +23,8 @@ using Server.Engines.CannedEvil;
 using Server.Engines.Craft;
 using Server.Spells.Spellweaving;
 using Server.Engines.PartySystem;
+using CustomsFramework;
+using CustomsFramework.Systems.VIPSystem;
 
 namespace Server.Mobiles
 {

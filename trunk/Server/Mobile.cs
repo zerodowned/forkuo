@@ -14,6 +14,7 @@ using Server.Mobiles;
 using Server.Network;
 using Server.Prompts;
 using Server.Targeting;
+using CustomsFramework;
 
 namespace Server
 {
@@ -505,7 +506,28 @@ namespace Server
 
 			throw new ArgumentException();
 		}
-		#endregion
+        #endregion
+        #region Customs Framework
+        public BaseModule GetModule(string name)
+        {
+            return World.GetModule(this, name);
+        }
+
+        public BaseModule GetModule(Type type)
+        {
+            return World.GetModule(this, type);
+        }
+
+        public List<BaseModule> GetModules(string name)
+        {
+            return World.GetModules(this, name);
+        }
+
+        public List<BaseModule> SearchModules(string search)
+        {
+            return World.SearchModules(this, search);
+        }
+        #endregion
 
 		private static bool m_DragEffects = true;
 

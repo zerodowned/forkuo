@@ -1797,5 +1797,255 @@ namespace Server
         {
             _Services.Remove(service.Serial);
         }
+
+        public static BaseCore GetCore(string name)
+        {
+            foreach (BaseCore core in _Cores.Values)
+            {
+                if (core.Name == name)
+                    return core;
+            }
+
+            return null;
+        }
+
+        public static BaseModule GetModule(string name)
+        {
+            foreach (BaseModule module in _Modules.Values)
+            {
+                if (module.Name == name)
+                    return module;
+            }
+
+            return null;
+        }
+
+        public static BaseService GetService(string name)
+        {
+            foreach (BaseService service in _Services.Values)
+            {
+                if (service.Name == name)
+                    return service;
+            }
+
+            return null;
+        }
+
+        public static BaseCore GetCore(Type type)
+        {
+            foreach (BaseCore core in _Cores.Values)
+            {
+                if (core.GetType() == type)
+                    return core;
+            }
+
+            return null;
+        }
+
+        public static List<BaseModule> GetModules(Type type)
+        {
+            List<BaseModule> results = new List<BaseModule>();
+
+            foreach (BaseModule module in _Modules.Values)
+            {
+                if (module.GetType() == type)
+                    results.Add(module);
+            }
+
+            return results;
+        }
+
+        public static BaseService GetService(Type type)
+        {
+            foreach (BaseService service in _Services.Values)
+            {
+                if (service.GetType() == type)
+                    return service;
+            }
+
+            return null;
+        }
+
+        public static List<BaseCore> GetCores(Type type)
+        {
+            List<BaseCore> results = new List<BaseCore>();
+
+            foreach (BaseCore core in _Cores.Values)
+            {
+                if (core.GetType() == type)
+                    results.Add(core);
+            }
+
+            return results;
+        }
+
+        public static List<BaseService> GetServices(Type type)
+        {
+            List<BaseService> results = new List<BaseService>();
+
+            foreach (BaseService service in _Services.Values)
+            {
+                if (service.GetType() == type)
+                    results.Add(service);
+            }
+
+            return results;
+        }
+
+        public static BaseModule GetModule(Mobile mobile, string name)
+        {
+            foreach (BaseModule module in _Modules.Values)
+            {
+                if (module.LinkedMobile == mobile && module.Name == name)
+                    return module;
+            }
+
+            return null;
+        }
+
+        public static BaseModule GetModule(Mobile mobile, Type type)
+        {
+            foreach (BaseModule module in _Modules.Values)
+            {
+                if (module.LinkedMobile == mobile && module.GetType() == type)
+                    return module;
+            }
+
+            return null;
+        }
+
+        public static List<BaseModule> GetModules(Mobile mobile)
+        {
+            List<BaseModule> results = new List<BaseModule>();
+
+            foreach (BaseModule module in _Modules.Values)
+            {
+                if (module.LinkedMobile == mobile)
+                    results.Add(module);
+            }
+
+            return results;
+        }
+
+        public static List<BaseModule> GetModules(Mobile mobile, string name)
+        {
+            List<BaseModule> results = new List<BaseModule>();
+
+            foreach (BaseModule module in _Modules.Values)
+            {
+                if (module.LinkedMobile == mobile && module.Name == name)
+                    results.Add(module);
+            }
+
+            return results;
+        }
+
+        public static List<BaseModule> GetModules(Item item)
+        {
+            List<BaseModule> results = new List<BaseModule>();
+
+            foreach (BaseModule module in _Modules.Values)
+            {
+                if (module.LinkedItem == item)
+                    results.Add(module);
+            }
+
+            return results;
+        }
+
+        public static List<BaseCore> SearchCores(string find)
+        {
+            string[] keywords = find.ToLower().Split(' ');
+            List<BaseCore> results = new List<BaseCore>();
+
+            foreach (BaseCore core in _Cores.Values)
+            {
+                bool match = true;
+                string name = core.Name.ToLower();
+
+                for (int i = 0; i < keywords.Length; i++)
+                {
+                    if (name.IndexOf(keywords[i]) == -1)
+                        match = false;
+                }
+
+                if (match)
+                    results.Add(core);
+            }
+
+            return results;
+        }
+
+        public static List<BaseModule> SearchModules(string find)
+        {
+            string[] keywords = find.ToLower().Split(' ');
+            List<BaseModule> results = new List<BaseModule>();
+
+            foreach (BaseModule module in _Modules.Values)
+            {
+                bool match = true;
+                string name = module.Name.ToLower();
+
+                for (int i = 0; i < keywords.Length; i++)
+                {
+                    if (name.IndexOf(keywords[i]) == -1)
+                        match = false;
+                }
+
+                if (match)
+                    results.Add(module);
+            }
+
+            return results;
+        }
+
+        public static List<BaseService> SearchServices(string find)
+        {
+            string[] keywords = find.ToLower().Split(' ');
+            List<BaseService> results = new List<BaseService>();
+
+            foreach (BaseService service in _Services.Values)
+            {
+                bool match = true;
+                string name = service.Name.ToLower();
+
+                for (int i = 0; i < keywords.Length; i++)
+                {
+                    if (name.IndexOf(keywords[i]) == -1)
+                        match = false;
+                }
+
+                if (match)
+                    results.Add(service);
+            }
+
+            return results;
+        }
+
+        public static List<BaseModule> SearchModules(Mobile mobile, string find)
+        {
+            string[] keywords = find.ToLower().Split(' ');
+            List<BaseModule> results = new List<BaseModule>();
+
+            foreach (BaseModule module in _Modules.Values)
+            {
+                bool match = true;
+                string name = module.Name.ToLower();
+
+                if (module.LinkedMobile == mobile)
+                {
+                    for (int i = 0; i < keywords.Length; i++)
+                    {
+                        if (name.IndexOf(keywords[i]) == -1)
+                            match = false;
+                    }
+
+                    if (match)
+                        results.Add(module);
+                }
+            }
+
+            return results;
+        }
     }
 }
