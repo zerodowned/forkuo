@@ -25,65 +25,93 @@ using System.Text;
 
 namespace Server {
 	public sealed class SaveMetrics : IDisposable {
-		private const string PerformanceCategoryName = "RunUO 2.1";
-		private const string PerformanceCategoryDesc = "Performance counters for RunUO 2.1.";
+		private const string PerformanceCategoryName = "ForkUO 0.2";
+		private const string PerformanceCategoryDesc = "Performance counters for ForkUO 0.2";
 
 		private PerformanceCounter numberOfWorldSaves;
 
 		private PerformanceCounter itemsPerSecond;
 		private PerformanceCounter mobilesPerSecond;
+        private PerformanceCounter coresPerSecond;
+        private PerformanceCounter modulesPerSecond;
+        private PerformanceCounter servicesPerSecond;
 
 		private PerformanceCounter serializedBytesPerSecond;
 		private PerformanceCounter writtenBytesPerSecond;
 
 		public SaveMetrics() {
-			if ( !PerformanceCounterCategory.Exists( PerformanceCategoryName ) ) {
-				CounterCreationDataCollection counters = new CounterCreationDataCollection();
+            if (!PerformanceCounterCategory.Exists(PerformanceCategoryName))
+            {
+                CounterCreationDataCollection counters = new CounterCreationDataCollection();
 
-				counters.Add( new CounterCreationData(
-						"Save - Count",
-						"Number of world saves.",
-						PerformanceCounterType.NumberOfItems32
-					)
-				);
+                counters.Add(new CounterCreationData(
+                        "Save - Count",
+                        "Number of world saves.",
+                        PerformanceCounterType.NumberOfItems32
+                    )
+                );
 
-				counters.Add( new CounterCreationData(
-						"Save - Items/sec",
-						"Number of items saved per second.",
-						PerformanceCounterType.RateOfCountsPerSecond32
-					)
-				);
+                counters.Add(new CounterCreationData(
+                        "Save - Items/sec",
+                        "Number of items saved per second.",
+                        PerformanceCounterType.RateOfCountsPerSecond32
+                    )
+                );
 
-				counters.Add( new CounterCreationData(
-						"Save - Mobiles/sec",
-						"Number of mobiles saved per second.",
-						PerformanceCounterType.RateOfCountsPerSecond32
-					)
-				);
+                counters.Add(new CounterCreationData(
+                        "Save - Mobiles/sec",
+                        "Number of mobiles saved per second.",
+                        PerformanceCounterType.RateOfCountsPerSecond32
+                    )
+                );
 
-				counters.Add( new CounterCreationData(
-						"Save - Serialized bytes/sec",
-						"Amount of world-save bytes serialized per second.",
-						PerformanceCounterType.RateOfCountsPerSecond32
-					)
-				);
+                counters.Add(new CounterCreationData(
+                    "Save - Cores/sec",
+                    "Number of cores saved per second.",
+                    PerformanceCounterType.RateOfCountsPerSecond32
+                    )
+                );
 
-				counters.Add( new CounterCreationData(
-						"Save - Written bytes/sec",
-						"Amount of world-save bytes written to disk per second.",
-						PerformanceCounterType.RateOfCountsPerSecond32
-					)
-				);
+                counters.Add(new CounterCreationData(
+                    "Save - Modules/sec",
+                    "Number of modules saved per second.",
+                    PerformanceCounterType.RateOfCountsPerSecond32
+                    )
+                );
+
+                counters.Add(new CounterCreationData(
+                    "Save - Services/sec",
+                    "Number of services saved per second.",
+                    PerformanceCounterType.RateOfCountsPerSecond32
+                    )
+                );
+
+                counters.Add(new CounterCreationData(
+                        "Save - Serialized bytes/sec",
+                        "Amount of world-save bytes serialized per second.",
+                        PerformanceCounterType.RateOfCountsPerSecond32
+                    )
+                );
+
+                counters.Add(new CounterCreationData(
+                        "Save - Written bytes/sec",
+                        "Amount of world-save bytes written to disk per second.",
+                        PerformanceCounterType.RateOfCountsPerSecond32
+                    )
+                );
 
 #if !MONO
-				PerformanceCounterCategory.Create( PerformanceCategoryName, PerformanceCategoryDesc, PerformanceCounterCategoryType.SingleInstance, counters );
+                PerformanceCounterCategory.Create(PerformanceCategoryName, PerformanceCategoryDesc, PerformanceCounterCategoryType.SingleInstance, counters);
 #endif
-			}
+            }
 
 			numberOfWorldSaves = new PerformanceCounter( PerformanceCategoryName, "Save - Count", false );
 
 			itemsPerSecond = new PerformanceCounter( PerformanceCategoryName, "Save - Items/sec", false );
 			mobilesPerSecond = new PerformanceCounter( PerformanceCategoryName, "Save - Mobiles/sec", false );
+            coresPerSecond = new PerformanceCounter(PerformanceCategoryName, "Save - Cores/sec", false);
+            modulesPerSecond = new PerformanceCounter(PerformanceCategoryName, "Save - Modules/sec", false);
+            servicesPerSecond = new PerformanceCounter(PerformanceCategoryName, "Save - Services/sec", false);
 
 			serializedBytesPerSecond = new PerformanceCounter( PerformanceCategoryName, "Save - Serialized bytes/sec", false );
 			writtenBytesPerSecond = new PerformanceCounter( PerformanceCategoryName, "Save - Written bytes/sec", false );
@@ -108,6 +136,27 @@ namespace Server {
 			serializedBytesPerSecond.IncrementBy( numberOfBytes );
 		}
 
+        public void OnCoreSaved(int numberOfBytes)
+        {
+            coresPerSecond.Increment();
+
+            serializedBytesPerSecond.IncrementBy(numberOfBytes);
+        }
+
+        public void OnModuleSaved(int numberOfBytes)
+        {
+            modulesPerSecond.Increment();
+
+            serializedBytesPerSecond.IncrementBy(numberOfBytes);
+        }
+
+        public void OnServiceSaved(int numberOfBytes)
+        {
+            servicesPerSecond.Increment();
+
+            servicesPerSecond.IncrementBy(numberOfBytes);
+        }
+
 		public void OnFileWritten( int numberOfBytes ) {
 			writtenBytesPerSecond.IncrementBy( numberOfBytes );
 		}
@@ -122,6 +171,9 @@ namespace Server {
 
 				itemsPerSecond.Dispose();
 				mobilesPerSecond.Dispose();
+                coresPerSecond.Dispose();
+                modulesPerSecond.Dispose();
+                servicesPerSecond.Dispose();
 
 				serializedBytesPerSecond.Dispose();
 				writtenBytesPerSecond.Dispose();

@@ -182,7 +182,7 @@ namespace Server.Mobiles
 
 		public void RunFrom( Mobile m )
 		{
-			Run( ( m_Mobile.GetDirectionTo( m ) - 4 ) & Direction.Mask );
+			Run( (Direction)((int)m_Mobile.GetDirectionTo( m ) - 4 ) & Direction.Mask );
 		}
 
 		public void OnFailedMove()

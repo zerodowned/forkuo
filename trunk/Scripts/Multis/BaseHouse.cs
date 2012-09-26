@@ -1206,9 +1206,15 @@ namespace Server.Multis
 			return SecureAccessResult.Insecure;
 		}
 
-		private static List<BaseHouse> m_AllHouses = new List<BaseHouse>();
+        private static List<BaseHouse> m_AllHouses = new List<BaseHouse>();
 
-		public BaseHouse( int multiID, Mobile owner, int MaxLockDown, int MaxSecure ) : base( multiID )
+        public static List<BaseHouse> AllHouses
+        {
+            get { return m_AllHouses; }
+        }
+
+        public BaseHouse(int multiID, Mobile owner, int MaxLockDown, int MaxSecure)
+            : base(multiID)
 		{
 			m_AllHouses.Add( this );
 

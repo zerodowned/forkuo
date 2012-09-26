@@ -27,6 +27,7 @@ using System.Diagnostics;
 
 using Server;
 using Server.Guilds;
+using CustomsFramework;
 
 namespace Server {
 	public class StandardSaveStrategy : SaveStrategy {
@@ -60,6 +61,9 @@ namespace Server {
 			SaveMobiles(metrics);
 			SaveItems(metrics);
 			SaveGuilds(metrics);
+            SaveCores(metrics);
+            SaveModules(metrics);
+            SaveServices(metrics);
 
 			if (permitBackgroundWrite && UseSequentialWriters)	//If we're permitted to write in the background, but we don't anyways, then notify.
 				World.NotifyDiskWriteComplete();
@@ -199,7 +203,155 @@ namespace Server {
 			bin.Close();
 		}
 
-		public override void ProcessDecay() {
+        protected void SaveCores(SaveMetrics metrics)
+        {
+            Dictionary<CustomSerial, BaseCore> cores = World.Cores;
+
+            GenericWriter indexWriter;
+            GenericWriter typeWriter;
+            GenericWriter dataWriter;
+
+            if (UseSequentialWriters)
+            {
+                indexWriter = new BinaryFileWriter(World.CoreIndexPath, false);
+                typeWriter = new BinaryFileWriter(World.CoreTypesPath, false);
+                dataWriter = new BinaryFileWriter(World.CoresDataPath, true);
+            }
+            else
+            {
+                indexWriter = new AsyncWriter(World.CoreIndexPath, false);
+                typeWriter = new AsyncWriter(World.CoreTypesPath, false);
+                dataWriter = new AsyncWriter(World.CoresDataPath, true);
+            }
+
+            indexWriter.Write(cores.Count);
+
+            foreach (BaseCore core in cores.Values)
+            {
+                long start = dataWriter.Position;
+
+                indexWriter.Write(core._TypeID);
+                indexWriter.Write((int)core.Serial);
+                indexWriter.Write(start);
+
+                core.Serialize(dataWriter);
+
+                if (metrics != null)
+                    metrics.OnMobileSaved((int)(dataWriter.Position - start));
+
+                indexWriter.Write((int)(dataWriter.Position - start));
+            }
+
+            typeWriter.Write(World._CoreTypes.Count);
+
+            for (int i = 0; i < World._CoreTypes.Count; ++i)
+                typeWriter.Write(World._CoreTypes[i].FullName);
+
+            indexWriter.Close();
+            typeWriter.Close();
+            dataWriter.Close();
+        }
+
+        protected void SaveModules(SaveMetrics metrics)
+        {
+            Dictionary<CustomSerial, BaseModule> modules = World.Modules;
+
+            GenericWriter indexWriter;
+            GenericWriter typeWriter;
+            GenericWriter dataWriter;
+
+            if (UseSequentialWriters)
+            {
+                indexWriter = new BinaryFileWriter(World.ModuleIndexPath, false);
+                typeWriter = new BinaryFileWriter(World.ModuleTypesPath, false);
+                dataWriter = new BinaryFileWriter(World.ModulesDataPath, true);
+            }
+            else
+            {
+                indexWriter = new AsyncWriter(World.ModuleIndexPath, false);
+                typeWriter = new AsyncWriter(World.ModuleTypesPath, false);
+                dataWriter = new AsyncWriter(World.ModulesDataPath, true);
+            }
+
+            indexWriter.Write(modules.Count);
+
+            foreach (BaseModule module in modules.Values)
+            {
+                long start = dataWriter.Position;
+
+                indexWriter.Write(module._TypeID);
+                indexWriter.Write((int)module.Serial);
+                indexWriter.Write(start);
+
+                module.Serialize(dataWriter);
+
+                if (metrics != null)
+                    metrics.OnModuleSaved((int)(dataWriter.Position - start));
+
+                dataWriter.Write((int)(dataWriter.Position - start));
+            }
+
+            indexWriter.Write(World._ModuleTypes.Count);
+
+            for (int i = 0; i < World._ModuleTypes.Count; ++i)
+                typeWriter.Write(World._ModuleTypes[i].FullName);
+
+            indexWriter.Close();
+            typeWriter.Close();
+            dataWriter.Close();
+        }
+
+        protected void SaveServices(SaveMetrics metrics)
+        {
+            Dictionary<CustomSerial, BaseService> services = World.Services;
+
+            GenericWriter indexWriter;
+            GenericWriter typeWriter;
+            GenericWriter dataWriter;
+
+            if (UseSequentialWriters)
+            {
+                indexWriter = new BinaryFileWriter(World.ServiceIndexPath, false);
+                typeWriter = new BinaryFileWriter(World.ServiceTypesPath, false);
+                dataWriter = new BinaryFileWriter(World.ServicesDataPath, true);
+            }
+            else
+            {
+                indexWriter = new AsyncWriter(World.ServiceIndexPath, false);
+                typeWriter = new AsyncWriter(World.ServiceTypesPath, false);
+                dataWriter = new AsyncWriter(World.ServicesDataPath, true);
+            }
+
+            indexWriter.Write(services.Count);
+
+            foreach (BaseService service in services.Values)
+            {
+                long start = dataWriter.Position;
+
+                indexWriter.Write(service._TypeID);
+                indexWriter.Write((int)service.Serial);
+                indexWriter.Write(start);
+
+                service.Serialize(dataWriter);
+
+                if (metrics != null)
+                    metrics.OnServiceSaved((int)(dataWriter.Position - start));
+
+                indexWriter.Write((int)(dataWriter.Position - start));
+            }
+
+            typeWriter.Write(World._ServiceTypes.Count);
+
+            for (int i = 0; i < World._ServiceTypes.Count; ++i)
+                typeWriter.Write(World._ServiceTypes[i].FullName);
+
+            indexWriter.Close();
+            typeWriter.Close();
+            dataWriter.Close();
+        }
+
+        public override void ProcessDecay()
+        {
 			while ( _decayQueue.Count > 0 ) {
 				Item item = _decayQueue.Dequeue();
 

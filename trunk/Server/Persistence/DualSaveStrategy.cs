@@ -50,6 +50,9 @@ namespace Server {
 
 			SaveMobiles(metrics);
 			SaveGuilds(metrics);
+            SaveCores(metrics);
+            SaveModules(metrics);
+            SaveServices(metrics);
 
 			saveThread.Join();
 
