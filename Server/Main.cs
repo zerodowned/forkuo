@@ -1,40 +1,12 @@
-/***************************************************************************
- *                                  Main.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: Main.cs 844 2012-03-07 13:47:33Z mark $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-#if Framework_4_0
 using System.Threading.Tasks;
-#endif
-
-using Server;
-using Server.Accounting;
-using Server.Gumps;
 using Server.Network;
 using System.Runtime;
 
@@ -112,11 +84,7 @@ namespace Server
 		public static Thread Thread { get { return m_Thread; } }
 		public static MultiTextWriter MultiConsoleOut { get { return m_MultiConOut; } }
 
-#if Framework_4_0
 		public static readonly bool Is64Bit = Environment.Is64BitProcess;
-#else
-		public static readonly bool Is64Bit = (IntPtr.Size == 8);	//Returns the size for the current /process/
-#endif
 
 		private static bool m_MultiProcessor;
 		private static int m_ProcessorCount;
@@ -668,17 +636,10 @@ namespace Server
 			if( a == null )
 				return;
 
-#if Framework_4_0
 			Parallel.ForEach(a.GetTypes(), t => 
 				{
 					VerifyType(t);
 				});
-#else
-			foreach (Type t in a.GetTypes())
-			{
-				VerifyType(t);
-			}
-#endif
 		}
 	}
 
