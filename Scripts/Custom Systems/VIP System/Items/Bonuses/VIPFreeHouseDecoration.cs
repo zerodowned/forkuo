@@ -1,0 +1,51 @@
+﻿using Server;
+
+namespace CustomsFramework.Systems.VIPSystem
+{
+    public class VIPFreeHouseDecorationDeed : BaseVIPDeed
+    {
+        public override string DefaultName
+        {
+            get
+            {
+                return "VIP Deed - Loot Gold From Corpses, Ledger Needed";
+            }
+        }
+
+        [Constructable(AccessLevel.Developer)]
+        public VIPFreeHouseDecorationDeed()
+            : base()
+        {
+            Hue = 2213;
+            this.Bonuses.FreeHouseDecoration.Enabled = true;
+        }
+
+        public VIPFreeHouseDecorationDeed(Serial serial)
+            : base(serial)
+        {
+        }
+
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            Utilities.WriteVersion(writer, 0);
+        }
+
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+
+            switch (version)
+            {
+                case 0:
+                    {
+
+                        break;
+                    }
+            }
+        }
+    }
+}

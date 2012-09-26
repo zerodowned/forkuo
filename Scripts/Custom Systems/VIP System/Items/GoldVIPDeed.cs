@@ -1,0 +1,56 @@
+﻿using Server;
+
+namespace CustomsFramework.Systems.VIPSystem
+{
+    public class GoldVIPDeed : BaseVIPDeed
+    {
+        public override string DefaultName
+        {
+            get
+            {
+                return "A Gold VIP Deed";
+            }
+        }
+
+        [Constructable(AccessLevel.Developer)]
+        public GoldVIPDeed()
+            : base()
+        {
+            Hue = 2213;
+            Tier = VIPTier.Gold;
+
+            foreach (Bonus bonus in Bonuses)
+            {
+                bonus.Enabled = true;
+            }
+        }
+
+        public GoldVIPDeed(Serial serial)
+            : base(serial)
+        {
+        }
+
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            Utilities.WriteVersion(writer, 0);
+        }
+
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+
+            switch (version)
+            {
+                case 0:
+                    {
+
+                        break;
+                    }
+            }
+        }
+    }
+}
