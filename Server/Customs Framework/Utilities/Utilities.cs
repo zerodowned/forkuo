@@ -2,6 +2,7 @@
 using System.IO;
 using Server;
 using Server.Items;
+using SevenZip;
 
 namespace CustomsFramework
 {
@@ -87,6 +88,36 @@ namespace CustomsFramework
                 item.LootType = LootType.Newbied;
 
             return item;
+        }
+
+        public void Compress7z(string copyPath, string outPath, CompressionLevel compressionLevel)
+        {
+            SevenZipCompressor compressor = new SevenZipCompressor();
+            compressor.CustomParameters.Add("mt", "on");
+            compressor.CompressionLevel = compressionLevel;
+            compressor.ScanOnlyWritable = true;
+
+            compressor.CompressDirectory(copyPath, outPath + ".7z");
+        }
+
+        public void Compress7z(string copyPath, Stream outStream, CompressionLevel compressionLevel)
+        {
+            SevenZipCompressor compressor = new SevenZipCompressor();
+            compressor.CustomParameters.Add("mt", "on");
+            compressor.CompressionLevel = compressionLevel;
+            compressor.ScanOnlyWritable = true;
+
+            compressor.CompressDirectory(copyPath, outStream);
+        }
+
+        public void Compress7z(string copyPath, string outPath)
+        {
+            Compress7z(copyPath, outPath, CompressionLevel.Normal);
+        }
+
+        public void Compress7z(string copyPath, Stream outStream)
+        {
+            Compress7z(copyPath, outStream, CompressionLevel.Normal);
         }
 
         public static SaveStrategy GetSaveStrategy(SaveStrategyTypes saveStrategyTypes)
