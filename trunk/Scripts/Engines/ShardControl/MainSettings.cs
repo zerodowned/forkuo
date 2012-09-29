@@ -4,12 +4,26 @@ using Server;
 namespace CustomsFramework.Systems.ShardControl
 {
     [PropertyObject]
-	public class MainSettings
+	public partial class MainSettings
     {
         #region Variables
+        private GeneralSettings _GeneralSettings;
         private AccountSettings _AccountSettings;
         private SaveSettings _SaveSettings;
         private ClientSettings _ClientSettings;
+
+        [CommandProperty(AccessLevel.Owner)]
+        public GeneralSettings GeneralSettings
+        {
+            get
+            {
+                return _GeneralSettings;
+            }
+            set
+            {
+                _GeneralSettings = value;
+            }
+        }
 
         [CommandProperty(AccessLevel.Administrator)]
         public AccountSettings AccountSettings
@@ -53,6 +67,7 @@ namespace CustomsFramework.Systems.ShardControl
 
         public MainSettings()
         {
+            _GeneralSettings = new GeneralSettings();
             _AccountSettings = new AccountSettings();
             _SaveSettings = new SaveSettings();
             _ClientSettings = new ClientSettings();
@@ -66,6 +81,7 @@ namespace CustomsFramework.Systems.ShardControl
             _AccountSettings.Serialize(writer);
             _SaveSettings.Serialize(writer);
             _ClientSettings.Serialize(writer);
+            _GeneralSettings.Serialize(writer);
         }
 
         public MainSettings(GenericReader reader)
@@ -84,6 +100,7 @@ namespace CustomsFramework.Systems.ShardControl
                         _AccountSettings = new AccountSettings(reader);
                         _SaveSettings = new SaveSettings(reader);
                         _ClientSettings = new ClientSettings(reader);
+                        _GeneralSettings = new GeneralSettings(reader);
                         break;
                     }
             }

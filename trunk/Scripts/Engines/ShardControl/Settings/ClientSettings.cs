@@ -16,6 +16,7 @@ namespace CustomsFramework.Systems.ShardControl
         private TimeSpan _GameTimeLeniency;
         private TimeSpan _KickDelay;
 
+        [CommandProperty(AccessLevel.Administrator)]
         public bool AutoDetectClient
         {
             get
@@ -28,6 +29,7 @@ namespace CustomsFramework.Systems.ShardControl
             }
         }
 
+        [CommandProperty(AccessLevel.Administrator)]
         public string ClientPath
         {
             get
@@ -40,6 +42,7 @@ namespace CustomsFramework.Systems.ShardControl
             }
         }
 
+        [CommandProperty(AccessLevel.Administrator)]
         public OldClientResponse OldClientResponse
         {
             get
@@ -52,6 +55,7 @@ namespace CustomsFramework.Systems.ShardControl
             }
         }
 
+        [CommandProperty(AccessLevel.Administrator)]
         public ClientVersion RequiredClientVersion
         {
             get
@@ -64,6 +68,7 @@ namespace CustomsFramework.Systems.ShardControl
             }
         }
 
+        [CommandProperty(AccessLevel.Administrator)]
         public bool AllowRegular
         {
             get
@@ -76,6 +81,7 @@ namespace CustomsFramework.Systems.ShardControl
             }
         }
 
+        [CommandProperty(AccessLevel.Administrator)]
         public bool AllowUOTD
         {
             get
@@ -88,6 +94,7 @@ namespace CustomsFramework.Systems.ShardControl
             }
         }
 
+        [CommandProperty(AccessLevel.Administrator)]
         public bool AllowGod
         {
             get
@@ -100,6 +107,7 @@ namespace CustomsFramework.Systems.ShardControl
             }
         }
 
+        [CommandProperty(AccessLevel.Administrator)]
         public TimeSpan AgeLeniency
         {
             get
@@ -112,6 +120,7 @@ namespace CustomsFramework.Systems.ShardControl
             }
         }
 
+        [CommandProperty(AccessLevel.Administrator)]
         public TimeSpan GameTimeLeniency
         {
             get
@@ -124,6 +133,7 @@ namespace CustomsFramework.Systems.ShardControl
             }
         }
 
+        [CommandProperty(AccessLevel.Administrator)]
         public TimeSpan KickDelay
         {
             get

@@ -1,25 +1,4 @@
-/***************************************************************************
- *                              AssemblyInfo.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: AssemblyInfo.cs 805 2012-01-02 12:08:28Z asayre $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 //
@@ -27,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("RunUO Server Core")]	//Having just RunUO there is reundant, ie, RunUO.exe with the word 'RunUO' under it
-[assembly: AssemblyDescription("UO Server Software")]
+[assembly: AssemblyTitle("ForkUO Server")]	//Having just RunUO there is reundant, ie, RunUO.exe with the word 'RunUO' under it
+[assembly: AssemblyDescription("Ultima Online Server Emulator")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("The RunUO Team")]
+[assembly: AssemblyCompany("The ForkUO Team")]
 [assembly: AssemblyProduct("")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
@@ -47,7 +26,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("2.2.*")]
+[assembly: AssemblyVersion("0.1.*.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

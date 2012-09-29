@@ -8,12 +8,12 @@ namespace CustomsFramework.Systems.ShardControl
     public sealed class AccountSettings : BaseSettings
     {
         #region Variables
-        private int m_AccountsPerIP;
-        private int m_HousesPerAccount;
-        private int m_MaxHousesPerAccount;
-        private bool m_AutoAccountCreation;
-        private bool m_RestrictDeletion;
-        private TimeSpan m_DeleteDelay;
+        private int _AccountsPerIP;
+        private int _HousesPerAccount;
+        private int _MaxHousesPerAccount;
+        private bool _AutoAccountCreation;
+        private bool _RestrictDeletion;
+        private TimeSpan _DeleteDelay;
         private PasswordProtection m_PasswordProtection;
 
         [CommandProperty(AccessLevel.Administrator)]
@@ -21,11 +21,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_AccountsPerIP;
+                return _AccountsPerIP;
             }
             set
             {
-                m_AccountsPerIP = value;
+                _AccountsPerIP = value;
             }
         }
 
@@ -34,11 +34,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_HousesPerAccount;
+                return _HousesPerAccount;
             }
             set
             {
-                m_HousesPerAccount = value;
+                _HousesPerAccount = value;
             }
         }
 
@@ -47,11 +47,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_MaxHousesPerAccount;
+                return _MaxHousesPerAccount;
             }
             set
             {
-                m_MaxHousesPerAccount = value;
+                _MaxHousesPerAccount = value;
             }
         }
 
@@ -60,11 +60,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_AutoAccountCreation;
+                return _AutoAccountCreation;
             }
             set
             {
-                m_AutoAccountCreation = value;
+                _AutoAccountCreation = value;
             }
         }
 
@@ -73,11 +73,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_RestrictDeletion;
+                return _RestrictDeletion;
             }
             set
             {
-                m_RestrictDeletion = value;
+                _RestrictDeletion = value;
             }
         }
 
@@ -86,11 +86,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_DeleteDelay;
+                return _DeleteDelay;
             }
             set
             {
-                m_DeleteDelay = value;
+                _DeleteDelay = value;
             }
         }
 
@@ -113,12 +113,12 @@ namespace CustomsFramework.Systems.ShardControl
             bool restrictDeletion = true, TimeSpan deleteDelay = TimeSpan.FromDays(7.0),
             PasswordProtection passwordProtection = PasswordProtection.NewCrypt)
         {
-            m_AccountsPerIP = accountsPerIP;
-            m_HousesPerAccount = housesPerAccount;
-            m_MaxHousesPerAccount = maxHousesPerAccount;
-            m_AutoAccountCreation = autoAccountCreation;
-            m_RestrictDeletion = restrictDeletion;
-            m_DeleteDelay = deleteDelay;
+            _AccountsPerIP = accountsPerIP;
+            _HousesPerAccount = housesPerAccount;
+            _MaxHousesPerAccount = maxHousesPerAccount;
+            _AutoAccountCreation = autoAccountCreation;
+            _RestrictDeletion = restrictDeletion;
+            _DeleteDelay = deleteDelay;
             m_PasswordProtection = passwordProtection;
         }
 
@@ -127,12 +127,12 @@ namespace CustomsFramework.Systems.ShardControl
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(m_AccountsPerIP);
-            writer.Write(m_HousesPerAccount);
-            writer.Write(m_MaxHousesPerAccount);
-            writer.Write(m_AutoAccountCreation);
-            writer.Write(m_RestrictDeletion);
-            writer.Write(m_DeleteDelay);
+            writer.Write(_AccountsPerIP);
+            writer.Write(_HousesPerAccount);
+            writer.Write(_MaxHousesPerAccount);
+            writer.Write(_AutoAccountCreation);
+            writer.Write(_RestrictDeletion);
+            writer.Write(_DeleteDelay);
             writer.Write((byte)m_PasswordProtection);
         }
 
@@ -149,12 +149,12 @@ namespace CustomsFramework.Systems.ShardControl
             {
                 case 0:
                     {
-                        m_AccountsPerIP = reader.ReadInt();
-                        m_HousesPerAccount = reader.ReadInt();
-                        m_MaxHousesPerAccount = reader.ReadInt();
-                        m_AutoAccountCreation = reader.ReadBool();
-                        m_RestrictDeletion = reader.ReadBool();
-                        m_DeleteDelay = reader.ReadTimeSpan();
+                        _AccountsPerIP = reader.ReadInt();
+                        _HousesPerAccount = reader.ReadInt();
+                        _MaxHousesPerAccount = reader.ReadInt();
+                        _AutoAccountCreation = reader.ReadBool();
+                        _RestrictDeletion = reader.ReadBool();
+                        _DeleteDelay = reader.ReadTimeSpan();
                         m_PasswordProtection = (PasswordProtection)reader.ReadByte();
                         break;
                     }

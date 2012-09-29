@@ -1,28 +1,6 @@
-/***************************************************************************
- *                                 Gump.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: Gump.cs 521 2010-06-17 07:11:43Z mark $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Server;
 using Server.Network;
 
 namespace Server.Gumps
