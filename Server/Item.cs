@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                  Item.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: Item.cs 865 2012-04-22 04:10:06Z eos $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.IO;
 using System.Collections;
@@ -824,7 +804,37 @@ namespace Server
 				info.m_Items = new List<Item>();
 
 			return info.m_Items;
-		}
+        }
+
+        #region Mondain's Legacy
+
+        public static System.Drawing.Bitmap GetBitmap( int itemID )
+        {
+            try 
+			{ 
+				return Ultima.Art.GetStatic( itemID ); 
+			}
+            catch ( Exception e ) 
+			{ 
+				Console.WriteLine( e.ToString() ); 
+			}
+
+            return null;
+        }
+
+        public static void Measure( System.Drawing.Bitmap bmp, out int xMin, out int yMin, out int xMax, out int yMax )
+        {
+            try 
+            { 
+            	Ultima.Art.Measure( bmp, out xMin, out yMin, out xMax, out yMax ); 
+            }
+            catch ( Exception e ) 
+            { 
+            	Console.WriteLine( e.ToString() ); 
+            	xMin = yMin = xMax = yMax = 0;
+            }
+        }
+        #endregion
 
 		private void SetFlag( ImplFlag flag, bool value )
 		{

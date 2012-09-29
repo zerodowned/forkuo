@@ -1,25 +1,4 @@
-/***************************************************************************
- *                                 Poison.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: Poison.cs 511 2010-04-25 06:09:43Z mark $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server
@@ -62,6 +41,12 @@ namespace Server
         public static Poison Greater { get { return GetPoison( "Greater" ); } }
         public static Poison Deadly { get { return GetPoison( "Deadly" ); } }
         public static Poison Lethal { get { return GetPoison( "Lethal" ); } }
+        // Mondain's Legacy
+        public static Poison Parasitic { get { return GetPoison("DeadlyParasitic"); } }
+        public static Poison DarkGlow { get { return GetPoison("GreaterDarkglow"); } }
+
+        public abstract int RealLevel { get; }
+        public abstract int LabelNumber { get; }
 
         public static List<Poison> Poisons
         {

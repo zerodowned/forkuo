@@ -750,7 +750,9 @@ namespace Server
 		private DateTime m_NextActionTime;
 		private DateTime m_NextActionMessage;
 		private bool m_Paralyzed;
+        private bool _Sleep;
 		private ParalyzedTimer m_ParaTimer;
+        private SleepTimer _SleepTimer;
 		private bool m_Frozen;
 		private FrozenTimer m_FrozenTimer;
 		private int m_AllowedStealthSteps;
@@ -1690,6 +1692,29 @@ namespace Server
 			}
 		}
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public virtual bool Asleep
+        {
+            get
+            {
+                return _Sleep;
+            }
+            set
+            {
+                if (_Sleep != value)
+                {
+                    _Sleep = value;
+
+                    if (_SleepTimer != null)
+                    {
+                        this.Send(SpeedControl.Disable);
+                        _SleepTimer.Stop();
+                        _SleepTimer = null;
+                    }
+                }
+            }
+        }
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool DisarmReady
 		{
@@ -1751,6 +1776,18 @@ namespace Server
 				m_ParaTimer.Start();
 			}
 		}
+
+        public void Sleep(TimeSpan duration)
+        {
+            if (!_Sleep)
+            {
+                Asleep = true;
+                this.Send(SpeedControl.WalkSpeed);
+
+                _SleepTimer = new SleepTimer(this, duration);
+                _SleepTimer.Start();
+            }
+        }
 
 		public void Freeze( TimeSpan duration )
 		{
@@ -2023,6 +2060,23 @@ namespace Server
 				m_Mobile.Paralyzed = false;
 			}
 		}
+
+        private class SleepTimer : Timer
+        {
+            private Mobile _Mobile;
+
+            public SleepTimer(Mobile m, TimeSpan duration)
+                : base(duration)
+            {
+                this.Priority = TimerPriority.TwentyFiveMS;
+                _Mobile = m;
+            }
+
+            protected override void OnTick()
+            {
+                _Mobile.Asleep = false;
+            }
+        }
 
 		private class FrozenTimer : Timer
 		{
@@ -3815,6 +3869,9 @@ namespace Server
 			if( m_ParaTimer != null )
 				m_ParaTimer.Stop();
 
+            if (_SleepTimer != null)
+                _SleepTimer.Stop();
+
 			if( m_FrozenTimer != null )
 				m_FrozenTimer.Stop();
 
@@ -3906,6 +3963,15 @@ namespace Server
 					m_ParaTimer.Stop();
 			}
 
+            if (Asleep)
+            {
+                Asleep = false;
+                this.Send(SpeedControl.Disable);
+
+                if (_SleepTimer != null)
+                    _SleepTimer.Stop();
+            }
+
 			if( Frozen )
 			{
 				Frozen = false;
@@ -3950,6 +4016,7 @@ namespace Server
 			if( pack != null )
 			{
 				List<Item> packCopy = new List<Item>( pack.Items );
+				List<Item> contCopy = new List<Item>();
 
 				for( int i = 0; i < packCopy.Count; ++i )
 				{
@@ -3958,9 +4025,30 @@ namespace Server
 					DeathMoveResult res = GetInventoryMoveResultFor( item );
 
 					if( res == DeathMoveResult.MoveToCorpse )
+					{
 						content.Add( item );
+
+						if( item is Container )
+							contCopy.AddRange( item.Items );
+					}
 					else
 						moveToPack.Add( item );
+
+					while( contCopy.Count > 0 )
+					{
+						Item child = contCopy[0];
+						res = GetInventoryMoveResultFor( child );
+
+						if( res != DeathMoveResult.MoveToBackpack )
+						{
+							if( child is Container )
+								contCopy.AddRange( child.Items );
+						}
+						else
+							moveToPack.Add( child );
+
+						contCopy.RemoveAt( 0 );
+					}
 				}
 
 				for( int i = 0; i < moveToPack.Count; ++i )
@@ -4303,6 +4391,13 @@ namespace Server
 					{
 						reject = LRReason.CannotLift;
 					}
+					#region Mondain's Legacy
+					else if ( item.QuestItem && amount != item.Amount && from.AccessLevel < AccessLevel.GameMaster )
+					{
+						reject = LRReason.Inspecific;
+						from.SendLocalizedMessage( 1074868 ); // Stacks of quest items cannot be unstacked.
+					}
+					#endregion
 					else if( !item.IsAccessibleTo( from ) )
 					{
 						reject = LRReason.CannotLift;
@@ -5198,6 +5293,12 @@ namespace Server
 
 				Paralyzed = false;
 
+                if (Asleep)
+                {
+                    Asleep = false;
+                    from.Send(SpeedControl.Disable);
+                }
+				
 				switch( m_VisibleDamageType )
 				{
 					case VisibleDamageType.Related:
@@ -6249,22 +6350,48 @@ namespace Server
 					{
 						state.Mobile.ProcessDelta();
 
-						//if ( state.StygianAbyss ) {
-							//if( pNew == null )
-								//pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
+						#region SA
+						if( p == null )
+						{
+							if (this.Race == Race.Gargoyle)
+								{
+								frameCount = 10;
 
-							//state.Send( pNew );
-						//} else {
-							if( p == null )
+									if (action >= 200 && action <= 259 && !this.Flying)
+											action = 17;
+									if (action >= 260 && action <= 270 && !this.Flying)
+											action = 16;
+									if (action >= 200 && action <= 259 && this.Flying)
+											action = 75;
+									if (action >= 260 && action <= 270 && this.Flying)
+											action = 75;
+
+									if (action == 31 && this.Flying)
+											action = 71;
+									if (action == 20 && this.Flying)
+											action = 77;
+									if (action >= 9 && action <= 11 && this.Flying)
+											action = 71;
+									if (action >= 12 && action <= 14 && this.Flying)
+											action = 72;
+									if (action == 34 && this.Flying)
+											action = 78;
+								
+								
+								}
+
+							//if ( state.StygianAbyss )
+							//	p = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
+							//else
 								p = Packet.Acquire( new MobileAnimation( this, action, frameCount, repeatCount, forward, repeat, delay ) );
+						}
+						#endregion
 
 							state.Send( p );
-						//}
 					}
 				}
 
 				Packet.Release( p );
-				//Packet.Release( pNew );
 
 				eable.Free();
 			}
@@ -7895,6 +8022,12 @@ namespace Server
 			}
 		}
 
+		#region Stygian Abyss
+		public virtual void ToggleFlying()
+		{
+		}
+		#endregion
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Warmode
 		{
@@ -8181,7 +8314,7 @@ namespace Server
 
 			return this == m || (
 				m.m_Map == m_Map &&
-				(!m.Hidden || (m_AccessLevel != AccessLevel.Player && (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator))) &&
+				(!m.Hidden || (m_AccessLevel != AccessLevel.Player && m_AccessLevel >= m.AccessLevel)) &&
 				((m.Alive || (Core.SE && Skills.SpiritSpeak.Value >= 100.0)) || !Alive || m_AccessLevel > AccessLevel.Player || m.Warmode));
 
 		}
@@ -8537,8 +8670,10 @@ namespace Server
 		{
 			if( poison != null )
 			{
-				this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042857 + (poison.Level * 2) );
-				this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042858 + (poison.Level * 2), Name );
+				#region Mondain's Legacy
+				this.LocalOverheadMessage( MessageType.Regular, 0x21, 1042857 + (poison.RealLevel * 2) );
+				this.NonlocalOverheadMessage( MessageType.Regular, 0x21, 1042858 + (poison.RealLevel * 2), Name );
+				#endregion
 			}
 		}
 
@@ -8561,7 +8696,9 @@ namespace Server
 		/// </summary>
 		public virtual bool CheckHigherPoison( Mobile from, Poison poison )
 		{
-			return (m_Poison != null && m_Poison.Level >= poison.Level);
+			#region Mondain's Legacy
+			return (m_Poison != null && m_Poison.RealLevel >= poison.RealLevel);
+			#endregion
 		}
 
 		/// <summary>
@@ -8727,11 +8864,11 @@ namespace Server
 
 		private static int[] m_InvalidBodies = new int[]
 			{
-				32,
-				95,
-				156,
-				197,
-				198,
+				//32,		// Dunno why is blocked
+				//95,		// Used for Turkey
+				//156,		// Dunno why is blocked
+				//197,		// ML Dragon
+				//198,		// ML Dragon
 			};
 
 		[Body, CommandProperty( AccessLevel.GameMaster )]

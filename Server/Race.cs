@@ -1,27 +1,5 @@
-/***************************************************************************
- *                                  Race.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: Race.cs 644 2010-12-23 09:18:45Z asayre $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Server.Network;
 
 namespace Server
 {
@@ -36,6 +14,7 @@ namespace Server
 
 		public static Race Human { get { return m_Races[0]; } }
 		public static Race Elf { get { return m_Races[1]; } }
+        public static Race Gargoyle { get { return m_Races[2]; } }
 
 		private static List<Race> m_AllRaces = new List<Race>();
 

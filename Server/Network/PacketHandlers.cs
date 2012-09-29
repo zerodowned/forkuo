@@ -1,23 +1,3 @@
-/***************************************************************************
- *                             PacketHandlers.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: PacketHandlers.cs 698 2011-07-31 04:05:09Z mark $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Text;
 using System.Collections;
@@ -168,6 +148,10 @@ namespace Server.Network
 			RegisterExtended( 0x1A,  true, new OnPacketReceive( StatLockChange ) );
 			RegisterExtended( 0x1C,  true, new OnPacketReceive( CastSpell ) );
 			RegisterExtended( 0x24, false, new OnPacketReceive( UnhandledBF ) );
+
+			#region Stygian Abyss
+			RegisterExtended( 0x32,  true, new OnPacketReceive( ToggleFlying ) );
+			#endregion
 
 			RegisterEncoded( 0x19, true, new OnEncodedPacketReceive( SetAbility ) );
 			RegisterEncoded( 0x28, true, new OnEncodedPacketReceive( GuildGumpRequest ) );
@@ -1567,6 +1551,13 @@ namespace Server.Network
 
 			EventSink.InvokeCastSpellRequest( new CastSpellRequestEventArgs( from, spellID, spellbook ) );
 		}
+
+		#region Stygain Abyss
+		public static void ToggleFlying( NetState state, PacketReader pvSrc )
+		{
+			state.Mobile.ToggleFlying();
+		}
+		#endregion
 
 		public static void BatchQueryProperties( NetState state, PacketReader pvSrc )
 		{
