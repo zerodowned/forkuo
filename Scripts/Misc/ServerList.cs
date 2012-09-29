@@ -3,7 +3,6 @@ using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using Server;
 using Server.Network;
 
 namespace Server.Misc
@@ -12,7 +11,7 @@ namespace Server.Misc
 	{
 		/* 
 		 * The default setting for Address, a value of 'null', will use your local IP address. If all of your local IP addresses
-		 * are private network addresses and AutoDetect is 'true' then RunUO will attempt to discover your public IP address
+		 * are private network addresses and AutoDetect is 'true' then ForkUO will attempt to discover your public IP address
 		 * for you automatically.
 		 *
 		 * If you do not plan on allowing clients outside of your LAN to connect, you can set AutoDetect to 'false' and leave
@@ -20,7 +19,7 @@ namespace Server.Misc
 		 * 
 		 * If your public IP address cannot be determined, you must change the value of Address to your public IP address
 		 * manually to allow clients outside of your LAN to connect to your server. Address can be either an IP address or
-		 * a hostname that will be resolved when RunUO starts.
+		 * a hostname that will be resolved when ForkUO starts.
 		 * 
 		 * If you want players outside your LAN to be able to connect to your server and you are behind a router, you must also
 		 * forward TCP port 2593 to your private IP address. The procedure for doing this varies by manufacturer but generally
@@ -39,7 +38,7 @@ namespace Server.Misc
 		 */
 
 		public static readonly string Address = null;
-		public static readonly string ServerName = "RunUO TC";
+		public static readonly string ServerName = "My Shard";
 
 		public static readonly bool AutoDetect = true;
 
@@ -167,22 +166,23 @@ namespace Server.Misc
 		private static IPAddress FindPublicAddress()
 		{
 			try {
-				WebRequest req = HttpWebRequest.Create( "http://www.runuo.com/ip.php" );
-				req.Timeout = 15000;
+                String ip = "";
+				WebRequest request = WebRequest.Create("http://checkip.dyndns.org/");
+				request.Timeout = 15000;
 
-				WebResponse res = req.GetResponse();
+                using (WebResponse response = request.GetResponse())
+                {
+                    using (StreamReader stream = new StreamReader(response.GetResponseStream()))
+                    {
+                        ip = stream.ReadToEnd();
+                    }
+                }
 
-				Stream s = res.GetResponseStream();
+                int first = ip.IndexOf("Address: ") + 9;
+                int last = ip.LastIndexOf("</body>");
+                ip = ip.Substring(first, last - first);
 
-				StreamReader sr = new StreamReader( s );
-
-				IPAddress ip = IPAddress.Parse( sr.ReadLine() );
-
-				sr.Close();
-				s.Close();
-				res.Close();
-
-				return ip;
+                return IPAddress.Parse(ip);
 			} catch {
 				return null;
 			}
