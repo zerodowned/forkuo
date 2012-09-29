@@ -30,6 +30,22 @@ namespace Server
 				Register( new PoisonImpl( "Deadly",		3, 7, 26, 12.500, 3.5, 4.0, 10, 2 ) );
 				Register( new PoisonImpl( "Lethal",		4, 9, 26, 25.000, 3.5, 5.0, 10, 2 ) );
 			}
+			
+			#region Mondain's Legacy
+			if ( Core.ML )
+			{
+				Register( new PoisonImpl( "LesserDarkglow",		10,  4, 16,  7.5, 3.0, 2.25, 10, 4 ) );
+				Register( new PoisonImpl( "RegularDarkglow",	11,  8, 18, 10.0, 3.0, 3.25, 10, 3 ) );
+				Register( new PoisonImpl( "GreaterDarkglow",	12, 12, 20, 15.0, 3.0, 4.25, 10, 2 ) );
+				Register( new PoisonImpl( "DeadlyDarkglow",		13, 16, 30, 30.0, 3.0, 5.25, 15, 2 ) );
+				
+				Register( new PoisonImpl( "LesserParasitic",	14,  4, 16,  7.5, 3.0, 2.25, 10, 4 ) );
+				Register( new PoisonImpl( "RegularParasitic",	15,  8, 18, 10.0, 3.0, 3.25, 10, 3 ) );
+				Register( new PoisonImpl( "GreaterParasitic",	16, 12, 20, 15.0, 3.0, 4.25, 10, 2 ) );
+				Register( new PoisonImpl( "DeadlyParasitic",	17, 16, 30, 30.0, 3.0, 5.25, 15, 2 ) );
+				Register( new PoisonImpl( "LethalParasitic",	18, 20, 50, 35.0, 3.0, 5.25, 20, 2 ) );
+			}
+			#endregion
 		}
 
 		public static Poison IncreaseLevel( Poison oldPoison )
@@ -68,6 +84,34 @@ namespace Server
 		public override string Name{ get{ return m_Name; } }
 		public override int Level{ get{ return m_Level; } }
 
+		#region Mondain's Legacy
+		public override int RealLevel
+		{
+			get
+			{
+				if ( m_Level >= 14 )
+					return m_Level - 14;
+				else if ( m_Level >= 10 )
+					return m_Level - 10;
+
+				return m_Level;
+			}
+		}
+
+		public override int LabelNumber
+		{
+			get
+			{
+				if ( m_Level >= 14 )
+					return 1072852; // parasitic poison charges: ~1_val~
+				else if ( m_Level >= 10 )
+					return 1072853; // darkglow poison charges: ~1_val~
+
+				return 1062412 + m_Level; // ~poison~ poison charges: ~1_val~
+			}
+		}
+		#endregion
+
 		public class PoisonTimer : Timer
 		{
 			private PoisonImpl m_Poison;
@@ -87,8 +131,9 @@ namespace Server
 
 			protected override void OnTick()
 			{
-				if ( (Core.AOS && m_Poison.Level < 4 && TransformationSpellHelper.UnderTransformation( m_Mobile, typeof( VampiricEmbraceSpell ) )) ||
-					(m_Poison.Level < 3 && OrangePetals.UnderEffect( m_Mobile )) ||
+				#region Mondain's Legacy
+				if ( (Core.AOS && m_Poison.RealLevel < 4 && TransformationSpellHelper.UnderTransformation( m_Mobile, typeof( VampiricEmbraceSpell ) )) ||
+					(m_Poison.RealLevel < 3 && OrangePetals.UnderEffect( m_Mobile )) ||
 					AnimalForm.UnderTransformation( m_Mobile, typeof( Unicorn ) ) )
 				{
 					if ( m_Mobile.CurePoison( m_Mobile ) )
@@ -137,6 +182,28 @@ namespace Server
 				IHonorTarget honorTarget = m_Mobile as IHonorTarget;
 				if ( honorTarget != null && honorTarget.ReceivedHonorContext != null )
 					honorTarget.ReceivedHonorContext.OnTargetPoisoned();
+					
+				#region Mondain's Legacy
+				if ( Core.ML )
+				{
+					if ( m_From != null && m_Mobile != m_From && !m_From.InRange( m_Mobile.Location, 1 ) && m_Poison.m_Level >= 10 && m_Poison.m_Level <=13 ) // darkglow
+					{
+						m_From.SendLocalizedMessage( 1072850 ); // Darkglow poison increases your damage!
+						damage = (int) Math.Floor( damage * 1.1 );
+					}
+					
+					if ( m_From != null && m_Mobile != m_From && m_From.InRange( m_Mobile.Location, 1 ) && m_Poison.m_Level >= 14 && m_Poison.m_Level <= 18 ) // parasitic
+					{
+						int toHeal = Math.Min( m_From.HitsMax - m_From.Hits, damage );
+												
+						if ( toHeal > 0 )
+						{
+							m_From.SendLocalizedMessage( 1060203, toHeal.ToString() ); // You have had ~1_HEALED_AMOUNT~ hit points of damage healed.
+							m_From.Heal( toHeal, m_Mobile, false );
+						}
+					}
+				}
+				#endregion
 
 				AOS.Damage( m_Mobile, m_From, damage, 0, 0, 0, 100, 0 );
 

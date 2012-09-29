@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                Packets.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: Packets.cs 843 2012-03-07 10:08:55Z asayre $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -915,8 +895,8 @@ namespace Server.Network
 
 			this.EnsureCapacity( 12 + (length * 8) );
 
-			m_Stream.Write( (short) 0x14 );
-			m_Stream.Write( (short) 0x01 );
+            m_Stream.Write((short)0x14);
+            m_Stream.Write((short)0x02); // New layout
 
 			IEntity target = menu.Target as IEntity;
 
@@ -937,8 +917,12 @@ namespace Server.Network
 			{
 				ContextMenuEntry e = entries[i];
 
-				m_Stream.Write( (short) i );
-				m_Stream.Write( (ushort) e.Number );
+                if (e.Number <= 65535)
+                    m_Stream.Write((uint)(e.Number + 3000000)); 
+                else
+                    m_Stream.Write((uint)e.Number);
+
+                m_Stream.Write((short)i);
 
 				int range = e.Range;
 

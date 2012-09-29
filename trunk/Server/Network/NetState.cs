@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                NetState.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: NetState.cs 892 2012-07-29 02:41:00Z eos $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -206,29 +186,29 @@ namespace Server.Network {
 		private ProtocolChanges _ProtocolChanges;
 
 		private enum ProtocolChanges {
-			NewSpellbook			= 0x00000001,
-			DamagePacket			= 0x00000002,
-			Unpack				= 0x00000004,
-			BuffIcon			= 0x00000008,
-			NewHaven			= 0x00000010,
-			ContainerGridLines		= 0x00000020,
+			NewSpellbook				= 0x00000001,
+			DamagePacket				= 0x00000002,
+			Unpack						= 0x00000004,
+			BuffIcon					= 0x00000008,
+			NewHaven					= 0x00000010,
+			ContainerGridLines			= 0x00000020,
 			ExtendedSupportedFeatures	= 0x00000040,
-			StygianAbyss			= 0x00000080,
-			HighSeas			= 0x00000100,
-			NewCharacterList		= 0x00000200,
+			StygianAbyss				= 0x00000080,
+			HighSeas					= 0x00000100,
+			NewCharacterList			= 0x00000200,
 			NewCharacterCreation		= 0x00000400,
 
-			Version400a			= NewSpellbook,
-			Version407a			= Version400a  | DamagePacket,
-			Version500a			= Version407a  | Unpack,
-			Version502b			= Version500a  | BuffIcon,
-			Version6000			= Version502b  | NewHaven,
-			Version6017			= Version6000  | ContainerGridLines,
-			Version60142			= Version6017  | ExtendedSupportedFeatures,
-			Version7000			= Version60142 | StygianAbyss,
-			Version7090			= Version7000  | HighSeas,
-			Version70130			= Version7090  | NewCharacterList,
-			Version70160			= Version70130 | NewCharacterCreation
+			Version400a					= NewSpellbook,
+			Version407a					= Version400a  | DamagePacket,
+			Version500a					= Version407a  | Unpack,
+			Version502b					= Version500a  | BuffIcon,
+			Version6000					= Version502b  | NewHaven,
+			Version6017					= Version6000  | ContainerGridLines,
+			Version60142				= Version6017  | ExtendedSupportedFeatures,
+			Version7000					= Version60142 | StygianAbyss,
+			Version7090					= Version7000  | HighSeas,
+			Version70130				= Version7090  | NewCharacterList,
+			Version70160				= Version70130 | NewCharacterCreation
 		}
 
 		public bool NewSpellbook { get { return ((_ProtocolChanges & ProtocolChanges.NewSpellbook) != 0); } }

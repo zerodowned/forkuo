@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                TileData.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: TileData.cs 644 2010-12-23 09:18:45Z asayre $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.IO;
 using System.Text;
@@ -170,7 +150,7 @@ namespace Server
 		Wall			= 0x00000010,
 		Damaging		= 0x00000020,
 		Impassable		= 0x00000040,
-		Wet			= 0x00000080,
+		Wet			    = 0x00000080,
 		Unknown1		= 0x00000100,
 		Surface			= 0x00000200,
 		Bridge			= 0x00000400,
@@ -183,7 +163,7 @@ namespace Server
 		Foliage			= 0x00020000,
 		PartialHue		= 0x00040000,
 		Unknown2		= 0x00080000,
-		Map			= 0x00100000,
+		Map		        = 0x00100000,
 		Container		= 0x00200000,
 		Wearable		= 0x00400000,
 		LightSource		= 0x00800000,
