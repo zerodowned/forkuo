@@ -180,7 +180,7 @@ namespace Server.SkillHandlers
 			foreach ( Mobile m in from.GetMobilesInRange( range ) )
 			{
 				// Ghosts can no longer be tracked 
-				if ( m != from && (!Core.AOS || m.Alive) && (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) && check( m ) && CheckDifficulty( from, m ) )
+				if ( m != from && (!Core.AOS || m.Alive) && (!m.Hidden || m.IsPlayer() || from.AccessLevel > m.AccessLevel) && check( m ) && CheckDifficulty( from, m ) )
 					list.Add( m );
 			}
 

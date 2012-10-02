@@ -127,7 +127,7 @@ namespace Server.Factions
 						if ( faction == null || !faction.IsCommander( from ) )
 							break;
 
-						if ( from.AccessLevel == AccessLevel.Player && !faction.FactionMessageReady )
+						if ( from.IsPlayer() && !faction.FactionMessageReady )
 							from.SendLocalizedMessage( 1010264 ); // The required time has not yet passed since the last message was sent
 						else
 							faction.BeginBroadcast( from );

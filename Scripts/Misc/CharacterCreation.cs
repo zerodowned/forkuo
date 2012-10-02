@@ -654,7 +654,7 @@ namespace Server.Misc
 
 				pm.Profession = args.Profession;
 
-				if ( pm.AccessLevel == AccessLevel.Player && ((Account)pm.Account).Young )
+				if ( pm.IsPlayer() && ((Account)pm.Account).Young )
 					young = pm.Young = true;
 			}
 

@@ -288,7 +288,7 @@ namespace Server.Gumps
 					}
 				}
 
-				if ( from.AccessLevel >= AccessLevel.Counselor && from.AccessLevel > m.AccessLevel )
+				if ( from.IsStaff() && from.AccessLevel > m.AccessLevel )
 				{
 					AddButton( 246, 36 + (line * 20), 0xFA5, 0xFA7, 11, GumpButtonType.Reply, 0 );
 					AddHtml( 280, 38 + (line++ * 20), 100, 20, Color( "Skills browser", LabelColor32 ), false, false );

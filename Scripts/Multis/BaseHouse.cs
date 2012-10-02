@@ -2146,7 +2146,7 @@ namespace Server.Multis
 			if ( !IsFriend( from ) || m_Friends == null )
 				return;
 
-			if ( targ.AccessLevel > AccessLevel.Player && from.AccessLevel <= targ.AccessLevel )
+			if ( targ.IsStaff() && from.AccessLevel <= targ.AccessLevel )
 			{
 				from.SendLocalizedMessage( 501346 ); // Uh oh...a bigger boot may be required!
 			}
@@ -2214,7 +2214,7 @@ namespace Server.Multis
 			if ( !IsFriend( from ) || m_Bans == null )
 				return;
 
-			if ( targ.AccessLevel > AccessLevel.Player && from.AccessLevel <= targ.AccessLevel )
+			if ( targ.IsStaff() && from.AccessLevel <= targ.AccessLevel )
 			{
 				from.SendLocalizedMessage( 501354 ); // Uh oh...a bigger boot may be required.
 			}
@@ -3377,7 +3377,7 @@ namespace Server.Multis
 
 		public bool IsBanned( Mobile m )
 		{
-			if ( m == null || m == Owner || m.AccessLevel > AccessLevel.Player || m_Bans == null )
+			if ( m == null || m == Owner || m.IsStaff() || m_Bans == null )
 				return false;
 
 			Account theirAccount = m.Account as Account;
@@ -3403,7 +3403,7 @@ namespace Server.Multis
 			if ( m == null )
 				return false;
 
-			if ( m.AccessLevel > AccessLevel.Player || IsFriend( m ) || ( m_Access != null && m_Access.Contains( m ) ) )
+			if ( m.IsStaff() || IsFriend( m ) || ( m_Access != null && m_Access.Contains( m ) ) )
 				return true;
 
 			if ( m is BaseCreature )
@@ -3423,7 +3423,7 @@ namespace Server.Multis
 					if ( m == null )
 						return false;
 
-					if ( m.AccessLevel > AccessLevel.Player || IsFriend( m ) || ( m_Access != null && m_Access.Contains( m ) ) )
+					if ( m.IsStaff() || IsFriend( m ) || ( m_Access != null && m_Access.Contains( m ) ) )
 						return true;
 				}
 			}

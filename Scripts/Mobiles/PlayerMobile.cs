@@ -663,7 +663,7 @@ namespace Server.Mobiles
 
 		public override int GetMaxResistance( ResistanceType type )
 		{
-			if ( AccessLevel > AccessLevel.Player )
+			if ( this.IsStaff() )
 				return int.MaxValue;
 
 			int max = base.GetMaxResistance( type );
@@ -768,7 +768,7 @@ namespace Server.Mobiles
 
 			CheckAtrophies( from );
 
-			if ( AccountHandler.LockdownLevel > AccessLevel.Player )
+			if ( AccountHandler.LockdownLevel > AccessLevel.VIP )
 			{
 				string notice;
 
@@ -776,7 +776,7 @@ namespace Server.Mobiles
 
 				if ( acct == null || !acct.HasAccess( from.NetState ) )
 				{
-					if ( from.AccessLevel == AccessLevel.Player )
+					if ( from.IsPlayer() )
 						notice = "The server is currently under lockdown. No players are allowed to log in at this time.";
 					else
 						notice = "The server is currently under lockdown. You do not have sufficient access level to connect.";
@@ -1278,7 +1278,7 @@ namespace Server.Mobiles
 					strBase = this.Str;	//this.Str already includes GetStatOffset/str
 					strOffs = AosAttributes.GetValue( this, AosAttribute.BonusHits );
 
-					if ( Core.ML && strOffs > 25 && AccessLevel <= AccessLevel.Player )
+					if ( Core.ML && strOffs > 25 && this.IsPlayer() )
 						strOffs = 25;
 
 					if ( AnimalForm.UnderTransformation( this, typeof( BakeKitsune ) ) || AnimalForm.UnderTransformation( this, typeof( GreyWolf ) ) )
@@ -1313,7 +1313,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if( Core.ML && this.AccessLevel == AccessLevel.Player )
+				if( Core.ML && this.IsPlayer() )
 					return Math.Min( base.Str, 150 );
 
 				return base.Str;
@@ -1329,7 +1329,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if( Core.ML && this.AccessLevel == AccessLevel.Player )
+				if( Core.ML && this.IsPlayer() )
 					return Math.Min( base.Int, 150 );
 
 				return base.Int;
@@ -1345,7 +1345,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if( Core.ML && this.AccessLevel == AccessLevel.Player )
+				if( Core.ML && this.IsPlayer() )
 					return Math.Min( base.Dex, 150 );
 
 				return base.Dex;
@@ -1487,7 +1487,7 @@ namespace Server.Mobiles
 
 		public override void SetLocation( Point3D loc, bool isTeleport )
 		{
-			if ( !isTeleport && AccessLevel == AccessLevel.Player )
+			if ( !isTeleport && this.IsPlayer() )
 			{
 				// moving, not teleporting
 				int zDrop = ( this.Location.Z - loc.Z );
@@ -2017,7 +2017,7 @@ namespace Server.Mobiles
 		public override bool OnMoveOver( Mobile m )
 		{
 			if ( m is BaseCreature && !((BaseCreature)m).Controlled )
-				return ( !Alive || !m.Alive || IsDeadBondedPet || m.IsDeadBondedPet ) || ( Hidden && AccessLevel > AccessLevel.Player );
+				return ( !Alive || !m.Alive || IsDeadBondedPet || m.IsDeadBondedPet ) || ( Hidden && this.IsStaff() );
 
 			#region Dueling
 			if ( Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) && m is PlayerMobile )
@@ -2733,7 +2733,7 @@ namespace Server.Mobiles
 
 		public bool AntiMacroCheck( Skill skill, object obj )
 		{
-			if ( obj == null || m_AntiMacroTable == null || this.AccessLevel != AccessLevel.Player )
+			if ( obj == null || m_AntiMacroTable == null || this.IsStaff() )
 				return true;
 
 			Hashtable tbl = (Hashtable)m_AntiMacroTable[skill];
@@ -3032,7 +3032,7 @@ namespace Server.Mobiles
 			if( m_ChampionTitles == null )
 				m_ChampionTitles = new ChampionTitleInfo();
 
-			if ( AccessLevel > AccessLevel.Player )
+			if ( this.IsPlayer() )
 				m_IgnoreMobiles = true;
 
 			List<Mobile> list = this.Stabled;
@@ -3252,7 +3252,7 @@ namespace Server.Mobiles
 						owner = master;
 				}
 
-				if ( m.AccessLevel == AccessLevel.Player && owner is PlayerMobile && ((PlayerMobile)owner).DuelContext != m_DuelContext )
+				if ( m.IsPlayer() && owner is PlayerMobile && ((PlayerMobile)owner).DuelContext != m_DuelContext )
 					return false;
 			}
 
@@ -3366,7 +3366,7 @@ namespace Server.Mobiles
 			if( !Core.SE )
 				return base.OnMove( d );
 
-			if( AccessLevel != AccessLevel.Player )
+			if( this.IsStaff() )
 				return true;
 
 			if( Hidden && DesignContext.Find( this ) == null )	//Hidden & NOT customizing a house
@@ -3568,7 +3568,7 @@ namespace Server.Mobiles
 
 		public override void OnAccessLevelChanged( AccessLevel oldLevel )
 		{
-			if ( AccessLevel == AccessLevel.Player )
+			if ( this.IsPlayer() )
 				IgnoreMobiles = false;
 			else
 				IgnoreMobiles = true;

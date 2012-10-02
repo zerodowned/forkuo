@@ -422,7 +422,7 @@ namespace Server.Gumps
 					AddHtml( 20, 150, 380, 80, Color( "When enabled, only clients with an access level equal to or greater than the specified lockdown level may access the server. After setting a lockdown level, use the <em>Purge Invalid Clients</em> button to disconnect those clients without access.", LabelColor32 ), false, false );
 
 					AccessLevel level = Misc.AccountHandler.LockdownLevel;
-					bool isLockedDown = ( level > AccessLevel.Player );
+					bool isLockedDown = ( level > AccessLevel.VIP );
 
 					AddSelectedButton( 20, 230, GetButtonID( 3, 500 ), "Not Locked Down", !isLockedDown );
 					AddSelectedButton( 20, 260, GetButtonID( 3, 504 ), "Administrators", ( isLockedDown && level <= AccessLevel.Administrator ) );
@@ -1869,7 +1869,7 @@ namespace Server.Gumps
 						{
 							Misc.AccountHandler.LockdownLevel = (AccessLevel)(index - 500);
 
-							if ( Misc.AccountHandler.LockdownLevel > AccessLevel.Player )
+							if ( Misc.AccountHandler.LockdownLevel > AccessLevel.VIP )
 								notice = "The lockdown level has been changed.";
 							else
 								notice = "The server is now accessible to everyone.";
@@ -1881,7 +1881,7 @@ namespace Server.Gumps
 						{
 							AccessLevel level = Misc.AccountHandler.LockdownLevel;
 
-							if ( level > AccessLevel.Player )
+							if ( level > AccessLevel.VIP )
 							{
 								List<NetState> clients = NetState.Instances;
 								int count = 0;

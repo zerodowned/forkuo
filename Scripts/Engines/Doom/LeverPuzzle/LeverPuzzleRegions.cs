@@ -37,7 +37,7 @@ namespace Server.Engines.Doom
 			if ( m == null || m is WandererOfTheVoid )
 				return;
 
-			if ( m.AccessLevel > AccessLevel.Player )
+			if ( m.IsStaff() )
 				return;
 
 			if ( Controller.Successful != null )
@@ -79,7 +79,7 @@ namespace Server.Engines.Doom
 
 		public override bool OnSkillUse( Mobile m, int Skill ) /* just in case */
 		{
-			if (( Controller.Successful == null ) || ( m.AccessLevel == AccessLevel.Player && m != Controller.Successful ))
+			if (( Controller.Successful == null ) || ( m.IsStaff() && m != Controller.Successful ))
 			{
 				return false;
 			}

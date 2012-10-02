@@ -86,7 +86,7 @@ namespace Server.Items
 
 			foreach ( Mobile mob in GetMobilesInRange( CurrentRange ) )
 			{
-				if ( mob.Hidden && mob.AccessLevel > AccessLevel.Player )
+				if ( mob.Hidden && mob.IsStaff() )
 					continue;
 
 				found = true;

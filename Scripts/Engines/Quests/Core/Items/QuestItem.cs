@@ -24,7 +24,7 @@ namespace Server.Engines.Quests
 
 			if ( ret && !Accepted && Parent != from.Backpack )
 			{
-				if ( from.AccessLevel > AccessLevel.Player )
+				if ( from.IsStaff() )
 				{
 					return true;
 				}
@@ -50,7 +50,7 @@ namespace Server.Engines.Quests
 
 			if ( ret && !Accepted && Parent != from.Backpack )
 			{
-				if ( from.AccessLevel > AccessLevel.Player )
+				if ( from.IsStaff() )
 				{
 					return true;
 				}
@@ -76,7 +76,7 @@ namespace Server.Engines.Quests
 
 			if ( ret && !Accepted && Parent != from.Backpack )
 			{
-				if ( from.AccessLevel > AccessLevel.Player )
+				if ( from.IsStaff() )
 				{
 					return true;
 				}

@@ -59,7 +59,7 @@ namespace Server.Engines.ConPVP
 				from.CloseGump( typeof( ArenaGump ) );
 				from.SendGump( new ArenaGump( from, this ) );
 
-				if ( !from.Hidden || from.AccessLevel == AccessLevel.Player )
+				if ( !from.Hidden || from.IsPlayer() )
 					Effects.PlaySound( from.Location, from.Map, 0x20E );
 
 				return true;

@@ -18,7 +18,7 @@ namespace Server.Engines.Quests.Necro
 
 		public override bool OnMoveOver( Mobile m )
 		{
-			if ( m.AccessLevel > AccessLevel.Player )
+			if ( m.IsStaff() )
 				return true;
 
 			PlayerMobile pm = m as PlayerMobile;

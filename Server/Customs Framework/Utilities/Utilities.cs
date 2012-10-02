@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.IO;
 using Server;
 using Server.Items;
@@ -47,6 +47,14 @@ namespace CustomsFramework
         public static bool IsStaff(Mobile from)
         {
             if (from.AccessLevel >= AccessLevel.Counselor)
+                return true;
+            else
+                return false;
+        }
+
+        public static bool IsOwner(Mobile from)
+        {
+            if (from.AccessLevel >= AccessLevel.CoOwner)
                 return true;
             else
                 return false;

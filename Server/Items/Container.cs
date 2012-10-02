@@ -1587,7 +1587,7 @@ namespace Server.Items
 
 			object root = this.RootParent;
 
-			if ( root == null || root is Item || root == from || from.AccessLevel > AccessLevel.Player )
+			if ( root == null || root is Item || root == from || from.IsStaff() )
 				return true;
 
 			return false;
@@ -1715,7 +1715,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( from.AccessLevel > AccessLevel.Player || from.InRange( this.GetWorldLocation(), 2 ) )
+			if ( from.IsStaff() || from.InRange( this.GetWorldLocation(), 2 ) )
 				DisplayTo( from );
 			else
 				from.SendLocalizedMessage( 500446 ); // That is too far away.

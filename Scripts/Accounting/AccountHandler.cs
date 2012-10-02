@@ -201,7 +201,7 @@ namespace Server.Misc
                     state.Send(new DeleteResult(DeleteResultType.CharTooYoung));
                     state.Send(new CharacterListUpdate(acct));
                 }
-                else if (m.AccessLevel == AccessLevel.Player && Region.Find(m.LogoutLocation, m.LogoutMap).GetRegion(typeof(Jail)) != null)	//Don't need to check current location, if netstate is null, they're logged out
+                else if (m.IsPlayer() && Region.Find(m.LogoutLocation, m.LogoutMap).GetRegion(typeof(Jail)) != null)	//Don't need to check current location, if netstate is null, they're logged out
                 {
                     state.Send(new DeleteResult(DeleteResultType.BadRequest));
                     state.Send(new CharacterListUpdate(acct));
@@ -335,7 +335,7 @@ namespace Server.Misc
             else if (!acct.HasAccess(e.State))
             {
                 Console.WriteLine("Login: {0}: Access denied for '{1}'", e.State, un);
-                e.RejectReason = (m_LockdownLevel > AccessLevel.Player ? ALRReason.BadComm : ALRReason.BadPass);
+                e.RejectReason = (m_LockdownLevel > AccessLevel.VIP ? ALRReason.BadComm : ALRReason.BadPass);
             }
             else if (!acct.CheckPassword(pw))
             {

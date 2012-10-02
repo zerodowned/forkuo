@@ -632,7 +632,7 @@ namespace Server.Spells
 				return false;
 			}
 
-			if( caster != null && caster.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf( typeof( Regions.Jail ) ) )
+			if( caster != null && caster.IsPlayer() && caster.Region.IsPartOf( typeof( Regions.Jail ) ) )
 			{
 				caster.SendLocalizedMessage( 1114345 ); // You'll need a better jailbreak plan than that!
 				return false;

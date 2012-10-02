@@ -28,7 +28,7 @@ namespace Server.Factions
 			if ( !base.OnMoveInto( m, d, newLocation, oldLocation ) )
 				return false;
 
-			if ( m.AccessLevel >= AccessLevel.Counselor || Contains( oldLocation ) )
+			if ( m.IsStaff() || Contains( oldLocation ) )
 				return true;
 			
 			if ( m is PlayerMobile ) {

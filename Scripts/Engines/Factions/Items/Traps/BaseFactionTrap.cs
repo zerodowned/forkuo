@@ -274,7 +274,7 @@ namespace Server.Factions
 
 		public virtual bool IsEnemy( Mobile mob )
 		{
-			if ( mob.Hidden && mob.AccessLevel > AccessLevel.Player )
+			if ( mob.Hidden && mob.IsStaff() )
 				return false;
 
 			if ( !mob.Alive || mob.IsDeadBondedPet )

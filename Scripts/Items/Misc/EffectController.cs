@@ -282,7 +282,7 @@ namespace Server.Items
 			if ( Deleted || m_TriggerType == EffectTriggerType.None )
 				return;
 
-			if( trigger is Mobile && ((Mobile)trigger).Hidden && ((Mobile)trigger).AccessLevel > AccessLevel.Player )
+			if( trigger is Mobile && ((Mobile)trigger).Hidden && ((Mobile)trigger).IsStaff() )
 				return;
 
 			if ( m_SoundID > 0 )

@@ -62,7 +62,7 @@ namespace Server.Misc
 
 		public static bool Mobile_AllowBeneficial( Mobile from, Mobile target )
 		{
-			if( from == null || target == null || from.AccessLevel > AccessLevel.Player || target.AccessLevel > AccessLevel.Player )
+			if( from == null || target == null || from.IsStaff() || target.IsStaff() )
 				return true;
 
 			#region Dueling
@@ -153,7 +153,7 @@ namespace Server.Misc
 
 		public static bool Mobile_AllowHarmful( Mobile from, Mobile target )
 		{
-			if( from == null || target == null || from.AccessLevel > AccessLevel.Player || target.AccessLevel > AccessLevel.Player )
+			if( from == null || target == null || from.IsStaff() || target.IsStaff() )
 				return true;
 
 			#region Dueling
@@ -212,7 +212,7 @@ namespace Server.Misc
 
 			BaseCreature bc = from as BaseCreature;
 
-			if( !from.Player && !(bc != null && bc.GetMaster() != null && bc.GetMaster().AccessLevel == AccessLevel.Player ) )
+			if( !from.Player && !(bc != null && bc.GetMaster() != null && bc.GetMaster().IsPlayer() ) )
 			{
 				if( !CheckAggressor( from.Aggressors, target ) && !CheckAggressed( from.Aggressed, target ) && target is PlayerMobile && ((PlayerMobile)target).CheckYoungProtection( from ) )
 					return false;
@@ -262,7 +262,7 @@ namespace Server.Misc
 
 		public static int CorpseNotoriety( Mobile source, Corpse target )
 		{
-			if( target.AccessLevel > AccessLevel.Player )
+			if( target.AccessLevel > AccessLevel.VIP )
 				return Notoriety.CanBeAttacked;
 
 			Body body = (Body)target.Amount;
@@ -381,7 +381,7 @@ namespace Server.Misc
 			}
 			#endregion
 
-			if( target.AccessLevel > AccessLevel.Player )
+			if( target.IsStaff() )
 				return Notoriety.CanBeAttacked;
 
 			if( source.Player && !target.Player && source is PlayerMobile && target is BaseCreature )
@@ -390,7 +390,7 @@ namespace Server.Misc
 
 				Mobile master = bc.GetMaster();
 
-				if ( master != null && master.AccessLevel > AccessLevel.Player )
+				if ( master != null && master.IsStaff() )
 					return Notoriety.CanBeAttacked;
 
 				master = bc.ControlMaster;

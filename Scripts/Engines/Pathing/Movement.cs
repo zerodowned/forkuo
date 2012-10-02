@@ -269,7 +269,7 @@ namespace Server.Movement
 
 		private bool CanMoveOver( Mobile m, Mobile t )
 		{
-			return ( !t.Alive || !m.Alive || t.IsDeadBondedPet || m.IsDeadBondedPet ) || ( t.Hidden && t.AccessLevel > AccessLevel.Player );
+			return ( !t.Alive || !m.Alive || t.IsDeadBondedPet || m.IsDeadBondedPet ) || ( t.Hidden && t.IsStaff() );
 		}
 
 		public bool CheckMovement( Mobile m, Map map, Point3D loc, Direction d, out int newZ )

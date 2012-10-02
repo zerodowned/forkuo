@@ -458,7 +458,7 @@ namespace Server.Items
 				if ( m_Chest.Deleted || info.ButtonID == 0 || !m_From.CheckAlive() )
 					return;
 
-				if ( m_From.AccessLevel == AccessLevel.Player && ( m_From.Map != m_Chest.Map || !m_From.InRange( m_Chest.GetWorldLocation(), 2 ) ) )
+				if ( m_From.IsPlayer() && ( m_From.Map != m_Chest.Map || !m_From.InRange( m_Chest.GetWorldLocation(), 2 ) ) )
 				{
 					m_From.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500446 ); // That is too far away.
 					return;

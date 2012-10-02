@@ -42,7 +42,7 @@ namespace Server.Misc
 			{
 				if ( beholder == beheld )
 					footer = "Your profile has been locked.";
-				else if ( beholder.AccessLevel >= AccessLevel.Counselor )
+				else if ( beholder.IsStaff() )
 					footer = "This profile has been locked.";
 			}
 

@@ -19,7 +19,7 @@ namespace Server.Items
 
 		public override void OnTrigger( Mobile from )
 		{
-			if ( !from.Alive || ItemID != 0x1125 || from.AccessLevel > AccessLevel.Player )
+			if ( !from.Alive || ItemID != 0x1125 || from.IsStaff() )
 				return;
 
 			ItemID = 0x1126;

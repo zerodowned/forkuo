@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Server.Network;
 using Server.Items;
 using Server.ContextMenus;
+using CustomsFramework;
 
 namespace Server
 {
@@ -1834,7 +1835,7 @@ namespace Server
 			}
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Decorator )]
 		public bool Movable
 		{
 			get{ return GetFlag( ImplFlag.Movable ); }
@@ -1897,7 +1898,7 @@ namespace Server
 		{
 		}
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Counselor, AccessLevel.Decorator )]
 		public Map Map
 		{
 			get
@@ -2845,7 +2846,7 @@ namespace Server
 			}
 		}
 
-		[Hue, CommandProperty( AccessLevel.GameMaster )]
+		[Hue, CommandProperty( AccessLevel.Decorator )]
 		public virtual int Hue
 		{
 			get
@@ -3415,6 +3416,10 @@ namespace Server
 
 		public virtual void OnAfterDelete()
 		{
+            foreach (BaseModule module in World.GetModules(this))
+            {
+                module.Delete();
+            }
 		}
 
 		public virtual void RemoveItem( Item item )
@@ -3529,7 +3534,7 @@ namespace Server
 		{
 		}
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Counselor, AccessLevel.Decorator )]
 		public virtual Point3D Location
 		{
 			get
@@ -3616,21 +3621,21 @@ namespace Server
 			}
 		}
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Counselor, AccessLevel.Decorator )]
 		public int X
 		{
 			get{ return m_Location.m_X; }
 			set{ Location = new Point3D( value, m_Location.m_Y, m_Location.m_Z ); }
 		}
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Counselor, AccessLevel.Decorator )]
 		public int Y
 		{
 			get{ return m_Location.m_Y; }
 			set{ Location = new Point3D( m_Location.m_X, value, m_Location.m_Z ); }
 		}
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Counselor, AccessLevel.Decorator )]
 		public int Z
 		{
 			get{ return m_Location.m_Z; }
@@ -3638,7 +3643,7 @@ namespace Server
 		}
 		#endregion
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Decorator )]
 		public virtual int ItemID
 		{
 			get
@@ -3669,7 +3674,7 @@ namespace Server
 			get { return null; }
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Decorator )]
 		public string Name
 		{
 			get
@@ -3741,7 +3746,7 @@ namespace Server
 			}
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Decorator )]
 		public Direction Direction
 		{
 			get

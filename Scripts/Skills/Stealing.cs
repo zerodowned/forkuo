@@ -197,7 +197,7 @@ namespace Server.SkillHandlers
                 {
                     m_Thief.SendLocalizedMessage(502704); // You catch yourself red-handed.
                 }
-                else if (root is Mobile && ((Mobile)root).AccessLevel > AccessLevel.Player)
+                else if (root is Mobile && ((Mobile)root).IsStaff())
                 {
                     m_Thief.SendLocalizedMessage(502710); // You can't steal that!
                 }

@@ -12,6 +12,9 @@ namespace CustomsFramework.Systems.ShardControl
         private string _Address;
         private int _Port;
         private Expansion _Expansion;
+        private AccessLevel _MaxPlayerLevel;
+        private AccessLevel _LowestStaffLevel;
+        private AccessLevel _LowestOwnerLevel;
 
         [CommandProperty(AccessLevel.Owner)]
         public string ShardName
