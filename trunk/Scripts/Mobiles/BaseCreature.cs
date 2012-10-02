@@ -3188,7 +3188,7 @@ namespace Server.Mobiles
 		public override bool OnMoveOver( Mobile m )
 		{
 			if ( m is BaseCreature && !((BaseCreature)m).Controlled )
-				return ( !Alive || !m.Alive || IsDeadBondedPet || m.IsDeadBondedPet ) || ( Hidden && AccessLevel > AccessLevel.Player );
+				return ( !Alive || !m.Alive || IsDeadBondedPet || m.IsDeadBondedPet ) || ( Hidden && this.IsStaff() );
 
 			return base.OnMoveOver( m );
 		}
@@ -3418,7 +3418,7 @@ namespace Server.Mobiles
 				speechType.OnMovement( this, m, oldLocation );
 
 			/* Begin notice sound */
-			if ( (!m.Hidden || m.AccessLevel == AccessLevel.Player) && m.Player && m_FightMode != FightMode.Aggressor && m_FightMode != FightMode.None && Combatant == null && !Controlled && !Summoned )
+			if ( (!m.Hidden || m.IsPlayer()) && m.Player && m_FightMode != FightMode.Aggressor && m_FightMode != FightMode.None && Combatant == null && !Controlled && !Summoned )
 			{
 				// If this creature defends itself but doesn't actively attack (animal) or
 				// doesn't fight at all (vendor) then no notice sounds are played..

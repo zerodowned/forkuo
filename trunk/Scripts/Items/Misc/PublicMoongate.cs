@@ -77,7 +77,7 @@ namespace Server.Items
 				m.CloseGump( typeof( MoongateGump ) );
 				m.SendGump( new MoongateGump( m, this ) );
 
-				if ( !m.Hidden || m.AccessLevel == AccessLevel.Player )
+				if ( !m.Hidden || m.IsPlayer() )
 					Effects.PlaySound( m.Location, m.Map, 0x20E );
 
 				return true;

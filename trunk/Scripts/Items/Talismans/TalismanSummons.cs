@@ -396,7 +396,7 @@ namespace Server.Mobiles
 			{
 				if ( mob.InRange( Location, 2 ) )
 				{
-					if ( mob.AccessLevel != AccessLevel.Player )
+					if ( mob.IsStaff() )
 					{
 						AOS.Damage( mob, Utility.Random( 2, 3 ), 0, 100, 0, 0, 0 );
 						mob.SendLocalizedMessage( 1008112 ); // The intense heat is damaging you!

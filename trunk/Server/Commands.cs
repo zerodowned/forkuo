@@ -1,35 +1,6 @@
-/***************************************************************************
- *                                Commands.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: Commands.cs 644 2010-12-23 09:18:45Z asayre $
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using Server.Guilds;
-using Server.Gumps;
-using Server.Menus;
-using Server.Menus.ItemLists;
-using Server.Menus.Questions;
 using Server.Network;
-using Server.Items;
-using Server.Targeting;
 
 namespace Server.Commands
 {
@@ -272,7 +243,15 @@ namespace Server.Commands
 			m_Entries[command] = new CommandEntry( command, handler, access );
 		}
 
-		private static AccessLevel m_BadCommandIngoreLevel = AccessLevel.Player;
+        public static bool UnRegister(string command)
+        {
+            if (m_Entries.Remove(command))
+                return true;
+            else
+                return false;
+        }
+
+		private static AccessLevel m_BadCommandIngoreLevel = AccessLevel.VIP;
 
 		public static AccessLevel BadCommandIgnoreLevel{ get{ return m_BadCommandIngoreLevel; } set{ m_BadCommandIngoreLevel = value; } }
 

@@ -120,7 +120,7 @@ namespace Server.Factions
 
 		public void EndBroadcast( Mobile from, string text )
 		{
-			if ( from.AccessLevel == AccessLevel.Player )
+			if ( from.IsPlayer() )
 				m_State.RegisterBroadcast();
 
 			Broadcast( Definition.HueBroadcast, "{0} [Commander] {1} : {2}", from.Name, Definition.FriendlyName, text );

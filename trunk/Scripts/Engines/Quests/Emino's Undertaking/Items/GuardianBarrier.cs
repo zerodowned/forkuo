@@ -16,7 +16,7 @@ namespace Server.Engines.Quests.Ninja
 
 		public override bool OnMoveOver( Mobile m )
 		{
-			if ( m.AccessLevel > AccessLevel.Player )
+			if ( m.IsStaff() )
 				return true;
 
 			// If the mobile is to the north of the barrier, allow him to pass

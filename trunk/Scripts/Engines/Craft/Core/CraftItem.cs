@@ -1167,7 +1167,7 @@ namespace Server.Engines.Craft
 
 					from.AddToBackpack( item );
 
-					if( from.AccessLevel > AccessLevel.Player )
+					if( from.IsStaff() )
 						CommandLogging.WriteLine( from, "Crafting {0} with craft system {1}", CommandLogging.Format( item ), craftSystem.GetType().Name );
 
 					//from.PlaySound( 0x57 );

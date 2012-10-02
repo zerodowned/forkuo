@@ -18,7 +18,7 @@ namespace Server.Regions
 
 		public override bool AllowHousing( Mobile from, Point3D p )
 		{
-			if ( from.AccessLevel == AccessLevel.Player )
+			if ( from.IsPlayer() )
 				return false;
 			else
 				return base.AllowHousing( from, p );
@@ -26,7 +26,7 @@ namespace Server.Regions
 
 		public override bool OnBeginSpellCast( Mobile m, ISpell s )
 		{
-			if ( ( s is GateTravelSpell || s is RecallSpell || s is MarkSpell || s is SacredJourneySpell ) && m.AccessLevel == AccessLevel.Player )
+			if ( ( s is GateTravelSpell || s is RecallSpell || s is MarkSpell || s is SacredJourneySpell ) && m.IsPlayer() )
 			{
 				m.SendMessage( "You cannot cast that spell here." );
 				return false;

@@ -143,7 +143,7 @@ namespace Server.Items
 
 		public override bool IsChildVisibleTo( Mobile m, Item child )
 		{
-			if ( !m.Player || m.AccessLevel > AccessLevel.Player )   //Staff and creatures not subject to instancing.
+			if ( !m.Player || m.IsStaff() )   //Staff and creatures not subject to instancing.
 				return true;
 
 			if ( m_InstancedItems != null )
@@ -1036,7 +1036,7 @@ namespace Server.Items
 
 		public virtual void Open( Mobile from, bool checkSelfLoot )
 		{
-			if ( from.AccessLevel > AccessLevel.Player || from.InRange( this.GetWorldLocation(), 2 ) )
+			if ( from.IsStaff() || from.InRange( this.GetWorldLocation(), 2 ) )
 			{
 				#region Self Looting
 				if ( checkSelfLoot && from == m_Owner && !GetFlag( CorpseFlag.SelfLooted ) && this.Items.Count != 0 )

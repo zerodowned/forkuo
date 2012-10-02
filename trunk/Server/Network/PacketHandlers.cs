@@ -1340,7 +1340,7 @@ namespace Server.Network
 		{
 			Mobile from = state.Mobile;
 
-			if ( from.AccessLevel >= AccessLevel.Counselor || DateTime.Now >= from.NextActionTime )
+			if ( from.IsStaff() || DateTime.Now >= from.NextActionTime )
 			{
 				int value = pvSrc.ReadInt32();
 

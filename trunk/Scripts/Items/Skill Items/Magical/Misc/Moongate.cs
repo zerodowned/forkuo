@@ -104,7 +104,7 @@ namespace Server.Items
 		public virtual void CheckGate( Mobile m, int range )
 		{
 			#region Mondain's Legacy
-			if ( m.Hidden && m.AccessLevel == AccessLevel.Player && Core.ML )
+			if ( m.Hidden && m.IsPlayer() && Core.ML )
 				m.RevealingAction();
 			#endregion
 
@@ -141,7 +141,7 @@ namespace Server.Items
 
 				m.MoveToWorld( m_Target, m_TargetMap );
 
-				if ( m.AccessLevel == AccessLevel.Player || !m.Hidden )
+				if ( m.IsPlayer() || !m.Hidden )
 					m.PlaySound( 0x1FE );
 
 				OnGateUsed( m );
@@ -198,7 +198,7 @@ namespace Server.Items
 		{
 			if ( IsInTown( from.Location, from.Map ) && !IsInTown( m_Target, m_TargetMap ) || (from.Map != Map.Felucca && TargetMap == Map.Felucca && ShowFeluccaWarning) )
 			{
-				if ( from.AccessLevel == AccessLevel.Player || !from.Hidden )
+				if ( from.IsPlayer() || !from.Hidden )
 					from.Send( new PlaySound( 0x20E, from.Location ) );
 				from.CloseGump( typeof( MoongateConfirmGump ) );
 				from.SendGump( new MoongateConfirmGump( from, this ) );

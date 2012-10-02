@@ -125,7 +125,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( from.AccessLevel > AccessLevel.Player || from.InRange( this.GetWorldLocation(), 2 ) || this.RootParent is PlayerVendor )
+			if ( from.IsStaff() || from.InRange( this.GetWorldLocation(), 2 ) || this.RootParent is PlayerVendor )
 				Open( from );
 			else
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
@@ -181,7 +181,7 @@ namespace Server.Items
 
 		public override bool OnDragLift( Mobile from )
 		{
-			if ( from.AccessLevel > AccessLevel.Player )
+			if ( from.IsPlayer() )
 				return true;
 
 			from.SendLocalizedMessage( 500169 ); // You cannot pick that up.

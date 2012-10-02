@@ -136,7 +136,7 @@ namespace Server.Items
 		{
 			if( m_NextSpawn < DateTime.Now ) // means we haven't spawned anything if the next spawn is below
 			{
-				if( Utility.InRange( m.Location, Location, 1 ) && !Utility.InRange( oldLocation, Location, 1 ) && m.Player && !(m.AccessLevel > AccessLevel.Player || m.Hidden) )
+				if( Utility.InRange( m.Location, Location, 1 ) && !Utility.InRange( oldLocation, Location, 1 ) && m.Player && !(m.IsStaff() || m.Hidden) )
 				{
 					if( m_Timer == null || !m_Timer.Running )
 						m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 2 ), new TimerCallback( HeedWarning ) );

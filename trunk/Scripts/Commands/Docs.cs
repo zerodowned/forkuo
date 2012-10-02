@@ -1668,7 +1668,7 @@ namespace Server.Commands
                 {
                     if (e.AccessLevel != last)
                     {
-                        if (last != AccessLevel.Player)
+                        if (last >= AccessLevel.Counselor)
                             html.WriteLine("      </table></td></tr></table><br>");
 
                         last = e.AccessLevel;

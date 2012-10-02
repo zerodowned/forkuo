@@ -494,7 +494,7 @@ namespace Server.Mobiles
 		{
 			Account acct = from.Account as Account;
 
-			if ( acct != null && from.AccessLevel == AccessLevel.Player )
+			if ( acct != null && from.IsPlayer() )
 			{
 				TimeSpan time = TimeSpan.FromDays( RewardSystem.RewardInterval.TotalDays * 6 ) - ( DateTime.Now - acct.Created );
 

@@ -232,7 +232,7 @@ namespace Server.Accounting
 		{
 			get 
 			{
-				if( this.AccessLevel != AccessLevel.Player )
+				if( this.AccessLevel >= AccessLevel.Counselor )
 					return false;
 
 				TimeSpan inactiveLength = DateTime.Now - m_LastLogin;
@@ -883,7 +883,7 @@ namespace Server.Accounting
 		public bool HasAccess( IPAddress ipAddress ) {
 			AccessLevel level = Misc.AccountHandler.LockdownLevel;
 
-			if ( level > AccessLevel.Player )
+			if ( level >= AccessLevel.Counselor )
 			{
 				bool hasAccess = false;
 
@@ -1006,7 +1006,7 @@ namespace Server.Accounting
 				xml.WriteEndElement();
 			}
 
-			if ( m_AccessLevel != AccessLevel.Player )
+			if ( m_AccessLevel >= AccessLevel.Counselor )
 			{
 				xml.WriteStartElement( "accessLevel" );
 				xml.WriteString( m_AccessLevel.ToString() );

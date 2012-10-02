@@ -99,7 +99,7 @@ namespace Server.Mobiles
 
 		public bool IsValidTarget( PlayerMobile m )
 		{
-			if ( m != null && m.PeacedUntil < DateTime.Now && !m.Hidden && m.AccessLevel == AccessLevel.Player && CanBeHarmful( m ) )
+			if ( m != null && m.PeacedUntil < DateTime.Now && !m.Hidden && m.IsPlayer() && CanBeHarmful( m ) )
 				return true;
 
 			return false;
@@ -116,7 +116,7 @@ namespace Server.Mobiles
 
 			foreach ( Mobile m in GetMobilesInRange( RangePerception ) )
 			{
-				if ( m != null && m.Player && !m.Female && !m.Hidden && m.AccessLevel == AccessLevel.Player && CanBeHarmful( m ) )
+				if ( m != null && m.Player && !m.Female && !m.Hidden && m.IsPlayer() && CanBeHarmful( m ) )
 				{
 					UndressItem( m, Layer.OuterTorso );
 					UndressItem( m, Layer.InnerTorso );

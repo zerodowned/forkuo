@@ -47,7 +47,7 @@ namespace Server.Items
 
 		public override void OnTrigger( Mobile from )
 		{
-			if ( from.AccessLevel > AccessLevel.Player )
+			if ( from.IsStaff() )
 				return;
 
 			if ( WarningFlame )

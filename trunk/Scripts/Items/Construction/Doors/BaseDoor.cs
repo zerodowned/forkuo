@@ -305,7 +305,7 @@ namespace Server.Items
 
 				if ( m.Location.X == x && m.Location.Y == y )
 				{
-					if ( m.Hidden && m.AccessLevel > AccessLevel.Player )
+					if ( m.Hidden && m.IsPlayer() )
 						continue;
 
 					if ( !m.Alive )
@@ -515,7 +515,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( from.AccessLevel == AccessLevel.Player && (/*!from.InLOS( this ) || */!from.InRange( GetWorldLocation(), 2 )) )
+			if ( from.IsPlayer() && (/*!from.InLOS( this ) || */!from.InRange( GetWorldLocation(), 2 )) )
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 			else
 				Use( from );

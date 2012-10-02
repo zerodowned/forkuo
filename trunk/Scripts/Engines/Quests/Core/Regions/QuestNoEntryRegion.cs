@@ -33,7 +33,7 @@ namespace Server.Engines.Quests
 			if ( !base.OnMoveInto ( m, d, newLocation, oldLocation ) )
 				return false;
 
-			if ( m.AccessLevel > AccessLevel.Player )
+			if ( m.IsStaff() )
 				return true;
 
 			if( m is BaseCreature )

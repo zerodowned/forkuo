@@ -194,7 +194,7 @@ namespace Server.Items
 
 			Server.Mobiles.BaseCreature.TeleportPets( m, p, map );
 
-			bool sendEffect = ( !m.Hidden || m.AccessLevel == AccessLevel.Player );
+			bool sendEffect = ( !m.Hidden || m.IsPlayer() );
 
 			if ( m_SourceEffect && sendEffect )
 				Effects.SendLocationEffect( m.Location, m.Map, 0x3728, 10, 10 );

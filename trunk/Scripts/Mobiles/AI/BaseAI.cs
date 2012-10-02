@@ -2483,7 +2483,7 @@ namespace Server.Mobiles
 						continue;
 
 					// Staff members cannot be targeted.
-					if ( m.AccessLevel > AccessLevel.Player )
+					if ( m.IsStaff() )
 						continue;
 
 					// Does it have to be a player?
@@ -2590,7 +2590,7 @@ namespace Server.Mobiles
 
 			foreach( Mobile trg in m_Mobile.GetMobilesInRange( m_Mobile.RangePerception ) )
 			{
-				if( trg != m_Mobile && trg.Player && trg.Alive && trg.Hidden && trg.AccessLevel == AccessLevel.Player && m_Mobile.InLOS( trg ) )
+				if( trg != m_Mobile && trg.Player && trg.Alive && trg.Hidden && trg.IsPlayer() && m_Mobile.InLOS( trg ) )
 				{
 					m_Mobile.DebugSay( "Trying to detect {0}", trg.Name );
 
