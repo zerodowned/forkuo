@@ -2,19 +2,22 @@ using System;
 
 namespace Server
 {
-	[AttributeUsage( AttributeTargets.Class )]
-	public class CorpseNameAttribute : Attribute
-	{
-		private string m_Name;
+    [AttributeUsage(AttributeTargets.Class)]
+    public class CorpseNameAttribute : Attribute
+    {
+        private readonly string m_Name;
 
-		public string Name
-		{
-			get{ return m_Name; }
-		}
+        public string Name
+        {
+            get
+            {
+                return this.m_Name;
+            }
+        }
 
-		public CorpseNameAttribute( string name )
-		{
-			m_Name = name;
-		}
-	}
+        public CorpseNameAttribute(string name)
+        {
+            this.m_Name = name;
+        }
+    }
 }

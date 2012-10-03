@@ -1,82 +1,95 @@
 using System;
-using System.Collections;
 using Server.Items;
-using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a mummy corpse" )]
-	public class Mummy : BaseCreature
-	{
-		[Constructable]
-		public Mummy() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8 )
-		{
-			Name = "a mummy";
-			Body = 154;
-			BaseSoundID = 471;
+    [CorpseName("a mummy corpse")]
+    public class Mummy : BaseCreature
+    {
+        [Constructable]
+        public Mummy() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8)
+        {
+            this.Name = "a mummy";
+            this.Body = 154;
+            this.BaseSoundID = 471;
 
-			SetStr( 346, 370 );
-			SetDex( 71, 90 );
-			SetInt( 26, 40 );
+            this.SetStr(346, 370);
+            this.SetDex(71, 90);
+            this.SetInt(26, 40);
 
-			SetHits( 208, 222 );
+            this.SetHits(208, 222);
 
-			SetDamage( 13, 23 );
+            this.SetDamage(13, 23);
 
-			SetDamageType( ResistanceType.Physical, 40 );
-			SetDamageType( ResistanceType.Cold, 60 );
+            this.SetDamageType(ResistanceType.Physical, 40);
+            this.SetDamageType(ResistanceType.Cold, 60);
 
-			SetResistance( ResistanceType.Physical, 45, 55 );
-			SetResistance( ResistanceType.Fire, 10, 20 );
-			SetResistance( ResistanceType.Cold, 50, 60 );
-			SetResistance( ResistanceType.Poison, 20, 30 );
-			SetResistance( ResistanceType.Energy, 20, 30 );
+            this.SetResistance(ResistanceType.Physical, 45, 55);
+            this.SetResistance(ResistanceType.Fire, 10, 20);
+            this.SetResistance(ResistanceType.Cold, 50, 60);
+            this.SetResistance(ResistanceType.Poison, 20, 30);
+            this.SetResistance(ResistanceType.Energy, 20, 30);
 
-			SetSkill( SkillName.MagicResist, 15.1, 40.0 );
-			SetSkill( SkillName.Tactics, 35.1, 50.0 );
-			SetSkill( SkillName.Wrestling, 35.1, 50.0 );
+            this.SetSkill(SkillName.MagicResist, 15.1, 40.0);
+            this.SetSkill(SkillName.Tactics, 35.1, 50.0);
+            this.SetSkill(SkillName.Wrestling, 35.1, 50.0);
 
-			Fame = 4000;
-			Karma = -4000;
+            this.Fame = 4000;
+            this.Karma = -4000;
 
-			VirtualArmor = 50;
+            this.VirtualArmor = 50;
 
-			if ( Core.ML && Utility.RandomDouble() < .33 )
-				PackItem( Engines.Plants.Seed.RandomPeculiarSeed(2) );
+            if (Core.ML && Utility.RandomDouble() < .33)
+                this.PackItem(Engines.Plants.Seed.RandomPeculiarSeed(2));
 
-			PackItem( new Garlic( 5 ) );
-			PackItem( new Bandage( 10 ) );
-		}
+            this.PackItem(new Garlic(5));
+            this.PackItem(new Bandage(10));
+        }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Rich );
-			AddLoot( LootPack.Gems );
-			AddLoot( LootPack.Potions );
-		}
+        public override void GenerateLoot()
+        {
+            this.AddLoot(LootPack.Rich);
+            this.AddLoot(LootPack.Gems);
+            this.AddLoot(LootPack.Potions);
+        }
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lesser; } }
+        public override bool BleedImmune
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override Poison PoisonImmune
+        {
+            get
+            {
+                return Poison.Lesser;
+            }
+        }
 
-		public Mummy( Serial serial ) : base( serial )
-		{
-		}
+        public Mummy(Serial serial) : base(serial)
+        {
+        }
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+        public override OppositionGroup OppositionGroup
+        {
+            get
+            {
+                return OppositionGroup.FeyAndUndead;
+            }
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write((int)0);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+            int version = reader.ReadInt();
+        }
+    }
 }

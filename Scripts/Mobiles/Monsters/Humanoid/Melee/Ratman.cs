@@ -1,73 +1,94 @@
 using System;
-using System.Collections;
 using Server.Misc;
-using Server.Items;
-using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a ratman's corpse" )]
-	public class Ratman : BaseCreature
-	{
-		public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Ratman; } }
+    [CorpseName("a ratman's corpse")]
+    public class Ratman : BaseCreature
+    {
+        public override InhumanSpeech SpeechType
+        {
+            get
+            {
+                return InhumanSpeech.Ratman;
+            }
+        }
 
-		[Constructable]
-		public Ratman() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Name = NameList.RandomName( "ratman" );
-			Body = 42;
-			BaseSoundID = 437;
+        [Constructable]
+        public Ratman() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            this.Name = NameList.RandomName("ratman");
+            this.Body = 42;
+            this.BaseSoundID = 437;
 
-			SetStr( 96, 120 );
-			SetDex( 81, 100 );
-			SetInt( 36, 60 );
+            this.SetStr(96, 120);
+            this.SetDex(81, 100);
+            this.SetInt(36, 60);
 
-			SetHits( 58, 72 );
+            this.SetHits(58, 72);
 
-			SetDamage( 4, 5 );
+            this.SetDamage(4, 5);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+            this.SetDamageType(ResistanceType.Physical, 100);
 
-			SetResistance( ResistanceType.Physical, 25, 30 );
-			SetResistance( ResistanceType.Fire, 10, 20 );
-			SetResistance( ResistanceType.Cold, 10, 20 );
-			SetResistance( ResistanceType.Poison, 10, 20 );
-			SetResistance( ResistanceType.Energy, 10, 20 );
+            this.SetResistance(ResistanceType.Physical, 25, 30);
+            this.SetResistance(ResistanceType.Fire, 10, 20);
+            this.SetResistance(ResistanceType.Cold, 10, 20);
+            this.SetResistance(ResistanceType.Poison, 10, 20);
+            this.SetResistance(ResistanceType.Energy, 10, 20);
 
-			SetSkill( SkillName.MagicResist, 35.1, 60.0 );
-			SetSkill( SkillName.Tactics, 50.1, 75.0 );
-			SetSkill( SkillName.Wrestling, 50.1, 75.0 );
+            this.SetSkill(SkillName.MagicResist, 35.1, 60.0);
+            this.SetSkill(SkillName.Tactics, 50.1, 75.0);
+            this.SetSkill(SkillName.Wrestling, 50.1, 75.0);
 
-			Fame = 1500;
-			Karma = -1500;
+            this.Fame = 1500;
+            this.Karma = -1500;
 
-			VirtualArmor = 28;
-		}
+            this.VirtualArmor = 28;
+        }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Meager );
-			// TODO: weapon, misc
-		}
+        public override void GenerateLoot()
+        {
+            this.AddLoot(LootPack.Meager);
+            // TODO: weapon, misc
+        }
 
-		public override bool CanRummageCorpses{ get{ return true; } }
-		public override int Hides{ get{ return 8; } }
-		public override HideType HideType{ get{ return HideType.Spined; } }
+        public override bool CanRummageCorpses
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override int Hides
+        {
+            get
+            {
+                return 8;
+            }
+        }
+        public override HideType HideType
+        {
+            get
+            {
+                return HideType.Spined;
+            }
+        }
 
-		public Ratman( Serial serial ) : base( serial )
-		{
-		}
+        public Ratman(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write((int)0);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+            int version = reader.ReadInt();
+        }
+    }
 }

@@ -3,100 +3,101 @@ using Server.Network;
 
 namespace Server
 {
-	public class QuestArrow
-	{
-		private Mobile m_Mobile;
-		private Mobile m_Target;
-		private bool m_Running;
+    public class QuestArrow
+    {
+        private readonly Mobile m_Mobile;
+        private readonly Mobile m_Target;
+        private bool m_Running;
 
-		public Mobile Mobile
-		{
-			get
-			{
-				return m_Mobile;
-			}
-		}
+        public Mobile Mobile
+        {
+            get
+            {
+                return this.m_Mobile;
+            }
+        }
 
-		public Mobile Target
-		{
-			get
-			{
-				return m_Target;
-			}
-		}
+        public Mobile Target
+        {
+            get
+            {
+                return this.m_Target;
+            }
+        }
 
-		public bool Running
-		{
-			get
-			{
-				return m_Running;
-			}
-		}
+        public bool Running
+        {
+            get
+            {
+                return this.m_Running;
+            }
+        }
 
-		public void Update()
-		{
-			Update( m_Target.X, m_Target.Y );
-		}
+        public void Update()
+        {
+            this.Update(m_Target.X, m_Target.Y);
+        }
 
-		public void Update( int x, int y )
-		{
-			if ( !m_Running )
-				return;
+        public void Update(int x, int y)
+        {
+            if (!this.m_Running)
+                return;
 
-			NetState ns = m_Mobile.NetState;
+            NetState ns = this.m_Mobile.NetState;
 
-			if ( ns == null )
-				return;
+            if (ns == null)
+                return;
 
-			if ( ns.HighSeas )
-				ns.Send( new SetArrowHS( x, y, m_Target.Serial ) );
-			else
-				ns.Send( new SetArrow( x, y ) );
-		}
+            if (ns.HighSeas)
+                ns.Send(new SetArrowHS(x, y, this.m_Target.Serial));
+            else
+                ns.Send(new SetArrow(x, y));
+        }
 
-		public void Stop()
-		{
-			Stop( m_Target.X, m_Target.Y );
-		}
+        public void Stop()
+        {
+            this.Stop(m_Target.X, m_Target.Y);
+        }
 
-		public void Stop( int x, int y )
-		{
-			if ( !m_Running )
-				return;
+        public void Stop(int x, int y)
+        {
+            if (!this.m_Running)
+                return;
 
-			m_Mobile.ClearQuestArrow();
+            this.m_Mobile.ClearQuestArrow();
 
-			NetState ns = m_Mobile.NetState;
+            NetState ns = this.m_Mobile.NetState;
 
-			if ( ns != null ) {
-				if ( ns.HighSeas )
-					ns.Send( new CancelArrowHS( x, y, m_Target.Serial ) );
-				else
-					ns.Send( new CancelArrow() );
-			}
+            if (ns != null)
+            {
+                if (ns.HighSeas)
+                    ns.Send(new CancelArrowHS(x, y, this.m_Target.Serial));
+                else
+                    ns.Send(new CancelArrow());
+            }
 
-			m_Running = false;
-			OnStop();
-		}
+            this.m_Running = false;
+            this.OnStop();
+        }
 
-		public virtual void OnStop()
-		{
-		}
+        public virtual void OnStop()
+        {
+        }
 
-		public virtual void OnClick( bool rightClick )
-		{
-		}
+        public virtual void OnClick(bool rightClick)
+        {
+        }
 
-		public QuestArrow( Mobile m, Mobile t )
-		{
-			m_Running = true;
-			m_Mobile = m;
-			m_Target = t;
-		}
+        public QuestArrow(Mobile m, Mobile t)
+        {
+            this.m_Running = true;
+            this.m_Mobile = m;
+            this.m_Target = t;
+        }
 
-		public QuestArrow( Mobile m, Mobile t, int x, int y ) : this( m, t )
-		{
-			Update( x, y );
-		}
-	}
+        public QuestArrow(Mobile m, Mobile t, int x, int y) : this(m, t)
+        {
+            this.Update(x, y);
+        }
+    }
 }

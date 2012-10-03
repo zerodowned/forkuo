@@ -13,20 +13,18 @@ namespace CustomsFramework.Systems.VIPSystem
         }
 
         [Constructable(AccessLevel.Developer)]
-        public BronzeVIPDeed()
-            : base()
+        public BronzeVIPDeed() : base()
         {
-            Hue = 1055;
-            Tier = VIPTier.Bronze;
-            Bonuses.ResProtection.Enabled = true;
-            Bonuses.ToolbarAccess.Enabled = true;
-            Bonuses.BasicCommands.Enabled = true;
-            Bonuses.GainIncrease.Enabled = true;
-            Bonuses.FreeCorpseReturn.Enabled = true;
+            this.Hue = 1055;
+            this.Tier = VIPTier.Bronze;
+            this.Bonuses.ResProtection.Enabled = true;
+            this.Bonuses.ToolbarAccess.Enabled = true;
+            this.Bonuses.BasicCommands.Enabled = true;
+            this.Bonuses.GainIncrease.Enabled = true;
+            this.Bonuses.FreeCorpseReturn.Enabled = true;
         }
 
-        public BronzeVIPDeed(Serial serial)
-            : base(serial)
+        public BronzeVIPDeed(Serial serial) : base(serial)
         {
         }
 
@@ -47,10 +45,9 @@ namespace CustomsFramework.Systems.VIPSystem
             {
                 case 0:
                     {
-
                         break;
                     }
             }
         }
-	}
+    }
 }

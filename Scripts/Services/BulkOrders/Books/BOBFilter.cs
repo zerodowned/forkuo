@@ -2,87 +2,114 @@ using System;
 
 namespace Server.Engines.BulkOrders
 {
-	public class BOBFilter
-	{
-		private int m_Type;
-		private int m_Quality;
-		private int m_Material;
-		private int m_Quantity;
+    public class BOBFilter
+    {
+        private int m_Type;
+        private int m_Quality;
+        private int m_Material;
+        private int m_Quantity;
 
-		public bool IsDefault
-		{
-			get{ return ( m_Type == 0 && m_Quality == 0 && m_Material == 0 && m_Quantity == 0 ); }
-		}
+        public bool IsDefault
+        {
+            get
+            {
+                return (this.m_Type == 0 && this.m_Quality == 0 && this.m_Material == 0 && this.m_Quantity == 0);
+            }
+        }
 
-		public void Clear()
-		{
-			m_Type = 0;
-			m_Quality = 0;
-			m_Material = 0;
-			m_Quantity = 0;
-		}
+        public void Clear()
+        {
+            this.m_Type = 0;
+            this.m_Quality = 0;
+            this.m_Material = 0;
+            this.m_Quantity = 0;
+        }
 
-		public int Type
-		{
-			get{ return m_Type; }
-			set{ m_Type = value; }
-		}
+        public int Type
+        {
+            get
+            {
+                return this.m_Type;
+            }
+            set
+            {
+                this.m_Type = value;
+            }
+        }
 
-		public int Quality
-		{
-			get{ return m_Quality; }
-			set{ m_Quality = value; }
-		}
+        public int Quality
+        {
+            get
+            {
+                return this.m_Quality;
+            }
+            set
+            {
+                this.m_Quality = value;
+            }
+        }
 
-		public int Material
-		{
-			get{ return m_Material; }
-			set{ m_Material = value; }
-		}
+        public int Material
+        {
+            get
+            {
+                return this.m_Material;
+            }
+            set
+            {
+                this.m_Material = value;
+            }
+        }
 
-		public int Quantity
-		{
-			get{ return m_Quantity; }
-			set{ m_Quantity = value; }
-		}
+        public int Quantity
+        {
+            get
+            {
+                return this.m_Quantity;
+            }
+            set
+            {
+                this.m_Quantity = value;
+            }
+        }
 
-		public BOBFilter()
-		{
-		}
+        public BOBFilter()
+        {
+        }
 
-		public BOBFilter( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+        public BOBFilter(GenericReader reader)
+        {
+            int version = reader.ReadEncodedInt();
 
-			switch ( version )
-			{
-				case 1:
-				{
-					m_Type = reader.ReadEncodedInt();
-					m_Quality = reader.ReadEncodedInt();
-					m_Material = reader.ReadEncodedInt();
-					m_Quantity = reader.ReadEncodedInt();
+            switch ( version )
+            {
+                case 1:
+                    {
+                        this.m_Type = reader.ReadEncodedInt();
+                        this.m_Quality = reader.ReadEncodedInt();
+                        this.m_Material = reader.ReadEncodedInt();
+                        this.m_Quantity = reader.ReadEncodedInt();
 
-					break;
-				}
-			}
-		}
+                        break;
+                    }
+            }
+        }
 
-		public void Serialize( GenericWriter writer )
-		{
-			if ( IsDefault )
-			{
-				writer.WriteEncodedInt( 0 ); // version
-			}
-			else
-			{
-				writer.WriteEncodedInt( 1 ); // version
+        public void Serialize(GenericWriter writer)
+        {
+            if (this.IsDefault)
+            {
+                writer.WriteEncodedInt(0); // version
+            }
+            else
+            {
+                writer.WriteEncodedInt(1); // version
 
-				writer.WriteEncodedInt( m_Type );
-				writer.WriteEncodedInt( m_Quality );
-				writer.WriteEncodedInt( m_Material );
-				writer.WriteEncodedInt( m_Quantity );
-			}
-		}
-	}
+                writer.WriteEncodedInt(this.m_Type);
+                writer.WriteEncodedInt(this.m_Quality);
+                writer.WriteEncodedInt(this.m_Material);
+                writer.WriteEncodedInt(this.m_Quantity);
+            }
+        }
+    }
 }

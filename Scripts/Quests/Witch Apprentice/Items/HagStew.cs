@@ -1,24 +1,22 @@
 using System;
-using Server;
 
 namespace Server.Items
 {
-	public class HagStew : BaseAddon
-	{
-
-		[Constructable]
+    public class HagStew : BaseAddon
+    {
+        [Constructable]
         public HagStew()
         {
             AddonComponent stew;
             stew = new AddonComponent(2416);
             stew.Name = "stew";
             stew.Visible = true;
-            AddComponent(stew, 0, 0, -7);      //stew
+            this.AddComponent(stew, 0, 0, -7);      //stew
         }
 
         public override void OnComponentUsed(AddonComponent stew, Mobile from)
         {
-            if (!from.InRange(GetWorldLocation(), 2))
+            if (!from.InRange(this.GetWorldLocation(), 2))
                 from.SendMessage("You are too far away.");
             else
             {
@@ -36,41 +34,41 @@ namespace Server.Items
 
         public class ShowStew : Timer
         {
-            private AddonComponent stew;
+            private readonly AddonComponent stew;
 
             public ShowStew(AddonComponent ac) : base(TimeSpan.FromSeconds(30))
             {
-                stew = ac;
-                Priority = TimerPriority.OneSecond;
+                this.stew = ac;
+                this.Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()
             {
-                if ( stew.Visible == false )
+                if (this.stew.Visible == false)
                 {
-                    Stop();
-                    stew.Visible = true;
+                    this.Stop();
+                    this.stew.Visible = true;
                     return;
                 }
             }
         }
 
-		public HagStew( Serial serial ) : base( serial )
-		{
-		}
+        public HagStew(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+            writer.Write((int)0); // version
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+            int version = reader.ReadInt();
+        }
+    }
 }

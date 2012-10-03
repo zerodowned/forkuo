@@ -1,12 +1,12 @@
 using System;
-using System.IO;
-using System.Text;
-using System.Reflection;
 using System.Collections;
-using Server.Items;
-using Server.Engines.BulkOrders;
-using Server.Commands.Generic;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using Server.Commands.Generic;
+using Server.Engines.BulkOrders;
+using Server.Items;
 
 namespace Server.Commands
 {
@@ -63,8 +63,8 @@ namespace Server.Commands
                 MethodInfo aMethod = x as MethodInfo;
                 MethodInfo bMethod = y as MethodInfo;
 
-                bool aStatic = GetStaticFor(aCtor, aProp, aMethod);
-                bool bStatic = GetStaticFor(bCtor, bProp, bMethod);
+                bool aStatic = this.GetStaticFor(aCtor, aProp, aMethod);
+                bool bStatic = this.GetStaticFor(bCtor, bProp, bMethod);
 
                 if (aStatic && !bStatic)
                     return -1;
@@ -96,7 +96,7 @@ namespace Server.Commands
 
                 if (v == 0)
                 {
-                    v = GetNameFrom(aCtor, aProp, aMethod).CompareTo(GetNameFrom(bCtor, bProp, bMethod));
+                    v = this.GetNameFrom(aCtor, aProp, aMethod).CompareTo(this.GetNameFrom(bCtor, bProp, bMethod));
                 }
 
                 if (v == 0 && aCtor != null && bCtor != null)
@@ -159,33 +159,53 @@ namespace Server.Commands
 
         private class TypeInfo
         {
-            public Type m_Type, m_BaseType, m_Declaring;
+            public readonly Type m_Type;
+
+            public readonly Type m_BaseType;
+
+            public readonly Type m_Declaring;
+
             public List<TypeInfo> m_Derived, m_Nested;
-            public Type[] m_Interfaces;
-            private string m_FileName, m_TypeName, m_LinkName;
+            public readonly Type[] m_Interfaces;
+            private readonly string m_FileName;
+
+            private readonly string m_TypeName;
+
+            private readonly string m_LinkName;
 
             public TypeInfo(Type type)
             {
-                m_Type = type;
+                this.m_Type = type;
 
-                m_BaseType = type.BaseType;
-                m_Declaring = type.DeclaringType;
-                m_Interfaces = type.GetInterfaces();
+                this.m_BaseType = type.BaseType;
+                this.m_Declaring = type.DeclaringType;
+                this.m_Interfaces = type.GetInterfaces();
 
-                FormatGeneric(m_Type, ref m_TypeName, ref m_FileName, ref m_LinkName);
-
+                FormatGeneric(this.m_Type, ref this.m_TypeName, ref this.m_FileName, ref this.m_LinkName);
                 //				Console.WriteLine( ">> inline typeinfo: "+m_TypeName );
                 //				m_TypeName = GetGenericTypeName( m_Type );
                 //				m_FileName = Docs.GetFileName( "docs/types/", GetGenericTypeName( m_Type, "-", "-" ), ".html" );
                 //				m_Writer = Docs.GetWriter( "docs/types/", m_FileName );
             }
 
-            public string FileName { get { return m_FileName; } }
-            public string TypeName { get { return m_TypeName; } }
+            public string FileName
+            {
+                get
+                {
+                    return this.m_FileName;
+                }
+            }
+            public string TypeName
+            {
+                get
+                {
+                    return this.m_TypeName;
+                }
+            }
 
             public string LinkName(string dirRoot)
             {
-                return m_LinkName.Replace("@directory@", dirRoot);
+                return this.m_LinkName.Replace("@directory@", dirRoot);
             }
         }
 
@@ -217,7 +237,7 @@ namespace Server.Commands
             return file;
         }
 
-        private static string m_RootDirectory = Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
+        private static readonly string m_RootDirectory = Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
 
         private static void EnsureDirectory(string path)
         {
@@ -244,31 +264,32 @@ namespace Server.Commands
         {
             return new StreamWriter(Path.Combine(m_RootDirectory, path));
         }
+
         #endregion
 
         #region GetPair
 
-        private static string[,] m_Aliases = new string[,]
-			{
-				{ "System.Object",	"<font color=\"blue\">object</font>" },
-				{ "System.String",	"<font color=\"blue\">string</font>" },
-				{ "System.Boolean",	"<font color=\"blue\">bool</font>" },
-				{ "System.Byte",	"<font color=\"blue\">byte</font>" },
-				{ "System.SByte",	"<font color=\"blue\">sbyte</font>" },
-				{ "System.Int16",	"<font color=\"blue\">short</font>" },
-				{ "System.UInt16",	"<font color=\"blue\">ushort</font>" },
-				{ "System.Int32",	"<font color=\"blue\">int</font>" },
-				{ "System.UInt32",	"<font color=\"blue\">uint</font>" },
-				{ "System.Int64",	"<font color=\"blue\">long</font>" },
-				{ "System.UInt64",	"<font color=\"blue\">ulong</font>" },
-				{ "System.Single",	"<font color=\"blue\">float</font>" },
-				{ "System.Double",	"<font color=\"blue\">double</font>" },
-				{ "System.Decimal",	"<font color=\"blue\">decimal</font>" },
-				{ "System.Char",	"<font color=\"blue\">char</font>" },
-				{ "System.Void",	"<font color=\"blue\">void</font>" },
-			};
+        private static readonly string[,] m_Aliases = new string[,]
+        {
+            { "System.Object", "<font color=\"blue\">object</font>" },
+            { "System.String", "<font color=\"blue\">string</font>" },
+            { "System.Boolean", "<font color=\"blue\">bool</font>" },
+            { "System.Byte", "<font color=\"blue\">byte</font>" },
+            { "System.SByte", "<font color=\"blue\">sbyte</font>" },
+            { "System.Int16", "<font color=\"blue\">short</font>" },
+            { "System.UInt16", "<font color=\"blue\">ushort</font>" },
+            { "System.Int32", "<font color=\"blue\">int</font>" },
+            { "System.UInt32", "<font color=\"blue\">uint</font>" },
+            { "System.Int64", "<font color=\"blue\">long</font>" },
+            { "System.UInt64", "<font color=\"blue\">ulong</font>" },
+            { "System.Single", "<font color=\"blue\">float</font>" },
+            { "System.Double", "<font color=\"blue\">double</font>" },
+            { "System.Decimal", "<font color=\"blue\">decimal</font>" },
+            { "System.Char", "<font color=\"blue\">char</font>" },
+            { "System.Void", "<font color=\"blue\">void</font>" },
+        };
 
-        private static int m_AliasLength = m_Aliases.GetLength(0);
+        private static readonly int m_AliasLength = m_Aliases.GetLength(0);
 
         public static string GetPair(Type varType, string name, bool ignoreRef)
         {
@@ -301,7 +322,8 @@ namespace Server.Commands
                         append.Append(']');
 
                         realType = realType.GetElementType();
-                    } while (realType.IsArray);
+                    }
+                    while (realType.IsArray);
 
                     append.Append(' ');
                 }
@@ -323,7 +345,8 @@ namespace Server.Commands
                     append.Append(']');
 
                     realType = realType.GetElementType();
-                } while (realType.IsArray);
+                }
+                while (realType.IsArray);
 
                 append.Append(' ');
             }
@@ -386,8 +409,14 @@ namespace Server.Commands
 
         private static bool Document()
         {
-            try { DeleteDirectory("docs/"); }
-            catch { return false; }
+            try
+            {
+                DeleteDirectory("docs/");
+            }
+            catch
+            {
+                return false;
+            }
 
             EnsureDirectory("docs/");
             EnsureDirectory("docs/namespaces/");
@@ -534,7 +563,6 @@ namespace Server.Commands
 
                 html.WriteLine("      <br><br>");
                 html.WriteLine("      <br><br>");
-
 
                 sbod.Type = typeof(PlateArms);
 
@@ -957,9 +985,18 @@ namespace Server.Commands
 
                         break;
                     }
-                case BulkMaterialType.Spined: style = "sp"; name = "Spined"; break;
-                case BulkMaterialType.Horned: style = "ho"; name = "Horned"; break;
-                case BulkMaterialType.Barbed: style = "ba"; name = "Barbed"; break;
+                case BulkMaterialType.Spined:
+                    style = "sp";
+                    name = "Spined";
+                    break;
+                case BulkMaterialType.Horned:
+                    style = "ho";
+                    name = "Horned";
+                    break;
+                case BulkMaterialType.Barbed:
+                    style = "ba";
+                    name = "Barbed";
+                    break;
             }
 
             html.WriteLine("         <tr>");
@@ -1180,15 +1217,42 @@ namespace Server.Commands
 
             switch (material)
             {
-                case BulkMaterialType.None: style = "ir"; name = "Iron"; break;
-                case BulkMaterialType.DullCopper: style = "du"; name = "Dull Copper"; break;
-                case BulkMaterialType.ShadowIron: style = "sh"; name = "Shadow Iron"; break;
-                case BulkMaterialType.Copper: style = "co"; name = "Copper"; break;
-                case BulkMaterialType.Bronze: style = "br"; name = "Bronze"; break;
-                case BulkMaterialType.Gold: style = "go"; name = "Gold"; break;
-                case BulkMaterialType.Agapite: style = "ag"; name = "Agapite"; break;
-                case BulkMaterialType.Verite: style = "ve"; name = "Verite"; break;
-                case BulkMaterialType.Valorite: style = "va"; name = "Valorite"; break;
+                case BulkMaterialType.None:
+                    style = "ir";
+                    name = "Iron";
+                    break;
+                case BulkMaterialType.DullCopper:
+                    style = "du";
+                    name = "Dull Copper";
+                    break;
+                case BulkMaterialType.ShadowIron:
+                    style = "sh";
+                    name = "Shadow Iron";
+                    break;
+                case BulkMaterialType.Copper:
+                    style = "co";
+                    name = "Copper";
+                    break;
+                case BulkMaterialType.Bronze:
+                    style = "br";
+                    name = "Bronze";
+                    break;
+                case BulkMaterialType.Gold:
+                    style = "go";
+                    name = "Gold";
+                    break;
+                case BulkMaterialType.Agapite:
+                    style = "ag";
+                    name = "Agapite";
+                    break;
+                case BulkMaterialType.Verite:
+                    style = "ve";
+                    name = "Verite";
+                    break;
+                case BulkMaterialType.Valorite:
+                    style = "va";
+                    name = "Valorite";
+                    break;
             }
 
             html.WriteLine("         <tr>");
@@ -1306,11 +1370,21 @@ namespace Server.Commands
 
                             switch (type)
                             {
-                                case ModelBodyType.Monsters: html.WriteLine("      <b>Monsters</b> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>"); break;
-                                case ModelBodyType.Sea: html.WriteLine("      <a href=\"#Top\">Monsters</a> | <b>Sea</b> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>"); break;
-                                case ModelBodyType.Animals: html.WriteLine("      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <b>Animals</b> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>"); break;
-                                case ModelBodyType.Human: html.WriteLine("      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <b>Human</b> | <a href=\"#Equipment\">Equipment</a><br><br>"); break;
-                                case ModelBodyType.Equipment: html.WriteLine("      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <b>Equipment</b><br><br>"); break;
+                                case ModelBodyType.Monsters:
+                                    html.WriteLine("      <b>Monsters</b> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>");
+                                    break;
+                                case ModelBodyType.Sea:
+                                    html.WriteLine("      <a href=\"#Top\">Monsters</a> | <b>Sea</b> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>");
+                                    break;
+                                case ModelBodyType.Animals:
+                                    html.WriteLine("      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <b>Animals</b> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>");
+                                    break;
+                                case ModelBodyType.Human:
+                                    html.WriteLine("      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <b>Human</b> | <a href=\"#Equipment\">Equipment</a><br><br>");
+                                    break;
+                                case ModelBodyType.Equipment:
+                                    html.WriteLine("      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <b>Equipment</b><br><br>");
+                                    break;
                             }
 
                             html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
@@ -1333,6 +1407,7 @@ namespace Server.Commands
                 html.WriteLine("</html>");
             }
         }
+
         #endregion
 
         #region Speech
@@ -1415,16 +1490,28 @@ namespace Server.Commands
 
         private class SpeechEntry
         {
-            private int m_Index;
-            private List<string> m_Strings;
+            private readonly int m_Index;
+            private readonly List<string> m_Strings;
 
-            public int Index { get { return m_Index; } }
-            public List<string> Strings { get { return m_Strings; } }
+            public int Index
+            {
+                get
+                {
+                    return this.m_Index;
+                }
+            }
+            public List<string> Strings
+            {
+                get
+                {
+                    return this.m_Strings;
+                }
+            }
 
             public SpeechEntry(int index)
             {
-                m_Index = index;
-                m_Strings = new List<string>();
+                this.m_Index = index;
+                this.m_Strings = new List<string>();
             }
         }
 
@@ -1483,31 +1570,62 @@ namespace Server.Commands
 
             return tables;
         }
+
         #endregion
 
         #region Commands
 
         public class DocCommandEntry
         {
-            private AccessLevel m_AccessLevel;
-            private string m_Name;
-            private string[] m_Aliases;
-            private string m_Usage;
-            private string m_Description;
+            private readonly AccessLevel m_AccessLevel;
+            private readonly string m_Name;
+            private readonly string[] m_Aliases;
+            private readonly string m_Usage;
+            private readonly string m_Description;
 
-            public AccessLevel AccessLevel { get { return m_AccessLevel; } }
-            public string Name { get { return m_Name; } }
-            public string[] Aliases { get { return m_Aliases; } }
-            public string Usage { get { return m_Usage; } }
-            public string Description { get { return m_Description; } }
+            public AccessLevel AccessLevel
+            {
+                get
+                {
+                    return this.m_AccessLevel;
+                }
+            }
+            public string Name
+            {
+                get
+                {
+                    return this.m_Name;
+                }
+            }
+            public string[] Aliases
+            {
+                get
+                {
+                    return this.m_Aliases;
+                }
+            }
+            public string Usage
+            {
+                get
+                {
+                    return this.m_Usage;
+                }
+            }
+            public string Description
+            {
+                get
+                {
+                    return this.m_Description;
+                }
+            }
 
             public DocCommandEntry(AccessLevel accessLevel, string name, string[] aliases, string usage, string description)
             {
-                m_AccessLevel = accessLevel;
-                m_Name = name;
-                m_Aliases = aliases;
-                m_Usage = usage;
-                m_Description = description;
+                this.m_AccessLevel = accessLevel;
+                this.m_Name = name;
+                this.m_Aliases = aliases;
+                this.m_Usage = usage;
+                this.m_Description = description;
             }
         }
 
@@ -1677,11 +1795,21 @@ namespace Server.Commands
 
                         switch (last)
                         {
-                            case AccessLevel.Administrator: html.WriteLine("      <b>Administrator</b> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>"); break;
-                            case AccessLevel.GameMaster: html.WriteLine("      <a href=\"#Top\">Administrator</a> | <b>Game Master</b> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>"); break;
-                            case AccessLevel.Seer: html.WriteLine("      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>"); break;
-                            case AccessLevel.Counselor: html.WriteLine("      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <b>Counselor</b> | <a href=\"#Player\">Player</a><br><br>"); break;
-                            case AccessLevel.Player: html.WriteLine("      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <b>Player</b><br><br>"); break;
+                            case AccessLevel.Administrator:
+                                html.WriteLine("      <b>Administrator</b> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>");
+                                break;
+                            case AccessLevel.GameMaster:
+                                html.WriteLine("      <a href=\"#Top\">Administrator</a> | <b>Game Master</b> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>");
+                                break;
+                            case AccessLevel.Seer:
+                                html.WriteLine("      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>");
+                                break;
+                            case AccessLevel.Counselor:
+                                html.WriteLine("      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <b>Counselor</b> | <a href=\"#Player\">Player</a><br><br>");
+                                break;
+                            case AccessLevel.Player:
+                                html.WriteLine("      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <b>Player</b><br><br>");
+                                break;
                         }
 
                         html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
@@ -1839,8 +1967,13 @@ namespace Server.Commands
         }
 
         #region Constructable Objects
-        private static Type typeofItem = typeof(Item), typeofMobile = typeof(Mobile), typeofMap = typeof(Map);
-        private static Type typeofCustomEnum = typeof(CustomEnumAttribute);
+        private static readonly Type typeofItem = typeof(Item);
+
+        private static readonly Type typeofMobile = typeof(Mobile);
+
+        private static readonly Type typeofMap = typeof(Map);
+
+        private static readonly Type typeofCustomEnum = typeof(CustomEnumAttribute);
 
         private static bool IsConstructable(Type t, out bool isItem)
         {
@@ -1966,22 +2099,22 @@ namespace Server.Commands
 
         private const string HtmlNewLine = "&#13;";
 
-        private static object[,] m_Tooltips = new object[,]
-		{
-			{ typeof( Byte ), "Numeric value in the range from 0 to 255, inclusive." },
-			{ typeof( SByte ), "Numeric value in the range from negative 128 to positive 127, inclusive." },
-			{ typeof( UInt16 ), "Numeric value in the range from 0 to 65,535, inclusive." },
-			{ typeof( Int16 ), "Numeric value in the range from negative 32,768 to positive 32,767, inclusive." },
-			{ typeof( UInt32 ), "Numeric value in the range from 0 to 4,294,967,295, inclusive." },
-			{ typeof( Int32 ), "Numeric value in the range from negative 2,147,483,648 to positive 2,147,483,647, inclusive." },
-			{ typeof( UInt64 ), "Numeric value in the range from 0 through about 10^20." },
-			{ typeof( Int64 ), "Numeric value in the approximate range from negative 10^19 through 10^19." },
-			{ typeof( String ), "Text value. To specify a value containing spaces, encapsulate the value in quote characters:{0}{0}&quot;Spaced text example&quot;" },
-			{ typeof( Boolean ), "Boolean value which can be either True or False." },
-			{ typeof( Map ), "Map or facet name. Possible values include:{0}{0}- Felucca{0}- Trammel{0}- Ilshenar{0}- Malas" },
-			{ typeof( Poison ), "Poison name or level. Possible values include:{0}{0}- Lesser{0}- Regular{0}- Greater{0}- Deadly{0}- Lethal" },
-			{ typeof( Point3D ), "Three-dimensional coordinate value. Format as follows:{0}{0}&quot;(<x value>, <y value>, <z value>)&quot;" }
-		};
+        private static readonly object[,] m_Tooltips = new object[,]
+        {
+            { typeof(Byte), "Numeric value in the range from 0 to 255, inclusive." },
+            { typeof(SByte), "Numeric value in the range from negative 128 to positive 127, inclusive." },
+            { typeof(UInt16), "Numeric value in the range from 0 to 65,535, inclusive." },
+            { typeof(Int16), "Numeric value in the range from negative 32,768 to positive 32,767, inclusive." },
+            { typeof(UInt32), "Numeric value in the range from 0 to 4,294,967,295, inclusive." },
+            { typeof(Int32), "Numeric value in the range from negative 2,147,483,648 to positive 2,147,483,647, inclusive." },
+            { typeof(UInt64), "Numeric value in the range from 0 through about 10^20." },
+            { typeof(Int64), "Numeric value in the approximate range from negative 10^19 through 10^19." },
+            { typeof(String), "Text value. To specify a value containing spaces, encapsulate the value in quote characters:{0}{0}&quot;Spaced text example&quot;" },
+            { typeof(Boolean), "Boolean value which can be either True or False." },
+            { typeof(Map), "Map or facet name. Possible values include:{0}{0}- Felucca{0}- Trammel{0}- Ilshenar{0}- Malas" },
+            { typeof(Poison), "Poison name or level. Possible values include:{0}{0}- Lesser{0}- Regular{0}- Greater{0}- Deadly{0}- Lethal" },
+            { typeof(Point3D), "Three-dimensional coordinate value. Format as follows:{0}{0}&quot;(<x value>, <y value>, <z value>)&quot;" }
+        };
 
         private static string GetTooltipFor(ParameterInfo param)
         {
@@ -2174,7 +2307,6 @@ namespace Server.Commands
             if (decType != null)
             {
                 // We are a nested type
-
                 typeHtml.Write('(');
 
                 TypeInfo decInfo = null;
@@ -2183,7 +2315,7 @@ namespace Server.Commands
                 if (decInfo == null)
                     typeHtml.Write(decType.Name);
                 else
-                    //typeHtml.Write( "<a href=\"{0}\">{1}</a>", decInfo.m_FileName, decInfo.m_TypeName );
+                //typeHtml.Write( "<a href=\"{0}\">{1}</a>", decInfo.m_FileName, decInfo.m_TypeName );
                     typeHtml.Write(decInfo.LinkName(null));
 
                 typeHtml.Write(") - ");
@@ -2409,6 +2541,7 @@ namespace Server.Commands
 
             html.WriteLine(")<br>");
         }
+
         #endregion
 
         public static void FormatGeneric(Type type, ref string typeName, ref string fileName, ref string linkName)
@@ -2468,11 +2601,15 @@ namespace Server.Commands
                     link = linkBuilder.ToString();
                 }
             }
-            if (name == null) typeName = type.Name;
-            else typeName = name;
+            if (name == null)
+                typeName = type.Name;
+            else
+                typeName = name;
 
-            if (fnam == null) fileName = "docs/types/" + Docs.SanitizeType(type.Name) + ".html";
-            else fileName = fnam + ".html";
+            if (fnam == null)
+                fileName = "docs/types/" + Docs.SanitizeType(type.Name) + ".html";
+            else
+                fileName = fnam + ".html";
 
             if (link == null)
             {
@@ -2481,20 +2618,26 @@ namespace Server.Commands
                 else
                     linkName = "<a href=\"" + "@directory@" + Docs.SanitizeType(type.Name) + ".html\">" + Docs.SanitizeType(type.Name) + "</a>";
             }
-            else linkName = link;
-
+            else
+                linkName = link;
             //Console.WriteLine( typeName+":"+fileName+":"+linkName );
         }
 
         public static string SanitizeType(string name)
         {
             bool anonymousType = false;
-            if (name.Contains("<")) anonymousType = true;
+            if (name.Contains("<"))
+                anonymousType = true;
             StringBuilder sb = new StringBuilder(name);
-            for (int i = 0; i < ReplaceChars.Length; ++i) { sb.Replace(ReplaceChars[i], '-'); }
+            for (int i = 0; i < ReplaceChars.Length; ++i)
+            {
+                sb.Replace(ReplaceChars[i], '-');
+            }
 
-            if (anonymousType) return "(Anonymous-Type)" + sb.ToString();
-            else return sb.ToString();
+            if (anonymousType)
+                return "(Anonymous-Type)" + sb.ToString();
+            else
+                return sb.ToString();
         }
 
         public static string AliasForName(string name)
@@ -2513,30 +2656,29 @@ namespace Server.Commands
         // For stuff we don't want to links to
         private static string[] m_DontLink = new string[]
         {
-                "List",
-                "Stack",
-                "Queue",
-                "Dictionary",
-                "LinkedList",
-                "SortedList",
-                "SortedDictionary",
-                "IComparable",
-                "IComparer",
-                "ICloneable",
-                "Type"
+        "List",
+        "Stack",
+        "Queue",
+        "Dictionary",
+        "LinkedList",
+        "SortedList",
+        "SortedDictionary",
+        "IComparable",
+        "IComparer",
+        "ICloneable",
+        "Type"
         };
 
         public static bool DontLink( string name )
         {
-            foreach( string dontLink in m_DontLink )
-                if( dontLink == name ) return true;
-            return false;
+        foreach( string dontLink in m_DontLink )
+        if( dontLink == name ) return true;
+        return false;
         }
         */
         public static bool DontLink(Type type)
         {
             // MONO: type.Namespace is null/empty for generic arguments
-
             if (type.Name == "T" || String.IsNullOrEmpty(type.Namespace) || m_Namespaces == null)
                 return true;
 
@@ -2560,31 +2702,49 @@ namespace Server.Commands
 
     public class BodyEntry
     {
-        private Body m_Body;
-        private ModelBodyType m_BodyType;
-        private string m_Name;
+        private readonly Body m_Body;
+        private readonly ModelBodyType m_BodyType;
+        private readonly string m_Name;
 
-        public Body Body { get { return m_Body; } }
-        public ModelBodyType BodyType { get { return m_BodyType; } }
-        public string Name { get { return m_Name; } }
+        public Body Body
+        {
+            get
+            {
+                return this.m_Body;
+            }
+        }
+        public ModelBodyType BodyType
+        {
+            get
+            {
+                return this.m_BodyType;
+            }
+        }
+        public string Name
+        {
+            get
+            {
+                return this.m_Name;
+            }
+        }
 
         public BodyEntry(Body body, ModelBodyType bodyType, string name)
         {
-            m_Body = body;
-            m_BodyType = bodyType;
-            m_Name = name;
+            this.m_Body = body;
+            this.m_BodyType = bodyType;
+            this.m_Name = name;
         }
 
         public override bool Equals(object obj)
         {
             BodyEntry e = (BodyEntry)obj;
 
-            return (m_Body == e.m_Body && m_BodyType == e.m_BodyType && m_Name == e.m_Name);
+            return (this.m_Body == e.m_Body && this.m_BodyType == e.m_BodyType && this.m_Name == e.m_Name);
         }
 
         public override int GetHashCode()
         {
-            return m_Body.BodyID ^ (int)m_BodyType ^ m_Name.GetHashCode();
+            return this.m_Body.BodyID ^ (int)this.m_BodyType ^ this.m_Name.GetHashCode();
         }
     }
 

@@ -1,35 +1,40 @@
 using System;
-using Server;
 
 namespace Server.Items
 {
-	[Flipable( 0x4214, 0x4215 )]
-	public class RockingHorse : Item
-	{
-		public override double DefaultWeight { get { return 30.0; } }
+    [Flipable(0x4214, 0x4215)]
+    public class RockingHorse : Item
+    {
+        public override double DefaultWeight
+        {
+            get
+            {
+                return 30.0;
+            }
+        }
 
-		[Constructable]
-		public RockingHorse() : base( 0x4214 )
-		{
-			LootType = LootType.Blessed;
-		}
+        [Constructable]
+        public RockingHorse() : base(0x4214)
+        {
+            this.LootType = LootType.Blessed;
+        }
 
-		public RockingHorse( Serial serial ) : base( serial )
-		{
-		}
+        public RockingHorse(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+            writer.Write((int)0); // version
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+            int version = reader.ReadInt();
+        }
+    }
 }

@@ -4,16 +4,16 @@ namespace CustomsFramework.GumpPlus
 {
     public class RadioPlus : GumpRadio
     {
-        private string _Name;
-        private int _Group;
-        private object _Callback;
+        private readonly string _Name;
+        private readonly int _Group;
+        private readonly object _Callback;
         private object _Param;
 
         public string Name
         {
             get
             {
-                return _Name;
+                return this._Name;
             }
         }
 
@@ -21,7 +21,7 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _Group;
+                return this._Group;
             }
         }
 
@@ -29,40 +29,38 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _Param;
+                return this._Param;
             }
             set
             {
-                _Param = value;
+                this._Param = value;
             }
         }
 
         public RadioPlus(int x, int y, int inactiveID, int activeID, bool initialState, int switchID,
-            int groupID, string name, RadioResponse callback)
-            : base(x, y, inactiveID, activeID, initialState, switchID)
+            int groupID, string name, RadioResponse callback) : base(x, y, inactiveID, activeID, initialState, switchID)
         {
-            _Group = groupID;
-            _Name = name;
-            _Callback = callback;
-            _Param = null;
+            this._Group = groupID;
+            this._Name = name;
+            this._Callback = callback;
+            this._Param = null;
         }
 
         public RadioPlus(int x, int y, int inactiveID, int activeID, bool initialState, int switchID,
-            int groupID, string name, RadioParamResponse callback, object param)
-            : base(x, y, inactiveID, activeID, initialState, switchID)
+            int groupID, string name, RadioParamResponse callback, object param) : base(x, y, inactiveID, activeID, initialState, switchID)
         {
-            _Group = groupID;
-            _Name = name;
-            _Callback = callback;
-            _Param = param;
+            this._Group = groupID;
+            this._Name = name;
+            this._Callback = callback;
+            this._Param = param;
         }
 
         public void Invoke(bool switched)
         {
-            if (_Callback is RadioResponse)
-                ((RadioResponse)_Callback)(switched);
-            else if (_Callback is RadioParamResponse)
-                ((RadioParamResponse)_Callback)(switched, _Param);
+            if (this._Callback is RadioResponse)
+                ((RadioResponse)this._Callback)(switched);
+            else if (this._Callback is RadioParamResponse)
+                ((RadioParamResponse)this._Callback)(switched, this._Param);
         }
     }
 }

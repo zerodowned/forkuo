@@ -1,49 +1,54 @@
 using System; 
-using System.Collections.Generic; 
-using Server; 
-
+using System.Collections.Generic;
+ 
 namespace Server.Mobiles 
 { 
-	public class Butcher : BaseVendor 
-	{ 
-		private List<SBInfo> m_SBInfos = new List<SBInfo>(); 
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } } 
+    public class Butcher : BaseVendor 
+    { 
+        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>(); 
+        protected override List<SBInfo> SBInfos
+        {
+            get
+            {
+                return this.m_SBInfos;
+            }
+        }
 
-		[Constructable]
-		public Butcher() : base( "the butcher" ) 
-		{ 
-			SetSkill( SkillName.Anatomy, 45.0, 68.0 );
-		} 
+        [Constructable]
+        public Butcher() : base("the butcher")
+        { 
+            this.SetSkill(SkillName.Anatomy, 45.0, 68.0);
+        }
 
-		public override void InitSBInfo() 
-		{ 
-			m_SBInfos.Add( new SBButcher() ); 
-		}
+        public override void InitSBInfo() 
+        { 
+            this.m_SBInfos.Add(new SBButcher()); 
+        }
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+        public override void InitOutfit()
+        {
+            base.InitOutfit();
 
-			AddItem( new Server.Items.HalfApron() );
-			AddItem( new Server.Items.Cleaver() );
-		}
+            this.AddItem(new Server.Items.HalfApron());
+            this.AddItem(new Server.Items.Cleaver());
+        }
 
-		public Butcher( Serial serial ) : base( serial ) 
-		{ 
-		}
+        public Butcher(Serial serial) : base(serial)
+        { 
+        }
 
-		public override void Serialize( GenericWriter writer ) 
-		{ 
-			base.Serialize( writer ); 
+        public override void Serialize(GenericWriter writer) 
+        { 
+            base.Serialize(writer); 
 
-			writer.Write( (int) 0 ); // version 
-		} 
+            writer.Write((int)0); // version 
+        }
 
-		public override void Deserialize( GenericReader reader ) 
-		{ 
-			base.Deserialize( reader ); 
+        public override void Deserialize(GenericReader reader) 
+        { 
+            base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
-		} 
-	} 
+            int version = reader.ReadInt(); 
+        }
+    }
 }

@@ -8,13 +8,12 @@ namespace CustomsFramework.Systems.VIPSystem
 {
     public class VIPStore : Gump
     {
-        Mobile mobile;
+        readonly Mobile mobile;
 
-        public VIPStore(Mobile from)
-            : base(150, 150)
+        public VIPStore(Mobile from) : base(150, 150)
         {
             VIPCore core = World.GetCore(typeof(VIPCore)) as VIPCore;
-            mobile = from;
+            this.mobile = from;
             PlayerMobile player = from as PlayerMobile;
             VIPModule module = player.GetModule(typeof(VIPModule)) as VIPModule;
 
@@ -155,7 +154,7 @@ namespace CustomsFramework.Systems.VIPSystem
                         }
                         else
                         {
-                            FailedPurchase(from);
+                            this.FailedPurchase(from);
                         }
                         break;
                     }

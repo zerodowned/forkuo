@@ -4,7 +4,7 @@ using Server;
 namespace CustomsFramework.Systems.ShardControl
 {
     [PropertyObject]
-	public partial class MainSettings
+    public partial class MainSettings
     {
         #region Variables
         private GeneralSettings _GeneralSettings;
@@ -17,11 +17,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _GeneralSettings;
+                return this._GeneralSettings;
             }
             set
             {
-                _GeneralSettings = value;
+                this._GeneralSettings = value;
             }
         }
 
@@ -30,11 +30,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _AccountSettings;
+                return this._AccountSettings;
             }
             set
             {
-                _AccountSettings = value;
+                this._AccountSettings = value;
             }
         }
 
@@ -43,11 +43,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _SaveSettings;
+                return this._SaveSettings;
             }
             set
             {
-                _SaveSettings = value;
+                this._SaveSettings = value;
             }
         }
 
@@ -56,21 +56,21 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _ClientSettings;
+                return this._ClientSettings;
             }
             set
             {
-                _ClientSettings = value;
+                this._ClientSettings = value;
             }
         }
         #endregion
 
         public MainSettings()
         {
-            _GeneralSettings = new GeneralSettings();
-            _AccountSettings = new AccountSettings();
-            _SaveSettings = new SaveSettings();
-            _ClientSettings = new ClientSettings();
+            this._GeneralSettings = new GeneralSettings();
+            this._AccountSettings = new AccountSettings();
+            this._SaveSettings = new SaveSettings();
+            this._ClientSettings = new ClientSettings();
         }
 
         public void Serialize(GenericWriter writer)
@@ -78,15 +78,15 @@ namespace CustomsFramework.Systems.ShardControl
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            _AccountSettings.Serialize(writer);
-            _SaveSettings.Serialize(writer);
-            _ClientSettings.Serialize(writer);
-            _GeneralSettings.Serialize(writer);
+            this._AccountSettings.Serialize(writer);
+            this._SaveSettings.Serialize(writer);
+            this._ClientSettings.Serialize(writer);
+            this._GeneralSettings.Serialize(writer);
         }
 
         public MainSettings(GenericReader reader)
         {
-            Deserialize(reader);
+            this.Deserialize(reader);
         }
 
         private void Deserialize(GenericReader reader)
@@ -97,10 +97,10 @@ namespace CustomsFramework.Systems.ShardControl
             {
                 case 0:
                     {
-                        _AccountSettings = new AccountSettings(reader);
-                        _SaveSettings = new SaveSettings(reader);
-                        _ClientSettings = new ClientSettings(reader);
-                        _GeneralSettings = new GeneralSettings(reader);
+                        this._AccountSettings = new AccountSettings(reader);
+                        this._SaveSettings = new SaveSettings(reader);
+                        this._ClientSettings = new ClientSettings(reader);
+                        this._GeneralSettings = new GeneralSettings(reader);
                         break;
                     }
             }

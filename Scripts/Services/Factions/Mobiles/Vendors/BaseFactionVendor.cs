@@ -1,115 +1,136 @@
 using System;
 using System.Collections.Generic;
-using Server;
 using Server.Mobiles;
 
 namespace Server.Factions
 {
-	public abstract class BaseFactionVendor : BaseVendor
-	{
-		private Town m_Town;
-		private Faction m_Faction;
+    public abstract class BaseFactionVendor : BaseVendor
+    {
+        private Town m_Town;
+        private Faction m_Faction;
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public Town Town
-		{
-			get{ return m_Town; }
-			set{ Unregister(); m_Town = value; Register(); }
-		}
+        [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
+        public Town Town
+        {
+            get
+            {
+                return this.m_Town;
+            }
+            set
+            {
+                this.Unregister();
+                this.m_Town = value;
+                this.Register();
+            }
+        }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public Faction Faction
-		{
-			get{ return m_Faction; }
-			set{ Unregister(); m_Faction = value; Register(); }
-		}
+        [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
+        public Faction Faction
+        {
+            get
+            {
+                return this.m_Faction;
+            }
+            set
+            {
+                this.Unregister();
+                this.m_Faction = value;
+                this.Register();
+            }
+        }
 
-		public void Register()
-		{
-			if ( m_Town != null && m_Faction != null )
-				m_Town.RegisterVendor( this );
-		}
+        public void Register()
+        {
+            if (this.m_Town != null && this.m_Faction != null)
+                this.m_Town.RegisterVendor(this);
+        }
 
-		public override bool OnMoveOver( Mobile m )
-		{
-			if ( Core.ML )
-				return true;
+        public override bool OnMoveOver(Mobile m)
+        {
+            if (Core.ML)
+                return true;
 
-			return base.OnMoveOver( m );
-		}
+            return base.OnMoveOver(m);
+        }
 
-		public void Unregister()
-		{
-			if ( m_Town != null )
-				m_Town.UnregisterVendor( this );
-		}
+        public void Unregister()
+        {
+            if (this.m_Town != null)
+                this.m_Town.UnregisterVendor(this);
+        }
 
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
+        protected override List<SBInfo> SBInfos
+        {
+            get
+            {
+                return this.m_SBInfos;
+            }
+        }
 
-		public override void InitSBInfo()
-		{
-		}
+        public override void InitSBInfo()
+        {
+        }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+        public override void OnAfterDelete()
+        {
+            base.OnAfterDelete();
 
-			Unregister();
-		}
+            this.Unregister();
+        }
 
-		public override bool CheckVendorAccess( Mobile from )
-		{
-			return true;
-		}
+        public override bool CheckVendorAccess(Mobile from)
+        {
+            return true;
+        }
 
-		public BaseFactionVendor( Town town, Faction faction, string title ) : base( title )
-		{
-			Frozen = true;
-			CantWalk = true;
-			Female = false;
-			BodyValue = 400;
-			Name = NameList.RandomName( "male" );
+        public BaseFactionVendor(Town town, Faction faction, string title) : base(title)
+        {
+            this.Frozen = true;
+            this.CantWalk = true;
+            this.Female = false;
+            this.BodyValue = 400;
+            this.Name = NameList.RandomName("male");
 
-			RangeHome = 0;
+            this.RangeHome = 0;
 
-			m_Town = town;
-			m_Faction = faction;
-			Register();
-		}
+            this.m_Town = town;
+            this.m_Faction = faction;
+            this.Register();
+        }
 
-		public BaseFactionVendor( Serial serial ) : base( serial )
-		{
-		}
+        public BaseFactionVendor(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+            writer.Write((int)0); // version
 
-			Town.WriteReference( writer, m_Town );
-			Faction.WriteReference( writer, m_Faction );
-		}
+            Town.WriteReference(writer, this.m_Town);
+            Faction.WriteReference(writer, this.m_Faction);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+            int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_Town = Town.ReadReference( reader );
-					m_Faction = Faction.ReadReference( reader );
-					Register();
-					break;
-				}
-			}
+            switch ( version )
+            {
+                case 0:
+                    {
+                        this.m_Town = Town.ReadReference(reader);
+                        this.m_Faction = Faction.ReadReference(reader);
+                        this.Register();
+                        break;
+                    }
+            }
 
-			Frozen = true;
-		}
-	}
+            this.Frozen = true;
+        }
+    }
 }

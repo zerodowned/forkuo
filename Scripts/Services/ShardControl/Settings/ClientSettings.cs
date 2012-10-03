@@ -21,11 +21,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _AutoDetectClient;
+                return this._AutoDetectClient;
             }
             set
             {
-                _AutoDetectClient = value;
+                this._AutoDetectClient = value;
             }
         }
 
@@ -34,11 +34,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _ClientPath;
+                return this._ClientPath;
             }
             set
             {
-                _ClientPath = value;
+                this._ClientPath = value;
             }
         }
 
@@ -47,11 +47,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _OldClientResponse;
+                return this._OldClientResponse;
             }
             set
             {
-                _OldClientResponse = value;
+                this._OldClientResponse = value;
             }
         }
 
@@ -60,11 +60,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _RequiredVersion;
+                return this._RequiredVersion;
             }
             set
             {
-                _RequiredVersion = value;
+                this._RequiredVersion = value;
             }
         }
 
@@ -73,11 +73,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _AllowRegular;
+                return this._AllowRegular;
             }
             set
             {
-                _AllowRegular = value;
+                this._AllowRegular = value;
             }
         }
 
@@ -86,11 +86,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _AllowUOTD;
+                return this._AllowUOTD;
             }
             set
             {
-                _AllowUOTD = value;
+                this._AllowUOTD = value;
             }
         }
 
@@ -99,11 +99,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _AllowGod;
+                return this._AllowGod;
             }
             set
             {
-                _AllowGod = value;
+                this._AllowGod = value;
             }
         }
 
@@ -112,11 +112,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _AgeLeniency;
+                return this._AgeLeniency;
             }
             set
             {
-                _AgeLeniency = value;
+                this._AgeLeniency = value;
             }
         }
 
@@ -125,11 +125,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _GameTimeLeniency;
+                return this._GameTimeLeniency;
             }
             set
             {
-                _GameTimeLeniency = value;
+                this._GameTimeLeniency = value;
             }
         }
 
@@ -138,11 +138,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _KickDelay;
+                return this._KickDelay;
             }
             set
             {
-                _KickDelay = value;
+                this._KickDelay = value;
             }
         }
         #endregion
@@ -153,16 +153,16 @@ namespace CustomsFramework.Systems.ShardControl
             bool allowGod = true, TimeSpan ageLeniency = TimeSpan.FromDays(10.0),
             TimeSpan gameTimeLeniency = TimeSpan.FromHours(25.0), TimeSpan kickDelay = TimeSpan.FromSeconds(30.0))
         {
-            _AutoDetectClient = autoDetectClient;
-            _ClientPath = clientPath;
-            _OldClientResponse = oldClientResponse;
-            _RequiredVersion = requiredVersion;
-            _AllowRegular = allowRegular;
-            _AllowUOTD = allowUOTD;
-            _AllowGod = allowGod;
-            _AgeLeniency = ageLeniency;
-            _GameTimeLeniency = gameTimeLeniency;
-            _KickDelay = kickDelay;
+            this._AutoDetectClient = autoDetectClient;
+            this._ClientPath = clientPath;
+            this._OldClientResponse = oldClientResponse;
+            this._RequiredVersion = requiredVersion;
+            this._AllowRegular = allowRegular;
+            this._AllowUOTD = allowUOTD;
+            this._AllowGod = allowGod;
+            this._AgeLeniency = ageLeniency;
+            this._GameTimeLeniency = gameTimeLeniency;
+            this._KickDelay = kickDelay;
         }
 
         public override void Serialize(GenericWriter writer)
@@ -170,26 +170,26 @@ namespace CustomsFramework.Systems.ShardControl
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_AutoDetectClient);
-            writer.Write(_ClientPath);
-            writer.Write((byte)_OldClientResponse);
+            writer.Write(this._AutoDetectClient);
+            writer.Write(this._ClientPath);
+            writer.Write((byte)this._OldClientResponse);
 
-            writer.Write(_RequiredVersion.Major);
-            writer.Write(_RequiredVersion.Minor);
-            writer.Write(_RequiredVersion.Revision);
-            writer.Write(_RequiredVersion.Patch);
+            writer.Write(this._RequiredVersion.Major);
+            writer.Write(this._RequiredVersion.Minor);
+            writer.Write(this._RequiredVersion.Revision);
+            writer.Write(this._RequiredVersion.Patch);
 
-            writer.Write(_AllowRegular);
-            writer.Write(_AllowUOTD);
-            writer.Write(_AllowGod);
-            writer.Write(_AgeLeniency);
-            writer.Write(_GameTimeLeniency);
-            writer.Write(_KickDelay);
+            writer.Write(this._AllowRegular);
+            writer.Write(this._AllowUOTD);
+            writer.Write(this._AllowGod);
+            writer.Write(this._AgeLeniency);
+            writer.Write(this._GameTimeLeniency);
+            writer.Write(this._KickDelay);
         }
 
         public ClientSettings(GenericReader reader)
         {
-            Deserialize(reader);
+            this.Deserialize(reader);
         }
 
         protected sealed override void Deserialize(GenericReader reader)
@@ -200,18 +200,18 @@ namespace CustomsFramework.Systems.ShardControl
             {
                 case 0:
                     {
-                        _AutoDetectClient = reader.ReadBool();
-                        _ClientPath = reader.ReadString();
-                        _OldClientResponse = (OldClientResponse)reader.ReadByte();
+                        this._AutoDetectClient = reader.ReadBool();
+                        this._ClientPath = reader.ReadString();
+                        this._OldClientResponse = (OldClientResponse)reader.ReadByte();
 
-                        _RequiredVersion = new ClientVersion(reader.ReadInt(), reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
+                        this._RequiredVersion = new ClientVersion(reader.ReadInt(), reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
 
-                        _AllowRegular = reader.ReadBool();
-                        _AllowUOTD = reader.ReadBool();
-                        _AllowGod = reader.ReadBool();
-                        _AgeLeniency = reader.ReadTimeSpan();
-                        _GameTimeLeniency = reader.ReadTimeSpan();
-                        _KickDelay = reader.ReadTimeSpan();
+                        this._AllowRegular = reader.ReadBool();
+                        this._AllowUOTD = reader.ReadBool();
+                        this._AllowGod = reader.ReadBool();
+                        this._AgeLeniency = reader.ReadTimeSpan();
+                        this._GameTimeLeniency = reader.ReadTimeSpan();
+                        this._KickDelay = reader.ReadTimeSpan();
                         break;
                     }
             }

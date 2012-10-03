@@ -1,7 +1,6 @@
-﻿using System.IO;
-using System.Collections.Generic; 
+﻿using System.Collections.Generic;
+using System.IO;
 using Server;
-using Server.Gumps;
 using Server.Network;
 
 namespace CustomsFramework.GumpPlus
@@ -76,41 +75,41 @@ namespace CustomsFramework.GumpPlus
 
         protected virtual void RegisterInstance()
         {
-            if (_User == null || _User.Deleted)
+            if (this._User == null || this._User.Deleted)
                 return;
 
             if (_InternalInstances == null)
                 _InternalInstances = new Dictionary<int, GumpPlus>();
 
-            if (!_InternalInstances.ContainsKey(Serial))
-                _InternalInstances.Add(Serial, this);
+            if (!_InternalInstances.ContainsKey(this.Serial))
+                _InternalInstances.Add(this.Serial, this);
             else
-                _InternalInstances[Serial] = this;
+                _InternalInstances[this.Serial] = this;
 
             if (_Instances == null)
                 _Instances = new Dictionary<Mobile, List<GumpPlus>>();
 
-            if (!_Instances.ContainsKey(_User))
-                _Instances.Add(_User, new List<GumpPlus>());
-            else if (_Instances[_User] == null)
-                _Instances[_User] = new List<GumpPlus>();
+            if (!_Instances.ContainsKey(this._User))
+                _Instances.Add(this._User, new List<GumpPlus>());
+            else if (_Instances[this._User] == null)
+                _Instances[this._User] = new List<GumpPlus>();
 
-            if (!_Instances[_User].Contains(this))
-                _Instances[_User].Add(this);
+            if (!_Instances[this._User].Contains(this))
+                _Instances[this._User].Add(this);
         }
 
         protected virtual void UnregisterInstance()
         {
-            if (_InternalInstances != null && _InternalInstances.ContainsKey(Serial))
-                _InternalInstances.Remove(Serial);
+            if (_InternalInstances != null && _InternalInstances.ContainsKey(this.Serial))
+                _InternalInstances.Remove(this.Serial);
 
-            if (User == null)
+            if (this.User == null)
                 return;
 
-            if (_Instances == null || !_Instances.ContainsKey(User) || _Instances[User] == null || !_Instances[User].Contains(this))
+            if (_Instances == null || !_Instances.ContainsKey(this.User) || _Instances[this.User] == null || !_Instances[this.User].Contains(this))
                 return;
 
-            _Instances[User].Remove(this);
+            _Instances[this.User].Remove(this);
         }
     }
 }

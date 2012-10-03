@@ -1,259 +1,366 @@
 /***************************************************************************
- *                             Serialization.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: Serialization.cs 844 2012-03-07 13:47:33Z mark $
- *
- ***************************************************************************/
+*                             Serialization.cs
+*                            -------------------
+*   begin                : May 1, 2002
+*   copyright            : (C) The RunUO Software Team
+*   email                : info@runuo.com
+*
+*   $Id: Serialization.cs 844 2012-03-07 13:47:33Z mark $
+*
+***************************************************************************/
 
 /***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+*
+*   This program is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation; either version 2 of the License, or
+*   (at your option) any later version.
+*
+***************************************************************************/
 
 using System;
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Text;
 using System.Threading;
-using System.Net;
-using Server.Guilds;
 using CustomsFramework;
+using Server.Guilds;
 
 namespace Server
 {
-	public abstract class GenericReader
-	{
-		protected GenericReader() { }
+    public abstract class GenericReader
+    {
+        protected GenericReader()
+        {
+        }
 
-		public abstract string ReadString();
-		public abstract DateTime ReadDateTime();
-		public abstract DateTimeOffset ReadDateTimeOffset();
-		public abstract TimeSpan ReadTimeSpan();
-		public abstract DateTime ReadDeltaTime();
-		public abstract decimal ReadDecimal();
-		public abstract long ReadLong();
-		public abstract ulong ReadULong();
-		public abstract int ReadInt();
-		public abstract uint ReadUInt();
-		public abstract short ReadShort();
-		public abstract ushort ReadUShort();
-		public abstract double ReadDouble();
-		public abstract float ReadFloat();
-		public abstract char ReadChar();
-		public abstract byte ReadByte();
-		public abstract sbyte ReadSByte();
-		public abstract bool ReadBool();
-		public abstract int ReadEncodedInt();
-		public abstract IPAddress ReadIPAddress();
+        public abstract string ReadString();
 
-		public abstract Point3D ReadPoint3D();
-		public abstract Point2D ReadPoint2D();
-		public abstract Rectangle2D ReadRect2D();
-		public abstract Rectangle3D ReadRect3D();
-		public abstract Map ReadMap();
+        public abstract DateTime ReadDateTime();
 
-		public abstract Item ReadItem();
-		public abstract Mobile ReadMobile();
-		public abstract BaseGuild ReadGuild();
+        public abstract DateTimeOffset ReadDateTimeOffset();
+
+        public abstract TimeSpan ReadTimeSpan();
+
+        public abstract DateTime ReadDeltaTime();
+
+        public abstract decimal ReadDecimal();
+
+        public abstract long ReadLong();
+
+        public abstract ulong ReadULong();
+
+        public abstract int ReadInt();
+
+        public abstract uint ReadUInt();
+
+        public abstract short ReadShort();
+
+        public abstract ushort ReadUShort();
+
+        public abstract double ReadDouble();
+
+        public abstract float ReadFloat();
+
+        public abstract char ReadChar();
+
+        public abstract byte ReadByte();
+
+        public abstract sbyte ReadSByte();
+
+        public abstract bool ReadBool();
+
+        public abstract int ReadEncodedInt();
+
+        public abstract IPAddress ReadIPAddress();
+
+        public abstract Point3D ReadPoint3D();
+
+        public abstract Point2D ReadPoint2D();
+
+        public abstract Rectangle2D ReadRect2D();
+
+        public abstract Rectangle3D ReadRect3D();
+
+        public abstract Map ReadMap();
+
+        public abstract Item ReadItem();
+
+        public abstract Mobile ReadMobile();
+
+        public abstract BaseGuild ReadGuild();
 
         public abstract BaseCore ReadCore();
+
         public abstract BaseModule ReadModule();
+
         public abstract BaseService ReadService();
 
-		public abstract T ReadItem<T>() where T : Item;
-		public abstract T ReadMobile<T>() where T : Mobile;
-		public abstract T ReadGuild<T>() where T : BaseGuild;
+        public abstract T ReadItem<T>() where T : Item;
+
+        public abstract T ReadMobile<T>() where T : Mobile;
+
+        public abstract T ReadGuild<T>() where T : BaseGuild;
 
         public abstract T ReadCore<T>() where T : BaseCore;
+
         public abstract T ReadModule<T>() where T : BaseModule;
+
         public abstract T ReadService<T>() where T : BaseService;
 
-		public abstract ArrayList ReadItemList();
-		public abstract ArrayList ReadMobileList();
-		public abstract ArrayList ReadGuildList();
+        public abstract ArrayList ReadItemList();
+
+        public abstract ArrayList ReadMobileList();
+
+        public abstract ArrayList ReadGuildList();
 
         public abstract ArrayList ReadCoreList();
+
         public abstract ArrayList ReadModuleList();
+
         public abstract ArrayList ReadServiceList();
 
-		public abstract List<Item> ReadStrongItemList();
-		public abstract List<T> ReadStrongItemList<T>() where T : Item;
+        public abstract List<Item> ReadStrongItemList();
 
-		public abstract List<Mobile> ReadStrongMobileList();
-		public abstract List<T> ReadStrongMobileList<T>() where T : Mobile;
+        public abstract List<T> ReadStrongItemList<T>() where T : Item;
 
-		public abstract List<BaseGuild> ReadStrongGuildList();
-		public abstract List<T> ReadStrongGuildList<T>() where T : BaseGuild;
+        public abstract List<Mobile> ReadStrongMobileList();
+
+        public abstract List<T> ReadStrongMobileList<T>() where T : Mobile;
+
+        public abstract List<BaseGuild> ReadStrongGuildList();
+
+        public abstract List<T> ReadStrongGuildList<T>() where T : BaseGuild;
 
         public abstract List<BaseCore> ReadStrongCoreList();
+
         public abstract List<T> ReadStrongCoreList<T>() where T : BaseCore;
 
         public abstract List<BaseModule> ReadStrongModuleList();
+
         public abstract List<T> ReadStrongModuleList<T>() where T : BaseModule;
 
         public abstract List<BaseService> ReadStrongServiceList();
+
         public abstract List<T> ReadStrongServiceList<T>() where T : BaseService;
 
-		public abstract HashSet<Item> ReadItemSet();
-		public abstract HashSet<T> ReadItemSet<T>() where T : Item;
+        public abstract HashSet<Item> ReadItemSet();
 
-		public abstract HashSet<Mobile> ReadMobileSet();
-		public abstract HashSet<T> ReadMobileSet<T>() where T : Mobile;
+        public abstract HashSet<T> ReadItemSet<T>() where T : Item;
 
-		public abstract HashSet<BaseGuild> ReadGuildSet();
-		public abstract HashSet<T> ReadGuildSet<T>() where T : BaseGuild;
+        public abstract HashSet<Mobile> ReadMobileSet();
+
+        public abstract HashSet<T> ReadMobileSet<T>() where T : Mobile;
+
+        public abstract HashSet<BaseGuild> ReadGuildSet();
+
+        public abstract HashSet<T> ReadGuildSet<T>() where T : BaseGuild;
 
         public abstract HashSet<BaseCore> ReadCoreSet();
+
         public abstract HashSet<T> ReadCoreSet<T>() where T : BaseCore;
 
         public abstract HashSet<BaseModule> ReadModuleSet();
+
         public abstract HashSet<T> ReadModuleSet<T>() where T : BaseModule;
 
         public abstract HashSet<BaseService> ReadServiceSet();
+
         public abstract HashSet<T> ReadServiceSet<T>() where T : BaseService;
 
-		public abstract Race ReadRace();
+        public abstract Race ReadRace();
 
-		public abstract bool End();
-	}
+        public abstract bool End();
+    }
 
-	public abstract class GenericWriter
-	{
-		protected GenericWriter() { }
+    public abstract class GenericWriter
+    {
+        protected GenericWriter()
+        {
+        }
 
-		public abstract void Close();
-		public abstract long Position { get; }
+        public abstract void Close();
 
-		public abstract void Write( string value );
-		public abstract void Write( DateTime value );
-		public abstract void Write( DateTimeOffset value );
-		public abstract void Write( TimeSpan value );
-		public abstract void Write( decimal value );
-		public abstract void Write( long value );
-		public abstract void Write( ulong value );
-		public abstract void Write( int value );
-		public abstract void Write( uint value );
-		public abstract void Write( short value );
-		public abstract void Write( ushort value );
-		public abstract void Write( double value );
-		public abstract void Write( float value );
-		public abstract void Write( char value );
-		public abstract void Write( byte value );
-		public abstract void Write( sbyte value );
-		public abstract void Write( bool value );
-		public abstract void WriteEncodedInt( int value );
-		public abstract void Write( IPAddress value );
+        public abstract long Position { get; }
 
-		public abstract void WriteDeltaTime( DateTime value );
+        public abstract void Write(string value);
 
-		public abstract void Write( Point3D value );
-		public abstract void Write( Point2D value );
-		public abstract void Write( Rectangle2D value );
-		public abstract void Write( Rectangle3D value );
-		public abstract void Write( Map value );
+        public abstract void Write(DateTime value);
 
-		public abstract void Write( Item value );
-		public abstract void Write( Mobile value );
-		public abstract void Write( BaseGuild value );
+        public abstract void Write(DateTimeOffset value);
+
+        public abstract void Write(TimeSpan value);
+
+        public abstract void Write(decimal value);
+
+        public abstract void Write(long value);
+
+        public abstract void Write(ulong value);
+
+        public abstract void Write(int value);
+
+        public abstract void Write(uint value);
+
+        public abstract void Write(short value);
+
+        public abstract void Write(ushort value);
+
+        public abstract void Write(double value);
+
+        public abstract void Write(float value);
+
+        public abstract void Write(char value);
+
+        public abstract void Write(byte value);
+
+        public abstract void Write(sbyte value);
+
+        public abstract void Write(bool value);
+
+        public abstract void WriteEncodedInt(int value);
+
+        public abstract void Write(IPAddress value);
+
+        public abstract void WriteDeltaTime(DateTime value);
+
+        public abstract void Write(Point3D value);
+
+        public abstract void Write(Point2D value);
+
+        public abstract void Write(Rectangle2D value);
+
+        public abstract void Write(Rectangle3D value);
+
+        public abstract void Write(Map value);
+
+        public abstract void Write(Item value);
+
+        public abstract void Write(Mobile value);
+
+        public abstract void Write(BaseGuild value);
 
         public abstract void Write(BaseCore value);
+
         public abstract void Write(BaseModule value);
+
         public abstract void Write(BaseService value);
 
-		public abstract void WriteItem<T>( T value ) where T : Item;
-		public abstract void WriteMobile<T>( T value ) where T : Mobile;
-		public abstract void WriteGuild<T>( T value ) where T : BaseGuild;
+        public abstract void WriteItem<T>(T value) where T : Item;
+
+        public abstract void WriteMobile<T>(T value) where T : Mobile;
+
+        public abstract void WriteGuild<T>(T value) where T : BaseGuild;
 
         public abstract void WriteCore<T>(T value) where T : BaseCore;
+
         public abstract void WriteModule<T>(T value) where T : BaseModule;
+
         public abstract void WriteService<T>(T value) where T : BaseService;
 
-		public abstract void Write( Race value );
+        public abstract void Write(Race value);
 
-		public abstract void WriteItemList( ArrayList list );
-		public abstract void WriteItemList( ArrayList list, bool tidy );
+        public abstract void WriteItemList(ArrayList list);
 
-		public abstract void WriteMobileList( ArrayList list );
-		public abstract void WriteMobileList( ArrayList list, bool tidy );
+        public abstract void WriteItemList(ArrayList list, bool tidy);
 
-		public abstract void WriteGuildList( ArrayList list );
-		public abstract void WriteGuildList( ArrayList list, bool tidy );
+        public abstract void WriteMobileList(ArrayList list);
+
+        public abstract void WriteMobileList(ArrayList list, bool tidy);
+
+        public abstract void WriteGuildList(ArrayList list);
+
+        public abstract void WriteGuildList(ArrayList list, bool tidy);
 
         public abstract void WriteCoreList(ArrayList list);
+
         public abstract void WriteCoreList(ArrayList list, bool tidy);
 
         public abstract void WriteModuleList(ArrayList list);
+
         public abstract void WriteModuleList(ArrayList list, bool tidy);
 
         public abstract void WriteServiceList(ArrayList list);
 
-		public abstract void Write( List<Item> list );
-		public abstract void Write( List<Item> list, bool tidy );
+        public abstract void Write(List<Item> list);
 
-		public abstract void WriteItemList<T>( List<T> list ) where T : Item;
-		public abstract void WriteItemList<T>( List<T> list, bool tidy ) where T : Item;
+        public abstract void Write(List<Item> list, bool tidy);
 
-		public abstract void Write( HashSet<Item> list );
-		public abstract void Write( HashSet<Item> list, bool tidy );
+        public abstract void WriteItemList<T>(List<T> list) where T : Item;
 
-		public abstract void WriteItemSet<T>( HashSet<T> set ) where T : Item;
-		public abstract void WriteItemSet<T>( HashSet<T> set, bool tidy ) where T : Item;
+        public abstract void WriteItemList<T>(List<T> list, bool tidy) where T : Item;
 
-		public abstract void Write( List<Mobile> list );
-		public abstract void Write( List<Mobile> list, bool tidy );
+        public abstract void Write(HashSet<Item> list);
 
-		public abstract void WriteMobileList<T>( List<T> list ) where T : Mobile;
-		public abstract void WriteMobileList<T>( List<T> list, bool tidy ) where T : Mobile;
+        public abstract void Write(HashSet<Item> list, bool tidy);
 
-		public abstract void Write( HashSet<Mobile> list );
-		public abstract void Write( HashSet<Mobile> list, bool tidy );
+        public abstract void WriteItemSet<T>(HashSet<T> set) where T : Item;
 
-		public abstract void WriteMobileSet<T>( HashSet<T> set ) where T : Mobile;
-		public abstract void WriteMobileSet<T>( HashSet<T> set, bool tidy ) where T : Mobile;
+        public abstract void WriteItemSet<T>(HashSet<T> set, bool tidy) where T : Item;
 
-		public abstract void Write( List<BaseGuild> list );
-		public abstract void Write( List<BaseGuild> list, bool tidy );
+        public abstract void Write(List<Mobile> list);
 
-		public abstract void WriteGuildList<T>( List<T> list ) where T : BaseGuild;
-		public abstract void WriteGuildList<T>( List<T> list, bool tidy ) where T : BaseGuild;
+        public abstract void Write(List<Mobile> list, bool tidy);
 
-		public abstract void Write( HashSet<BaseGuild> list );
-		public abstract void Write( HashSet<BaseGuild> list, bool tidy );
+        public abstract void WriteMobileList<T>(List<T> list) where T : Mobile;
 
-		public abstract void WriteGuildSet<T>( HashSet<T> set ) where T : BaseGuild;
-		public abstract void WriteGuildSet<T>( HashSet<T> set, bool tidy ) where T : BaseGuild;
+        public abstract void WriteMobileList<T>(List<T> list, bool tidy) where T : Mobile;
+
+        public abstract void Write(HashSet<Mobile> list);
+
+        public abstract void Write(HashSet<Mobile> list, bool tidy);
+
+        public abstract void WriteMobileSet<T>(HashSet<T> set) where T : Mobile;
+
+        public abstract void WriteMobileSet<T>(HashSet<T> set, bool tidy) where T : Mobile;
+
+        public abstract void Write(List<BaseGuild> list);
+
+        public abstract void Write(List<BaseGuild> list, bool tidy);
+
+        public abstract void WriteGuildList<T>(List<T> list) where T : BaseGuild;
+
+        public abstract void WriteGuildList<T>(List<T> list, bool tidy) where T : BaseGuild;
+
+        public abstract void Write(HashSet<BaseGuild> list);
+
+        public abstract void Write(HashSet<BaseGuild> list, bool tidy);
+
+        public abstract void WriteGuildSet<T>(HashSet<T> set) where T : BaseGuild;
+
+        public abstract void WriteGuildSet<T>(HashSet<T> set, bool tidy) where T : BaseGuild;
 
         public abstract void Write(List<BaseCore> list);
+
         public abstract void Write(List<BaseCore> list, bool tidy);
 
         public abstract void WriteCoreList<T>(List<T> list) where T : BaseCore;
+
         public abstract void WriteCoreList<T>(List<T> list, bool tidy) where T : BaseCore;
 
         public abstract void Write(HashSet<BaseCore> set);
+
         public abstract void Write(HashSet<BaseCore> set, bool tidy);
 
         public abstract void WriteCoreSet<T>(HashSet<T> set) where T : BaseCore;
+
         public abstract void WriteCoreSet<T>(HashSet<T> set, bool tidy) where T : BaseCore;
 
         public abstract void Write(List<BaseModule> list);
+
         public abstract void Write(List<BaseModule> list, bool tidy);
 
         public abstract void WriteModuleList<T>(List<T> list) where T : BaseModule;
+
         public abstract void WriteModuleList<T>(List<T> list, bool tidy) where T : BaseModule;
 
         public abstract void Write(HashSet<BaseModule> set);
+
         public abstract void Write(HashSet<BaseModule> set, bool tidy);
 
         public abstract void WriteModuleSet<T>(HashSet<T> set) where T : BaseModule;
+
         public abstract void WriteModuleSet<T>(HashSet<T> set, bool tidy) where T : BaseModule;
 
         public abstract void Write(List<BaseService> list);
@@ -263,553 +370,562 @@ namespace Server
         public abstract void Write(HashSet<BaseService> set);
 
         public abstract void WriteServiceSet<T>(HashSet<T> set) where T : BaseService;
-		//Stupid compiler won't notice there 'where' to differentiate the generic methods.
-	}
-
-	public class BinaryFileWriter : GenericWriter
-	{
-		private bool PrefixStrings;
-		private Stream m_File;
-
-		protected virtual int BufferSize
-		{
-			get
-			{
-				return 64 * 1024;
-			}
-		}
-
-		private byte[] m_Buffer;
-
-		private int m_Index;
-
-		private Encoding m_Encoding;
-
-		public BinaryFileWriter( Stream strm, bool prefixStr )
-		{
-			PrefixStrings = prefixStr;
-			m_Encoding = Utility.UTF8;
-			m_Buffer = new byte[BufferSize];
-			m_File = strm;
-		}
-
-		public BinaryFileWriter( string filename, bool prefixStr )
-		{
-			PrefixStrings = prefixStr;
-			m_Buffer = new byte[BufferSize];
-			m_File = new FileStream( filename, FileMode.Create, FileAccess.Write, FileShare.None );
-			m_Encoding = Utility.UTF8WithEncoding;
-		}
-
-		public void Flush()
-		{
-			if( m_Index > 0 )
-			{
-				m_Position += m_Index;
-
-				m_File.Write( m_Buffer, 0, m_Index );
-				m_Index = 0;
-			}
-		}
-
-		private long m_Position;
-
-		public override long Position
-		{
-			get
-			{
-				return m_Position + m_Index;
-			}
-		}
-
-		public Stream UnderlyingStream
-		{
-			get
-			{
-				if( m_Index > 0 )
-					Flush();
-
-				return m_File;
-			}
-		}
-
-		public override void Close()
-		{
-			if( m_Index > 0 )
-				Flush();
-
-			m_File.Close();
-		}
-
-		public override void WriteEncodedInt( int value )
-		{
-			uint v = (uint)value;
-
-			while( v >= 0x80 )
-			{
-				if( (m_Index + 1) > m_Buffer.Length )
-					Flush();
-
-				m_Buffer[m_Index++] = (byte)(v | 0x80);
-				v >>= 7;
-			}
-
-			if( (m_Index + 1) > m_Buffer.Length )
-				Flush();
-
-			m_Buffer[m_Index++] = (byte)v;
-		}
-
-		private byte[] m_CharacterBuffer;
-		private int m_MaxBufferChars;
-		private const int LargeByteBufferSize = 256;
-
-		internal void InternalWriteString( string value )
-		{
-			int length = m_Encoding.GetByteCount( value );
-
-			WriteEncodedInt( length );
-
-			if( m_CharacterBuffer == null )
-			{
-				m_CharacterBuffer = new byte[LargeByteBufferSize];
-				m_MaxBufferChars = LargeByteBufferSize / m_Encoding.GetMaxByteCount( 1 );
-			}
-
-			if( length > LargeByteBufferSize )
-			{
-				int current = 0;
-				int charsLeft = value.Length;
-
-				while( charsLeft > 0 )
-				{
-					int charCount = (charsLeft > m_MaxBufferChars) ? m_MaxBufferChars : charsLeft;
-					int byteLength = m_Encoding.GetBytes( value, current, charCount, m_CharacterBuffer, 0 );
-
-					if( (m_Index + byteLength) > m_Buffer.Length )
-						Flush();
-
-					Buffer.BlockCopy( m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength );
-					m_Index += byteLength;
-
-					current += charCount;
-					charsLeft -= charCount;
-				}
-			}
-			else
-			{
-				int byteLength = m_Encoding.GetBytes( value, 0, value.Length, m_CharacterBuffer, 0 );
-
-				if( (m_Index + byteLength) > m_Buffer.Length )
-					Flush();
-
-				Buffer.BlockCopy( m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength );
-				m_Index += byteLength;
-			}
-		}
-
-		public override void Write( string value )
-		{
-			if( PrefixStrings )
-			{
-				if( value == null )
-				{
-					if( (m_Index + 1) > m_Buffer.Length )
-						Flush();
-
-					m_Buffer[m_Index++] = 0;
-				}
-				else
-				{
-					if( (m_Index + 1) > m_Buffer.Length )
-						Flush();
-
-					m_Buffer[m_Index++] = 1;
-
-					InternalWriteString( value );
-				}
-			}
-			else
-			{
-				InternalWriteString( value );
-			}
-		}
-
-		public override void Write( DateTime value )
-		{
-			Write( value.Ticks );
-		}
-
-		public override void Write( DateTimeOffset value )
-		{
-			Write( value.Ticks );
-			Write( value.Offset.Ticks );
-		}
-
-		public override void WriteDeltaTime( DateTime value )
-		{
-			long ticks = value.Ticks;
-			long now = DateTime.Now.Ticks;
-
-			TimeSpan d;
-
-			try { d = new TimeSpan( ticks-now ); }
-			catch { if( ticks < now ) d = TimeSpan.MaxValue; else d = TimeSpan.MaxValue; }
-
-			Write( d );
-		}
-
-		public override void Write( IPAddress value )
-		{
-			Write( Utility.GetLongAddressValue( value ) );
-		}
-
-		public override void Write( TimeSpan value )
-		{
-			Write( value.Ticks );
-		}
-
-		public override void Write( decimal value )
-		{
-			int[] bits = Decimal.GetBits( value );
-
-			for( int i = 0; i < bits.Length; ++i )
-				Write( bits[i] );
-		}
-
-		public override void Write( long value )
-		{
-			if( (m_Index + 8) > m_Buffer.Length )
-				Flush();
-
-			m_Buffer[m_Index] = (byte)value;
-			m_Buffer[m_Index + 1] = (byte)(value >> 8);
-			m_Buffer[m_Index + 2] = (byte)(value >> 16);
-			m_Buffer[m_Index + 3] = (byte)(value >> 24);
-			m_Buffer[m_Index + 4] = (byte)(value >> 32);
-			m_Buffer[m_Index + 5] = (byte)(value >> 40);
-			m_Buffer[m_Index + 6] = (byte)(value >> 48);
-			m_Buffer[m_Index + 7] = (byte)(value >> 56);
-			m_Index += 8;
-		}
-
-		public override void Write( ulong value )
-		{
-			if( (m_Index + 8) > m_Buffer.Length )
-				Flush();
-
-			m_Buffer[m_Index] = (byte)value;
-			m_Buffer[m_Index + 1] = (byte)(value >> 8);
-			m_Buffer[m_Index + 2] = (byte)(value >> 16);
-			m_Buffer[m_Index + 3] = (byte)(value >> 24);
-			m_Buffer[m_Index + 4] = (byte)(value >> 32);
-			m_Buffer[m_Index + 5] = (byte)(value >> 40);
-			m_Buffer[m_Index + 6] = (byte)(value >> 48);
-			m_Buffer[m_Index + 7] = (byte)(value >> 56);
-			m_Index += 8;
-		}
-
-		public override void Write( int value )
-		{
-			if( (m_Index + 4) > m_Buffer.Length )
-				Flush();
-
-			m_Buffer[m_Index] = (byte)value;
-			m_Buffer[m_Index + 1] = (byte)(value >> 8);
-			m_Buffer[m_Index + 2] = (byte)(value >> 16);
-			m_Buffer[m_Index + 3] = (byte)(value >> 24);
-			m_Index += 4;
-		}
-
-		public override void Write( uint value )
-		{
-			if( (m_Index + 4) > m_Buffer.Length )
-				Flush();
-
-			m_Buffer[m_Index] = (byte)value;
-			m_Buffer[m_Index + 1] = (byte)(value >> 8);
-			m_Buffer[m_Index + 2] = (byte)(value >> 16);
-			m_Buffer[m_Index + 3] = (byte)(value >> 24);
-			m_Index += 4;
-		}
-
-		public override void Write( short value )
-		{
-			if( (m_Index + 2) > m_Buffer.Length )
-				Flush();
-
-			m_Buffer[m_Index] = (byte)value;
-			m_Buffer[m_Index + 1] = (byte)(value >> 8);
-			m_Index += 2;
-		}
-
-		public override void Write( ushort value )
-		{
-			if( (m_Index + 2) > m_Buffer.Length )
-				Flush();
-
-			m_Buffer[m_Index] = (byte)value;
-			m_Buffer[m_Index + 1] = (byte)(value >> 8);
-			m_Index += 2;
-		}
-
-		public unsafe override void Write( double value )
-		{
-			if( (m_Index + 8) > m_Buffer.Length )
-				Flush();
-
-			fixed( byte* pBuffer = m_Buffer )
-				*((double*)(pBuffer + m_Index)) = value;
-
-			m_Index += 8;
-		}
-
-		public unsafe override void Write( float value )
-		{
-			if( (m_Index + 4) > m_Buffer.Length )
-				Flush();
-
-			fixed( byte* pBuffer = m_Buffer )
-				*((float*)(pBuffer + m_Index)) = value;
-
-			m_Index += 4;
-		}
-
-		private char[] m_SingleCharBuffer = new char[1];
-
-		public override void Write( char value )
-		{
-			if( (m_Index + 8) > m_Buffer.Length )
-				Flush();
-
-			m_SingleCharBuffer[0] = value;
-
-			int byteCount = m_Encoding.GetBytes( m_SingleCharBuffer, 0, 1, m_Buffer, m_Index );
-			m_Index += byteCount;
-		}
-
-		public override void Write( byte value )
-		{
-			if( (m_Index + 1) > m_Buffer.Length )
-				Flush();
-
-			m_Buffer[m_Index++] = value;
-		}
-
-		public override void Write( sbyte value )
-		{
-			if( (m_Index + 1) > m_Buffer.Length )
-				Flush();
-
-			m_Buffer[m_Index++] = (byte)value;
-		}
-
-		public override void Write( bool value )
-		{
-			if( (m_Index + 1) > m_Buffer.Length )
-				Flush();
-
-			m_Buffer[m_Index++] = (byte)(value ? 1 : 0);
-		}
-
-		public override void Write( Point3D value )
-		{
-			Write( value.m_X );
-			Write( value.m_Y );
-			Write( value.m_Z );
-		}
-
-		public override void Write( Point2D value )
-		{
-			Write( value.m_X );
-			Write( value.m_Y );
-		}
-
-		public override void Write( Rectangle2D value )
-		{
-			Write( value.Start );
-			Write( value.End );
-		}
-
-		public override void Write( Rectangle3D value )
-		{
-			Write( value.Start );
-			Write( value.End );
-		}
-
-		public override void Write( Map value )
-		{
-			if( value != null )
-				Write( (byte)value.MapIndex );
-			else
-				Write( (byte)0xFF );
-		}
-
-		public override void Write( Race value )
-		{
-			if( value != null )
-				Write( (byte)value.RaceIndex );
-			else
-				Write( (byte)0xFF );
-		}
-
-		public override void Write( Item value )
-		{
-			if( value == null || value.Deleted )
-				Write( Serial.MinusOne );
-			else
-				Write( value.Serial );
-		}
-
-		public override void Write( Mobile value )
-		{
-			if( value == null || value.Deleted )
-				Write( Serial.MinusOne );
-			else
-				Write( value.Serial );
-		}
-
-		public override void Write( BaseGuild value )
-		{
-			if( value == null )
-				Write( 0 );
-			else
-				Write( value.Id );
-		}
+        //Stupid compiler won't notice there 'where' to differentiate the generic methods.
+    }
+
+    public class BinaryFileWriter : GenericWriter
+    {
+        private readonly bool PrefixStrings;
+        private readonly Stream m_File;
+
+        protected virtual int BufferSize
+        {
+            get
+            {
+                return 64 * 1024;
+            }
+        }
+
+        private readonly byte[] m_Buffer;
+
+        private int m_Index;
+
+        private readonly Encoding m_Encoding;
+
+        public BinaryFileWriter(Stream strm, bool prefixStr)
+        {
+            this.PrefixStrings = prefixStr;
+            this.m_Encoding = Utility.UTF8;
+            this.m_Buffer = new byte[this.BufferSize];
+            this.m_File = strm;
+        }
+
+        public BinaryFileWriter(string filename, bool prefixStr)
+        {
+            this.PrefixStrings = prefixStr;
+            this.m_Buffer = new byte[this.BufferSize];
+            this.m_File = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+            this.m_Encoding = Utility.UTF8WithEncoding;
+        }
+
+        public void Flush()
+        {
+            if (this.m_Index > 0)
+            {
+                this.m_Position += this.m_Index;
+
+                this.m_File.Write(this.m_Buffer, 0, this.m_Index);
+                this.m_Index = 0;
+            }
+        }
+
+        private long m_Position;
+
+        public override long Position
+        {
+            get
+            {
+                return this.m_Position + this.m_Index;
+            }
+        }
+
+        public Stream UnderlyingStream
+        {
+            get
+            {
+                if (this.m_Index > 0)
+                    this.Flush();
+
+                return this.m_File;
+            }
+        }
+
+        public override void Close()
+        {
+            if (this.m_Index > 0)
+                this.Flush();
+
+            this.m_File.Close();
+        }
+
+        public override void WriteEncodedInt(int value)
+        {
+            uint v = (uint)value;
+
+            while (v >= 0x80)
+            {
+                if ((this.m_Index + 1) > this.m_Buffer.Length)
+                    this.Flush();
+
+                this.m_Buffer[this.m_Index++] = (byte)(v | 0x80);
+                v >>= 7;
+            }
+
+            if ((this.m_Index + 1) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_Buffer[this.m_Index++] = (byte)v;
+        }
+
+        private byte[] m_CharacterBuffer;
+        private int m_MaxBufferChars;
+        private const int LargeByteBufferSize = 256;
+
+        internal void InternalWriteString(string value)
+        {
+            int length = this.m_Encoding.GetByteCount(value);
+
+            this.WriteEncodedInt(length);
+
+            if (this.m_CharacterBuffer == null)
+            {
+                this.m_CharacterBuffer = new byte[LargeByteBufferSize];
+                this.m_MaxBufferChars = LargeByteBufferSize / this.m_Encoding.GetMaxByteCount(1);
+            }
+
+            if (length > LargeByteBufferSize)
+            {
+                int current = 0;
+                int charsLeft = value.Length;
+
+                while (charsLeft > 0)
+                {
+                    int charCount = (charsLeft > this.m_MaxBufferChars) ? this.m_MaxBufferChars : charsLeft;
+                    int byteLength = this.m_Encoding.GetBytes(value, current, charCount, this.m_CharacterBuffer, 0);
+
+                    if ((this.m_Index + byteLength) > this.m_Buffer.Length)
+                        this.Flush();
+
+                    Buffer.BlockCopy(this.m_CharacterBuffer, 0, this.m_Buffer, this.m_Index, byteLength);
+                    this.m_Index += byteLength;
+
+                    current += charCount;
+                    charsLeft -= charCount;
+                }
+            }
+            else
+            {
+                int byteLength = this.m_Encoding.GetBytes(value, 0, value.Length, this.m_CharacterBuffer, 0);
+
+                if ((this.m_Index + byteLength) > this.m_Buffer.Length)
+                    this.Flush();
+
+                Buffer.BlockCopy(this.m_CharacterBuffer, 0, this.m_Buffer, this.m_Index, byteLength);
+                this.m_Index += byteLength;
+            }
+        }
+
+        public override void Write(string value)
+        {
+            if (this.PrefixStrings)
+            {
+                if (value == null)
+                {
+                    if ((this.m_Index + 1) > this.m_Buffer.Length)
+                        this.Flush();
+
+                    this.m_Buffer[this.m_Index++] = 0;
+                }
+                else
+                {
+                    if ((this.m_Index + 1) > this.m_Buffer.Length)
+                        this.Flush();
+
+                    this.m_Buffer[this.m_Index++] = 1;
+
+                    this.InternalWriteString(value);
+                }
+            }
+            else
+            {
+                this.InternalWriteString(value);
+            }
+        }
+
+        public override void Write(DateTime value)
+        {
+            this.Write(value.Ticks);
+        }
+
+        public override void Write(DateTimeOffset value)
+        {
+            this.Write(value.Ticks);
+            this.Write(value.Offset.Ticks);
+        }
+
+        public override void WriteDeltaTime(DateTime value)
+        {
+            long ticks = value.Ticks;
+            long now = DateTime.Now.Ticks;
+
+            TimeSpan d;
+
+            try
+            {
+                d = new TimeSpan(ticks - now);
+            }
+            catch
+            {
+                d = TimeSpan.MaxValue;
+            }
+
+            this.Write(d);
+        }
+
+        public override void Write(IPAddress value)
+        {
+            this.Write(Utility.GetLongAddressValue(value));
+        }
+
+        public override void Write(TimeSpan value)
+        {
+            this.Write(value.Ticks);
+        }
+
+        public override void Write(decimal value)
+        {
+            int[] bits = Decimal.GetBits(value);
+
+            for (int i = 0; i < bits.Length; ++i)
+                this.Write(bits[i]);
+        }
+
+        public override void Write(long value)
+        {
+            if ((this.m_Index + 8) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_Buffer[this.m_Index] = (byte)value;
+            this.m_Buffer[this.m_Index + 1] = (byte)(value >> 8);
+            this.m_Buffer[this.m_Index + 2] = (byte)(value >> 16);
+            this.m_Buffer[this.m_Index + 3] = (byte)(value >> 24);
+            this.m_Buffer[this.m_Index + 4] = (byte)(value >> 32);
+            this.m_Buffer[this.m_Index + 5] = (byte)(value >> 40);
+            this.m_Buffer[this.m_Index + 6] = (byte)(value >> 48);
+            this.m_Buffer[this.m_Index + 7] = (byte)(value >> 56);
+            this.m_Index += 8;
+        }
+
+        public override void Write(ulong value)
+        {
+            if ((this.m_Index + 8) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_Buffer[this.m_Index] = (byte)value;
+            this.m_Buffer[this.m_Index + 1] = (byte)(value >> 8);
+            this.m_Buffer[this.m_Index + 2] = (byte)(value >> 16);
+            this.m_Buffer[this.m_Index + 3] = (byte)(value >> 24);
+            this.m_Buffer[this.m_Index + 4] = (byte)(value >> 32);
+            this.m_Buffer[this.m_Index + 5] = (byte)(value >> 40);
+            this.m_Buffer[this.m_Index + 6] = (byte)(value >> 48);
+            this.m_Buffer[this.m_Index + 7] = (byte)(value >> 56);
+            this.m_Index += 8;
+        }
+
+        public override void Write(int value)
+        {
+            if ((this.m_Index + 4) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_Buffer[this.m_Index] = (byte)value;
+            this.m_Buffer[this.m_Index + 1] = (byte)(value >> 8);
+            this.m_Buffer[this.m_Index + 2] = (byte)(value >> 16);
+            this.m_Buffer[this.m_Index + 3] = (byte)(value >> 24);
+            this.m_Index += 4;
+        }
+
+        public override void Write(uint value)
+        {
+            if ((this.m_Index + 4) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_Buffer[this.m_Index] = (byte)value;
+            this.m_Buffer[this.m_Index + 1] = (byte)(value >> 8);
+            this.m_Buffer[this.m_Index + 2] = (byte)(value >> 16);
+            this.m_Buffer[this.m_Index + 3] = (byte)(value >> 24);
+            this.m_Index += 4;
+        }
+
+        public override void Write(short value)
+        {
+            if ((this.m_Index + 2) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_Buffer[this.m_Index] = (byte)value;
+            this.m_Buffer[this.m_Index + 1] = (byte)(value >> 8);
+            this.m_Index += 2;
+        }
+
+        public override void Write(ushort value)
+        {
+            if ((this.m_Index + 2) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_Buffer[this.m_Index] = (byte)value;
+            this.m_Buffer[this.m_Index + 1] = (byte)(value >> 8);
+            this.m_Index += 2;
+        }
+
+        public unsafe override void Write(double value)
+        {
+            if ((this.m_Index + 8) > this.m_Buffer.Length)
+                this.Flush();
+
+            fixed (byte* pBuffer = this.m_Buffer)
+                *((double*)(pBuffer + this.m_Index)) = value;
+
+            this.m_Index += 8;
+        }
+
+        public unsafe override void Write(float value)
+        {
+            if ((this.m_Index + 4) > this.m_Buffer.Length)
+                this.Flush();
+
+            fixed (byte* pBuffer = this.m_Buffer)
+                *((float*)(pBuffer + this.m_Index)) = value;
+
+            this.m_Index += 4;
+        }
+
+        private readonly char[] m_SingleCharBuffer = new char[1];
+
+        public override void Write(char value)
+        {
+            if ((this.m_Index + 8) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_SingleCharBuffer[0] = value;
+
+            int byteCount = this.m_Encoding.GetBytes(this.m_SingleCharBuffer, 0, 1, this.m_Buffer, this.m_Index);
+            this.m_Index += byteCount;
+        }
+
+        public override void Write(byte value)
+        {
+            if ((this.m_Index + 1) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_Buffer[this.m_Index++] = value;
+        }
+
+        public override void Write(sbyte value)
+        {
+            if ((this.m_Index + 1) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_Buffer[this.m_Index++] = (byte)value;
+        }
+
+        public override void Write(bool value)
+        {
+            if ((this.m_Index + 1) > this.m_Buffer.Length)
+                this.Flush();
+
+            this.m_Buffer[this.m_Index++] = (byte)(value ? 1 : 0);
+        }
+
+        public override void Write(Point3D value)
+        {
+            this.Write(value.m_X);
+            this.Write(value.m_Y);
+            this.Write(value.m_Z);
+        }
+
+        public override void Write(Point2D value)
+        {
+            this.Write(value.m_X);
+            this.Write(value.m_Y);
+        }
+
+        public override void Write(Rectangle2D value)
+        {
+            this.Write(value.Start);
+            this.Write(value.End);
+        }
+
+        public override void Write(Rectangle3D value)
+        {
+            this.Write(value.Start);
+            this.Write(value.End);
+        }
+
+        public override void Write(Map value)
+        {
+            if (value != null)
+                this.Write((byte)value.MapIndex);
+            else
+                this.Write((byte)0xFF);
+        }
+
+        public override void Write(Race value)
+        {
+            if (value != null)
+                this.Write((byte)value.RaceIndex);
+            else
+                this.Write((byte)0xFF);
+        }
+
+        public override void Write(Item value)
+        {
+            if (value == null || value.Deleted)
+                this.Write(Serial.MinusOne);
+            else
+                this.Write(value.Serial);
+        }
+
+        public override void Write(Mobile value)
+        {
+            if (value == null || value.Deleted)
+                this.Write(Serial.MinusOne);
+            else
+                this.Write(value.Serial);
+        }
+
+        public override void Write(BaseGuild value)
+        {
+            if (value == null)
+                this.Write(0);
+            else
+                this.Write(value.Id);
+        }
 
         public override void Write(BaseCore value)
         {
             if (value == null || value.Deleted)
-                Write(CustomSerial.MinusOne);
+                this.Write(CustomSerial.MinusOne);
             else
-                Write(value.Serial);
+                this.Write(value.Serial);
         }
 
         public override void Write(BaseModule value)
         {
             if (value == null || value.Deleted)
-                Write(CustomSerial.MinusOne);
+                this.Write(CustomSerial.MinusOne);
             else
-                Write(value.Serial);
+                this.Write(value.Serial);
         }
 
         public override void Write(BaseService value)
         {
             if (value == null)
-                Write(CustomSerial.MinusOne);
+                this.Write(CustomSerial.MinusOne);
             else
-                Write(value.Serial);
+                this.Write(value.Serial);
         }
 
-		public override void WriteItem<T>( T value )
-		{
-			Write( value );
-		}
+        public override void WriteItem<T>(T value)
+        {
+            this.Write(value);
+        }
 
-		public override void WriteMobile<T>( T value )
-		{
-			Write( value );
-		}
+        public override void WriteMobile<T>(T value)
+        {
+            this.Write(value);
+        }
 
-		public override void WriteGuild<T>( T value )
-		{
-			Write( value );
-		}
+        public override void WriteGuild<T>(T value)
+        {
+            this.Write(value);
+        }
 
         public override void WriteCore<T>(T value)
         {
-            Write(value);
+            this.Write(value);
         }
 
         public override void WriteModule<T>(T value)
         {
-            Write(value);
+            this.Write(value);
         }
 
         public override void WriteService<T>(T value)
         {
-            Write(value);
+            this.Write(value);
         }
 
-		public override void WriteMobileList( ArrayList list )
-		{
-			WriteMobileList( list, false );
-		}
-		public override void WriteMobileList( ArrayList list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( ((Mobile)list[i]).Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+        public override void WriteMobileList(ArrayList list)
+        {
+            this.WriteMobileList(list, false);
+        }
 
-			Write( list.Count );
+        public override void WriteMobileList(ArrayList list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (((Mobile)list[i]).Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( (Mobile)list[i] );
-		}
+            this.Write(list.Count);
 
-		public override void WriteItemList( ArrayList list )
-		{
-			WriteItemList( list, false );
-		}
-		public override void WriteItemList( ArrayList list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( ((Item)list[i]).Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+            for (int i = 0; i < list.Count; ++i)
+                this.Write((Mobile)list[i]);
+        }
 
-			Write( list.Count );
+        public override void WriteItemList(ArrayList list)
+        {
+            this.WriteItemList(list, false);
+        }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( (Item)list[i] );
-		}
+        public override void WriteItemList(ArrayList list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (((Item)list[i]).Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
 
-		public override void WriteGuildList( ArrayList list )
-		{
-			WriteGuildList( list, false );
-		}
-		public override void WriteGuildList( ArrayList list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( ((BaseGuild)list[i]).Disbanded )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+            this.Write(list.Count);
 
-			Write( list.Count );
+            for (int i = 0; i < list.Count; ++i)
+                this.Write((Item)list[i]);
+        }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( (BaseGuild)list[i] );
-		}
+        public override void WriteGuildList(ArrayList list)
+        {
+            this.WriteGuildList(list, false);
+        }
+
+        public override void WriteGuildList(ArrayList list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (((BaseGuild)list[i]).Disbanded)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            this.Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                this.Write((BaseGuild)list[i]);
+        }
 
         public override void WriteCoreList(ArrayList list)
         {
-            WriteCoreList(list, false);
+            this.WriteCoreList(list, false);
         }
 
         public override void WriteCoreList(ArrayList list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (((BaseCore)list[i]).Deleted)
                         list.RemoveAt(i);
@@ -818,22 +934,22 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write((BaseCore)list[i]);
+                this.Write((BaseCore)list[i]);
         }
 
         public override void WriteModuleList(ArrayList list)
         {
-            WriteModuleList(list, false);
+            this.WriteModuleList(list, false);
         }
 
         public override void WriteModuleList(ArrayList list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (((BaseModule)list[i]).Deleted)
                         list.RemoveAt(i);
@@ -842,282 +958,30 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write((BaseModule)list[i]);
+                this.Write((BaseModule)list[i]);
         }
 
         public override void WriteServiceList(ArrayList list)
         {
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write((BaseService)list[i]);
+                this.Write((BaseService)list[i]);
         }
 
         public override void Write(List<Item> list)
-		{
-			Write( list, false );
-		}
-		public override void Write( List<Item> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
-
-			Write( list.Count );
-
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
-
-		public override void WriteItemList<T>( List<T> list )
-		{
-			WriteItemList<T>( list, false );
-		}
-		public override void WriteItemList<T>( List<T> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
-
-			Write( list.Count );
-
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
-
-		public override void Write( HashSet<Item> set )
-		{
-			Write( set, false );
-		}
-		public override void Write( HashSet<Item> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( item => item.Deleted );
-			}
-
-			Write( set.Count );
-
-			foreach( Item item in set )
-			{
-				Write( item );
-			}
-		}
-
-		public override void WriteItemSet<T>( HashSet<T> set )
-		{
-			WriteItemSet( set, false );
-		}
-		public override void WriteItemSet<T>( HashSet<T> set, bool tidy ) 
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( item => item.Deleted );
-			}
-
-			Write( set.Count );
-
-			foreach( Item item in set )
-			{
-				Write( item );
-			}
-		}
-
-		public override void Write( List<Mobile> list )
-		{
-			Write( list, false );
-		}
-		public override void Write( List<Mobile> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
-
-			Write( list.Count );
-
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
-
-		public override void WriteMobileList<T>( List<T> list )
-		{
-			WriteMobileList<T>( list, false );
-		}
-		public override void WriteMobileList<T>( List<T> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
-
-			Write( list.Count );
-
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
-
-		public override void Write( HashSet<Mobile> set )
-		{
-			Write( set, false );
-		}
-		public override void Write( HashSet<Mobile> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( mobile => mobile.Deleted );
-			}
-
-			Write( set.Count );
-
-			foreach( Mobile mob in set )
-			{
-				Write( mob );
-			}
-		}
-
-		public override void WriteMobileSet<T>( HashSet<T> set )
-		{
-			WriteMobileSet( set, false );
-		}
-		public override void WriteMobileSet<T>( HashSet<T> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( mob => mob.Deleted );
-			}
-
-			Write( set.Count );
-
-			foreach( Mobile mob in set )
-			{
-				Write( mob );
-			}
-		}
-
-		public override void Write( List<BaseGuild> list )
-		{
-			Write( list, false );
-		}
-		public override void Write( List<BaseGuild> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Disbanded )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
-
-			Write( list.Count );
-
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
-
-		public override void WriteGuildList<T>( List<T> list )
-		{
-			WriteGuildList<T>( list, false );
-		}
-		public override void WriteGuildList<T>( List<T> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Disbanded )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
-
-			Write( list.Count );
-
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
-
-		public override void Write( HashSet<BaseGuild> set )
-		{
-			Write( set, false );
-		}
-		public override void Write( HashSet<BaseGuild> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( guild => guild.Disbanded );
-			}
-
-			Write( set.Count );
-
-			foreach( BaseGuild guild in set )
-			{
-				Write( guild );
-			}
-		}
-
-		public override void WriteGuildSet<T>( HashSet<T> set )
-		{
-			WriteGuildSet( set, false );
-		}
-		public override void WriteGuildSet<T>( HashSet<T> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( guild => guild.Disbanded );
-			}
-
-			Write( set.Count );
-
-			foreach( BaseGuild guild in set )
-			{
-				Write( guild );
-			}
-		}
-
-        public override void Write(List<BaseCore> list)
         {
-            Write(list, false);
+            this.Write(list, false);
         }
 
-        public override void  Write(List<BaseCore> list, bool tidy)
+        public override void Write(List<Item> list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (list[i].Deleted)
                         list.RemoveAt(i);
@@ -1126,22 +990,286 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
+        }
+
+        public override void WriteItemList<T>(List<T> list)
+        {
+            this.WriteItemList<T>(list, false);
+        }
+
+        public override void WriteItemList<T>(List<T> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            this.Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
+
+        public override void Write(HashSet<Item> set)
+        {
+            this.Write(set, false);
+        }
+
+        public override void Write(HashSet<Item> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(item => item.Deleted);
+            }
+
+            this.Write(set.Count);
+
+            foreach (Item item in set)
+            {
+                this.Write(item);
+            }
+        }
+
+        public override void WriteItemSet<T>(HashSet<T> set)
+        {
+            this.WriteItemSet(set, false);
+        }
+
+        public override void WriteItemSet<T>(HashSet<T> set, bool tidy) 
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(item => item.Deleted);
+            }
+
+            this.Write(set.Count);
+
+            foreach (Item item in set)
+            {
+                this.Write(item);
+            }
+        }
+
+        public override void Write(List<Mobile> list)
+        {
+            this.Write(list, false);
+        }
+
+        public override void Write(List<Mobile> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            this.Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
+
+        public override void WriteMobileList<T>(List<T> list)
+        {
+            this.WriteMobileList<T>(list, false);
+        }
+
+        public override void WriteMobileList<T>(List<T> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            this.Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
+
+        public override void Write(HashSet<Mobile> set)
+        {
+            this.Write(set, false);
+        }
+
+        public override void Write(HashSet<Mobile> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(mobile => mobile.Deleted);
+            }
+
+            this.Write(set.Count);
+
+            foreach (Mobile mob in set)
+            {
+                this.Write(mob);
+            }
+        }
+
+        public override void WriteMobileSet<T>(HashSet<T> set)
+        {
+            this.WriteMobileSet(set, false);
+        }
+
+        public override void WriteMobileSet<T>(HashSet<T> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(mob => mob.Deleted);
+            }
+
+            this.Write(set.Count);
+
+            foreach (Mobile mob in set)
+            {
+                this.Write(mob);
+            }
+        }
+
+        public override void Write(List<BaseGuild> list)
+        {
+            this.Write(list, false);
+        }
+
+        public override void Write(List<BaseGuild> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Disbanded)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            this.Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
+
+        public override void WriteGuildList<T>(List<T> list)
+        {
+            this.WriteGuildList<T>(list, false);
+        }
+
+        public override void WriteGuildList<T>(List<T> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Disbanded)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            this.Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
+
+        public override void Write(HashSet<BaseGuild> set)
+        {
+            this.Write(set, false);
+        }
+
+        public override void Write(HashSet<BaseGuild> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(guild => guild.Disbanded);
+            }
+
+            this.Write(set.Count);
+
+            foreach (BaseGuild guild in set)
+            {
+                this.Write(guild);
+            }
+        }
+
+        public override void WriteGuildSet<T>(HashSet<T> set)
+        {
+            this.WriteGuildSet(set, false);
+        }
+
+        public override void WriteGuildSet<T>(HashSet<T> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(guild => guild.Disbanded);
+            }
+
+            this.Write(set.Count);
+
+            foreach (BaseGuild guild in set)
+            {
+                this.Write(guild);
+            }
+        }
+
+        public override void Write(List<BaseCore> list)
+        {
+            this.Write(list, false);
+        }
+
+        public override void Write(List<BaseCore> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            this.Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
         }
 
         public override void WriteCoreList<T>(List<T> list)
         {
-            WriteCoreList<T>(list, false);
+            this.WriteCoreList<T>(list, false);
         }
 
         public override void WriteCoreList<T>(List<T> list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (list[i].Deleted)
                         list.RemoveAt(i);
@@ -1150,15 +1278,15 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void Write(HashSet<BaseCore> set)
         {
-            Write(set, false);
+            this.Write(set, false);
         }
 
         public override void Write(HashSet<BaseCore> set, bool tidy)
@@ -1166,15 +1294,15 @@ namespace Server
             if (tidy)
                 set.RemoveWhere(core => core.Deleted);
 
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseCore core in set)
-                Write(core);
+                this.Write(core);
         }
 
         public override void WriteCoreSet<T>(HashSet<T> set)
         {
-            WriteCoreSet(set, false);
+            this.WriteCoreSet(set, false);
         }
 
         public override void WriteCoreSet<T>(HashSet<T> set, bool tidy)
@@ -1182,22 +1310,22 @@ namespace Server
             if (tidy)
                 set.RemoveWhere(core => core.Deleted);
 
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseCore core in set)
-                Write(core);
+                this.Write(core);
         }
 
         public override void Write(List<BaseModule> list)
         {
-            Write(list, false);
+            this.Write(list, false);
         }
 
         public override void Write(List<BaseModule> list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (list[i].Deleted)
                         list.RemoveAt(i);
@@ -1206,22 +1334,22 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void WriteModuleList<T>(List<T> list)
         {
-            WriteModuleList<T>(list, false);
+            this.WriteModuleList<T>(list, false);
         }
 
         public override void WriteModuleList<T>(List<T> list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (list[i].Deleted)
                         list.RemoveAt(i);
@@ -1230,15 +1358,15 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void Write(HashSet<BaseModule> set)
         {
-            Write(set, false);
+            this.Write(set, false);
         }
 
         public override void Write(HashSet<BaseModule> set, bool tidy)
@@ -1246,15 +1374,15 @@ namespace Server
             if (tidy)
                 set.RemoveWhere(module => module.Deleted);
 
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseModule module in set)
-                Write(module);
+                this.Write(module);
         }
 
         public override void WriteModuleSet<T>(HashSet<T> set)
         {
-            WriteModuleSet(set, false);
+            this.WriteModuleSet(set, false);
         }
 
         public override void WriteModuleSet<T>(HashSet<T> set, bool tidy)
@@ -1262,345 +1390,295 @@ namespace Server
             if (tidy)
                 set.RemoveWhere(module => module.Deleted);
 
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseModule module in set)
-                Write(module);
+                this.Write(module);
         }
 
         public override void Write(List<BaseService> list)
         {
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void WriteServiceList<T>(List<T> list)
         {
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void Write(HashSet<BaseService> set)
         {
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseService service in set)
-                Write(service);
+                this.Write(service);
         }
 
         public override void WriteServiceSet<T>(HashSet<T> set)
         {
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseService service in set)
-                Write(service);
+                this.Write(service);
         }
-	}
+    }
 
-	public sealed class BinaryFileReader : GenericReader
-	{
-		private BinaryReader m_File;
+    public sealed class BinaryFileReader : GenericReader
+    {
+        private readonly BinaryReader m_File;
 
-		public BinaryFileReader( BinaryReader br ) { m_File = br; }
+        public BinaryFileReader(BinaryReader br)
+        {
+            this.m_File = br;
+        }
 
-		public void Close()
-		{
-			m_File.Close();
-		}
+        public void Close()
+        {
+            this.m_File.Close();
+        }
 
-		public long Position
-		{
-			get
-			{
-				return m_File.BaseStream.Position;
-			}
-		}
+        public long Position
+        {
+            get
+            {
+                return this.m_File.BaseStream.Position;
+            }
+        }
 
-		public long Seek( long offset, SeekOrigin origin )
-		{
-			return m_File.BaseStream.Seek( offset, origin );
-		}
+        public long Seek(long offset, SeekOrigin origin)
+        {
+            return this.m_File.BaseStream.Seek(offset, origin);
+        }
 
-		public override string ReadString()
-		{
-			if( ReadByte() != 0 )
-				return m_File.ReadString();
-			else
-				return null;
-		}
+        public override string ReadString()
+        {
+            if (this.ReadByte() != 0)
+                return this.m_File.ReadString();
+            else
+                return null;
+        }
 
-		public override DateTime ReadDeltaTime()
-		{
-			long ticks = m_File.ReadInt64();
-			long now = DateTime.Now.Ticks;
+        public override DateTime ReadDeltaTime()
+        {
+            long ticks = this.m_File.ReadInt64();
+            long now = DateTime.Now.Ticks;
 
-			if( ticks > 0 && (ticks+now) < 0 )
-				return DateTime.MaxValue;
-			else if( ticks < 0 && (ticks+now) < 0 )
-				return DateTime.MinValue;
+            if (ticks > 0 && (ticks + now) < 0)
+                return DateTime.MaxValue;
+            else if (ticks < 0 && (ticks + now) < 0)
+                return DateTime.MinValue;
 
-			try { return new DateTime( now+ticks ); }
-			catch { if( ticks > 0 ) return DateTime.MaxValue; else return DateTime.MinValue; }
-		}
+            try
+            {
+                return new DateTime(now + ticks);
+            }
+            catch
+            {
+                if (ticks > 0)
+                    return DateTime.MaxValue;
+                else
+                    return DateTime.MinValue;
+            }
+        }
 
-		public override IPAddress ReadIPAddress()
-		{
-			return new IPAddress( m_File.ReadInt64() );
-		}
+        public override IPAddress ReadIPAddress()
+        {
+            return new IPAddress(this.m_File.ReadInt64());
+        }
 
-		public override int ReadEncodedInt()
-		{
-			int v = 0, shift = 0;
-			byte b;
+        public override int ReadEncodedInt()
+        {
+            int v = 0, shift = 0;
+            byte b;
 
-			do
-			{
-				b = m_File.ReadByte();
-				v |= (b & 0x7F) << shift;
-				shift += 7;
-			} while( b >= 0x80 );
+            do
+            {
+                b = this.m_File.ReadByte();
+                v |= (b & 0x7F) << shift;
+                shift += 7;
+            }
+            while (b >= 0x80);
 
-			return v;
-		}
+            return v;
+        }
 
-		public override DateTime ReadDateTime()
-		{
-			return new DateTime( m_File.ReadInt64() );
-		}
+        public override DateTime ReadDateTime()
+        {
+            return new DateTime(this.m_File.ReadInt64());
+        }
 
-		public override DateTimeOffset ReadDateTimeOffset()
-		{
-			long ticks = m_File.ReadInt64();
-			TimeSpan offset = new TimeSpan( m_File.ReadInt64() );
+        public override DateTimeOffset ReadDateTimeOffset()
+        {
+            long ticks = this.m_File.ReadInt64();
+            TimeSpan offset = new TimeSpan(this.m_File.ReadInt64());
 
-			return new DateTimeOffset( ticks, offset );
-		}
+            return new DateTimeOffset(ticks, offset);
+        }
 
-		public override TimeSpan ReadTimeSpan()
-		{
-			return new TimeSpan( m_File.ReadInt64() );
-		}
+        public override TimeSpan ReadTimeSpan()
+        {
+            return new TimeSpan(this.m_File.ReadInt64());
+        }
 
-		public override decimal ReadDecimal()
-		{
-			return m_File.ReadDecimal();
-		}
+        public override decimal ReadDecimal()
+        {
+            return this.m_File.ReadDecimal();
+        }
 
-		public override long ReadLong()
-		{
-			return m_File.ReadInt64();
-		}
+        public override long ReadLong()
+        {
+            return this.m_File.ReadInt64();
+        }
 
-		public override ulong ReadULong()
-		{
-			return m_File.ReadUInt64();
-		}
+        public override ulong ReadULong()
+        {
+            return this.m_File.ReadUInt64();
+        }
 
-		public override int ReadInt()
-		{
-			return m_File.ReadInt32();
-		}
+        public override int ReadInt()
+        {
+            return this.m_File.ReadInt32();
+        }
 
-		public override uint ReadUInt()
-		{
-			return m_File.ReadUInt32();
-		}
+        public override uint ReadUInt()
+        {
+            return this.m_File.ReadUInt32();
+        }
 
-		public override short ReadShort()
-		{
-			return m_File.ReadInt16();
-		}
+        public override short ReadShort()
+        {
+            return this.m_File.ReadInt16();
+        }
 
-		public override ushort ReadUShort()
-		{
-			return m_File.ReadUInt16();
-		}
+        public override ushort ReadUShort()
+        {
+            return this.m_File.ReadUInt16();
+        }
 
-		public override double ReadDouble()
-		{
-			return m_File.ReadDouble();
-		}
+        public override double ReadDouble()
+        {
+            return this.m_File.ReadDouble();
+        }
 
-		public override float ReadFloat()
-		{
-			return m_File.ReadSingle();
-		}
+        public override float ReadFloat()
+        {
+            return this.m_File.ReadSingle();
+        }
 
-		public override char ReadChar()
-		{
-			return m_File.ReadChar();
-		}
+        public override char ReadChar()
+        {
+            return this.m_File.ReadChar();
+        }
 
-		public override byte ReadByte()
-		{
-			return m_File.ReadByte();
-		}
+        public override byte ReadByte()
+        {
+            return this.m_File.ReadByte();
+        }
 
-		public override sbyte ReadSByte()
-		{
-			return m_File.ReadSByte();
-		}
+        public override sbyte ReadSByte()
+        {
+            return this.m_File.ReadSByte();
+        }
 
-		public override bool ReadBool()
-		{
-			return m_File.ReadBoolean();
-		}
+        public override bool ReadBool()
+        {
+            return this.m_File.ReadBoolean();
+        }
 
-		public override Point3D ReadPoint3D()
-		{
-			return new Point3D( ReadInt(), ReadInt(), ReadInt() );
-		}
+        public override Point3D ReadPoint3D()
+        {
+            return new Point3D(this.ReadInt(), this.ReadInt(), this.ReadInt());
+        }
 
-		public override Point2D ReadPoint2D()
-		{
-			return new Point2D( ReadInt(), ReadInt() );
-		}
+        public override Point2D ReadPoint2D()
+        {
+            return new Point2D(this.ReadInt(), this.ReadInt());
+        }
 
-		public override Rectangle2D ReadRect2D()
-		{
-			return new Rectangle2D( ReadPoint2D(), ReadPoint2D() );
-		}
+        public override Rectangle2D ReadRect2D()
+        {
+            return new Rectangle2D(this.ReadPoint2D(), this.ReadPoint2D());
+        }
 
-		public override Rectangle3D ReadRect3D()
-		{
-			return new Rectangle3D( ReadPoint3D(), ReadPoint3D() );
-		}
+        public override Rectangle3D ReadRect3D()
+        {
+            return new Rectangle3D(this.ReadPoint3D(), this.ReadPoint3D());
+        }
 
-		public override Map ReadMap()
-		{
-			return Map.Maps[ReadByte()];
-		}
+        public override Map ReadMap()
+        {
+            return Map.Maps[this.ReadByte()];
+        }
 
-		public override Item ReadItem()
-		{
-			return World.FindItem( ReadInt() );
-		}
+        public override Item ReadItem()
+        {
+            return World.FindItem(this.ReadInt());
+        }
 
-		public override Mobile ReadMobile()
-		{
-			return World.FindMobile( ReadInt() );
-		}
+        public override Mobile ReadMobile()
+        {
+            return World.FindMobile(this.ReadInt());
+        }
 
-		public override BaseGuild ReadGuild()
-		{
-			return BaseGuild.Find( ReadInt() );
-		}
+        public override BaseGuild ReadGuild()
+        {
+            return BaseGuild.Find(this.ReadInt());
+        }
 
         public override BaseCore ReadCore()
         {
-            return World.GetCore(ReadInt());
+            return World.GetCore(this.ReadInt());
         }
 
         public override BaseModule ReadModule()
         {
-            return World.GetModule(ReadInt());
+            return World.GetModule(this.ReadInt());
         }
 
         public override BaseService ReadService()
         {
-            return World.GetService(ReadInt());
+            return World.GetService(this.ReadInt());
         }
 
-		public override T ReadItem<T>()
-		{
-			return ReadItem() as T;
-		}
+        public override T ReadItem<T>()
+        {
+            return this.ReadItem() as T;
+        }
 
-		public override T ReadMobile<T>()
-		{
-			return ReadMobile() as T;
-		}
+        public override T ReadMobile<T>()
+        {
+            return this.ReadMobile() as T;
+        }
 
-		public override T ReadGuild<T>()
-		{
-			return ReadGuild() as T;
-		}
+        public override T ReadGuild<T>()
+        {
+            return this.ReadGuild() as T;
+        }
 
         public override T ReadCore<T>()
         {
-            return ReadCore() as T;
+            return this.ReadCore() as T;
         }
 
         public override T ReadModule<T>()
         {
-            return ReadModule() as T;
+            return this.ReadModule() as T;
         }
 
         public override T ReadService<T>()
         {
-            return ReadService() as T;
+            return this.ReadService() as T;
         }
 
-		public override ArrayList ReadItemList()
-		{
-			int count = ReadInt();
-
-			if ( count > 0 ) {
-				ArrayList list = new ArrayList( count );
-
-				for ( int i = 0; i < count; ++i ) {
-					Item item = ReadItem();
-
-					if ( item != null ) {
-						list.Add( item );
-					}
-				}
-
-				return list;
-			} else {
-				return new ArrayList();
-			}
-		}
-
-		public override ArrayList ReadMobileList()
-		{
-			int count = ReadInt();
-
-			if ( count > 0 ) {
-				ArrayList list = new ArrayList( count );
-
-				for ( int i = 0; i < count; ++i ) {
-					Mobile m = ReadMobile();
-
-					if ( m != null ) {
-						list.Add( m );
-					}
-				}
-
-				return list;
-			} else {
-				return new ArrayList();
-			}
-		}
-
-		public override ArrayList ReadGuildList()
-		{
-			int count = ReadInt();
-
-			if ( count > 0 ) {
-				ArrayList list = new ArrayList( count );
-
-				for ( int i = 0; i < count; ++i ) {
-					BaseGuild g = ReadGuild();
-
-					if ( g != null ) {
-						list.Add( g );
-					}
-				}
-
-				return list;
-			} else {
-				return new ArrayList();
-			}
-		}
-
-        public override ArrayList ReadCoreList()
+        public override ArrayList ReadItemList()
         {
-            int count = ReadInt();
+            int count = this.ReadInt();
 
             if (count > 0)
             {
@@ -1608,7 +1686,85 @@ namespace Server
 
                 for (int i = 0; i < count; ++i)
                 {
-                    BaseCore core = ReadCore();
+                    Item item = this.ReadItem();
+
+                    if (item != null)
+                    {
+                        list.Add(item);
+                    }
+                }
+
+                return list;
+            }
+            else
+            {
+                return new ArrayList();
+            }
+        }
+
+        public override ArrayList ReadMobileList()
+        {
+            int count = this.ReadInt();
+
+            if (count > 0)
+            {
+                ArrayList list = new ArrayList(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    Mobile m = this.ReadMobile();
+
+                    if (m != null)
+                    {
+                        list.Add(m);
+                    }
+                }
+
+                return list;
+            }
+            else
+            {
+                return new ArrayList();
+            }
+        }
+
+        public override ArrayList ReadGuildList()
+        {
+            int count = this.ReadInt();
+
+            if (count > 0)
+            {
+                ArrayList list = new ArrayList(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    BaseGuild g = this.ReadGuild();
+
+                    if (g != null)
+                    {
+                        list.Add(g);
+                    }
+                }
+
+                return list;
+            }
+            else
+            {
+                return new ArrayList();
+            }
+        }
+
+        public override ArrayList ReadCoreList()
+        {
+            int count = this.ReadInt();
+
+            if (count > 0)
+            {
+                ArrayList list = new ArrayList(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    BaseCore core = this.ReadCore();
 
                     if (core != null)
                         list.Add(core);
@@ -1622,7 +1778,7 @@ namespace Server
 
         public override ArrayList ReadModuleList()
         {
-            int count = ReadInt();
+            int count = this.ReadInt();
 
             if (count > 0)
             {
@@ -1630,7 +1786,7 @@ namespace Server
 
                 for (int i = 0; i < count; ++i)
                 {
-                    BaseModule module = ReadModule();
+                    BaseModule module = this.ReadModule();
 
                     if (module != null)
                         list.Add(module);
@@ -1644,7 +1800,7 @@ namespace Server
 
         public override ArrayList ReadServiceList()
         {
-            int count = ReadInt();
+            int count = this.ReadInt();
 
             if (count > 0)
             {
@@ -1652,7 +1808,7 @@ namespace Server
 
                 for (int i = 0; i < count; ++i)
                 {
-                    BaseService service = ReadService();
+                    BaseService service = this.ReadService();
 
                     if (service != null)
                         list.Add(service);
@@ -1664,185 +1820,14 @@ namespace Server
                 return new ArrayList();
         }
 
-		public override List<Item> ReadStrongItemList()
-		{
-			return ReadStrongItemList<Item>();
-		}
-
-		public override List<T> ReadStrongItemList<T>()
-		{
-			int count = ReadInt();
-
-			if ( count > 0 ) {
-				List<T> list = new List<T>( count );
-
-				for ( int i = 0; i < count; ++i ) {
-					T item = ReadItem() as T;
-
-					if ( item != null ) {
-						list.Add( item );
-					}
-				}
-
-				return list;
-			} else {
-				return new List<T>();
-			}
-		}
-
-		public override HashSet<Item> ReadItemSet()
-		{
-			return ReadItemSet<Item>();
-		}
-
-		public override HashSet<T> ReadItemSet<T>()
-		{
-			int count = ReadInt();
-
-			if( count > 0 )
-			{
-				HashSet<T> set = new HashSet<T>();
-
-				for( int i = 0; i < count; ++i )
-				{
-					T item = ReadItem() as T;
-
-					if( item != null )
-					{
-						set.Add( item );
-					}
-				}
-
-				return set;
-			}
-			else
-			{
-				return new HashSet<T>();
-			}
-		}
-
-		public override List<Mobile> ReadStrongMobileList()
-		{
-			return ReadStrongMobileList<Mobile>();
-		}
-
-		public override List<T> ReadStrongMobileList<T>()
-		{
-			int count = ReadInt();
-
-			if ( count > 0 ) {
-				List<T> list = new List<T>( count );
-
-				for ( int i = 0; i < count; ++i ) {
-					T m = ReadMobile() as T;
-
-					if ( m != null ) {
-						list.Add( m );
-					}
-				}
-
-				return list;
-			} else {
-				return new List<T>();
-			}
-		}
-
-		public override HashSet<Mobile> ReadMobileSet()
-		{
-			return ReadMobileSet<Mobile>();
-		}
-
-		public override HashSet<T> ReadMobileSet<T>()
-		{
-			int count = ReadInt();
-
-			if( count > 0 )
-			{
-				HashSet<T> set = new HashSet<T>();
-
-				for( int i = 0; i < count; ++i )
-				{
-					T item = ReadMobile() as T;
-
-					if( item != null )
-					{
-						set.Add( item );
-					}
-				}
-
-				return set;
-			}
-			else
-			{
-				return new HashSet<T>();
-			}
-		}
-
-		public override List<BaseGuild> ReadStrongGuildList()
-		{
-			return ReadStrongGuildList<BaseGuild>();
-		}
-
-		public override List<T> ReadStrongGuildList<T>()
-		{
-			int count = ReadInt();
-
-			if ( count > 0 ) {
-				List<T> list = new List<T>( count );
-
-				for ( int i = 0; i < count; ++i ) {
-					T g = ReadGuild() as T;
-
-					if ( g != null ) {
-						list.Add( g );
-					}
-				}
-
-				return list;
-			} else {
-				return new List<T>();
-			}
-		}
-
-		public override HashSet<BaseGuild> ReadGuildSet()
-		{
-			return ReadGuildSet<BaseGuild>();
-		}
-
-		public override HashSet<T> ReadGuildSet<T>()
-		{
-			int count = ReadInt();
-
-			if( count > 0 )
-			{
-				HashSet<T> set = new HashSet<T>();
-
-				for( int i = 0; i < count; ++i )
-				{
-					T item = ReadGuild() as T;
-
-					if( item != null )
-					{
-						set.Add( item );
-					}
-				}
-
-				return set;
-			}
-			else
-			{
-				return new HashSet<T>();
-			}
-		}
-
-        public override List<BaseCore> ReadStrongCoreList()
+        public override List<Item> ReadStrongItemList()
         {
-            return ReadStrongCoreList<BaseCore>();
+            return this.ReadStrongItemList<Item>();
         }
 
-        public override List<T> ReadStrongCoreList<T>()
+        public override List<T> ReadStrongItemList<T>()
         {
-            int count = ReadInt();
+            int count = this.ReadInt();
 
             if (count > 0)
             {
@@ -1850,7 +1835,193 @@ namespace Server
 
                 for (int i = 0; i < count; ++i)
                 {
-                    T core = ReadCore() as T;
+                    T item = this.ReadItem() as T;
+
+                    if (item != null)
+                    {
+                        list.Add(item);
+                    }
+                }
+
+                return list;
+            }
+            else
+            {
+                return new List<T>();
+            }
+        }
+
+        public override HashSet<Item> ReadItemSet()
+        {
+            return this.ReadItemSet<Item>();
+        }
+
+        public override HashSet<T> ReadItemSet<T>()
+        {
+            int count = this.ReadInt();
+
+            if (count > 0)
+            {
+                HashSet<T> set = new HashSet<T>();
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T item = this.ReadItem() as T;
+
+                    if (item != null)
+                    {
+                        set.Add(item);
+                    }
+                }
+
+                return set;
+            }
+            else
+            {
+                return new HashSet<T>();
+            }
+        }
+
+        public override List<Mobile> ReadStrongMobileList()
+        {
+            return this.ReadStrongMobileList<Mobile>();
+        }
+
+        public override List<T> ReadStrongMobileList<T>()
+        {
+            int count = this.ReadInt();
+
+            if (count > 0)
+            {
+                List<T> list = new List<T>(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T m = this.ReadMobile() as T;
+
+                    if (m != null)
+                    {
+                        list.Add(m);
+                    }
+                }
+
+                return list;
+            }
+            else
+            {
+                return new List<T>();
+            }
+        }
+
+        public override HashSet<Mobile> ReadMobileSet()
+        {
+            return this.ReadMobileSet<Mobile>();
+        }
+
+        public override HashSet<T> ReadMobileSet<T>()
+        {
+            int count = this.ReadInt();
+
+            if (count > 0)
+            {
+                HashSet<T> set = new HashSet<T>();
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T item = this.ReadMobile() as T;
+
+                    if (item != null)
+                    {
+                        set.Add(item);
+                    }
+                }
+
+                return set;
+            }
+            else
+            {
+                return new HashSet<T>();
+            }
+        }
+
+        public override List<BaseGuild> ReadStrongGuildList()
+        {
+            return this.ReadStrongGuildList<BaseGuild>();
+        }
+
+        public override List<T> ReadStrongGuildList<T>()
+        {
+            int count = this.ReadInt();
+
+            if (count > 0)
+            {
+                List<T> list = new List<T>(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T g = this.ReadGuild() as T;
+
+                    if (g != null)
+                    {
+                        list.Add(g);
+                    }
+                }
+
+                return list;
+            }
+            else
+            {
+                return new List<T>();
+            }
+        }
+
+        public override HashSet<BaseGuild> ReadGuildSet()
+        {
+            return this.ReadGuildSet<BaseGuild>();
+        }
+
+        public override HashSet<T> ReadGuildSet<T>()
+        {
+            int count = this.ReadInt();
+
+            if (count > 0)
+            {
+                HashSet<T> set = new HashSet<T>();
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T item = this.ReadGuild() as T;
+
+                    if (item != null)
+                    {
+                        set.Add(item);
+                    }
+                }
+
+                return set;
+            }
+            else
+            {
+                return new HashSet<T>();
+            }
+        }
+
+        public override List<BaseCore> ReadStrongCoreList()
+        {
+            return this.ReadStrongCoreList<BaseCore>();
+        }
+
+        public override List<T> ReadStrongCoreList<T>()
+        {
+            int count = this.ReadInt();
+
+            if (count > 0)
+            {
+                List<T> list = new List<T>(count);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    T core = this.ReadCore() as T;
 
                     if (core != null)
                         list.Add(core);
@@ -1864,12 +2035,12 @@ namespace Server
 
         public override HashSet<BaseCore> ReadCoreSet()
         {
-            return ReadCoreSet<BaseCore>();
+            return this.ReadCoreSet<BaseCore>();
         }
 
         public override HashSet<T> ReadCoreSet<T>()
         {
-            int count = ReadInt();
+            int count = this.ReadInt();
 
             if (count > 0)
             {
@@ -1877,7 +2048,7 @@ namespace Server
 
                 for (int i = 0; i < count; ++i)
                 {
-                    T core = ReadCore() as T;
+                    T core = this.ReadCore() as T;
 
                     if (core != null)
                         set.Add(core);
@@ -1891,12 +2062,12 @@ namespace Server
 
         public override List<BaseModule> ReadStrongModuleList()
         {
-            return ReadStrongModuleList<BaseModule>();
+            return this.ReadStrongModuleList<BaseModule>();
         }
 
         public override List<T> ReadStrongModuleList<T>()
         {
-            int count = ReadInt();
+            int count = this.ReadInt();
 
             if (count > 0)
             {
@@ -1904,7 +2075,7 @@ namespace Server
 
                 for (int i = 0; i < count; ++i)
                 {
-                    T module = ReadModule() as T;
+                    T module = this.ReadModule() as T;
 
                     if (module != null)
                         list.Add(module);
@@ -1918,12 +2089,12 @@ namespace Server
 
         public override HashSet<BaseModule> ReadModuleSet()
         {
-            return ReadModuleSet<BaseModule>();
+            return this.ReadModuleSet<BaseModule>();
         }
 
         public override HashSet<T> ReadModuleSet<T>()
         {
-            int count = ReadInt();
+            int count = this.ReadInt();
 
             if (count > 0)
             {
@@ -1931,7 +2102,7 @@ namespace Server
 
                 for (int i = 0; i < count; ++i)
                 {
-                    T module = ReadModule() as T;
+                    T module = this.ReadModule() as T;
 
                     if (module != null)
                         set.Add(module);
@@ -1945,12 +2116,12 @@ namespace Server
 
         public override List<BaseService> ReadStrongServiceList()
         {
-            return ReadStrongServiceList<BaseService>();
+            return this.ReadStrongServiceList<BaseService>();
         }
 
         public override List<T> ReadStrongServiceList<T>()
         {
-            int count = ReadInt();
+            int count = this.ReadInt();
 
             if (count > 0)
             {
@@ -1958,7 +2129,7 @@ namespace Server
 
                 for (int i = 0; i < count; ++i)
                 {
-                    T service = ReadService() as T;
+                    T service = this.ReadService() as T;
 
                     if (service != null)
                         list.Add(service);
@@ -1972,12 +2143,12 @@ namespace Server
 
         public override HashSet<BaseService> ReadServiceSet()
         {
-            return ReadServiceSet<BaseService>();
+            return this.ReadServiceSet<BaseService>();
         }
 
         public override HashSet<T> ReadServiceSet<T>()
         {
-            int count = ReadInt();
+            int count = this.ReadInt();
 
             if (count > 0)
             {
@@ -1985,7 +2156,7 @@ namespace Server
 
                 for (int i = 0; i < count; ++i)
                 {
-                    T service = ReadService() as T;
+                    T service = this.ReadService() as T;
 
                     if (service != null)
                         set.Add(service);
@@ -1997,491 +2168,504 @@ namespace Server
                 return new HashSet<T>();
         }
 
-		public override Race ReadRace()
-		{
-			return Race.Races[ReadByte()];
-		}
+        public override Race ReadRace()
+        {
+            return Race.Races[this.ReadByte()];
+        }
 
-		public override bool End()
-		{
-			return m_File.PeekChar() == -1;
-		}
-	}
+        public override bool End()
+        {
+            return this.m_File.PeekChar() == -1;
+        }
+    }
 
-	public sealed class AsyncWriter : GenericWriter
-	{
-		private static int m_ThreadCount = 0;
-		public static int ThreadCount { get { return m_ThreadCount; } }
+    public sealed class AsyncWriter : GenericWriter
+    {
+        private static int m_ThreadCount = 0;
+        public static int ThreadCount
+        {
+            get
+            {
+                return m_ThreadCount;
+            }
+        }
 
+        private readonly int BufferSize;
 
-		private int BufferSize;
+        private long m_LastPos, m_CurPos;
+        private bool m_Closed;
+        private readonly bool PrefixStrings;
 
-		private long m_LastPos, m_CurPos;
-		private bool m_Closed;
-		private bool PrefixStrings;
+        private MemoryStream m_Mem;
+        private BinaryWriter m_Bin;
+        private readonly FileStream m_File;
 
-		private MemoryStream m_Mem;
-		private BinaryWriter m_Bin;
-		private FileStream m_File;
+        private readonly Queue m_WriteQueue;
+        private Thread m_WorkerThread;
 
-		private Queue m_WriteQueue;
-		private Thread m_WorkerThread;
+        public AsyncWriter(string filename, bool prefix) : this(filename, 1048576, prefix)//1 mb buffer
+        {
+        }
 
-		public AsyncWriter( string filename, bool prefix )
-			: this( filename, 1048576, prefix )//1 mb buffer
-		{
-		}
+        public AsyncWriter(string filename, int buffSize, bool prefix)
+        {
+            this.PrefixStrings = prefix;
+            this.m_Closed = false;
+            this.m_WriteQueue = Queue.Synchronized(new Queue());
+            this.BufferSize = buffSize;
 
-		public AsyncWriter( string filename, int buffSize, bool prefix )
-		{
-			PrefixStrings = prefix;
-			m_Closed = false;
-			m_WriteQueue = Queue.Synchronized( new Queue() );
-			BufferSize = buffSize;
+            this.m_File = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+            this.m_Mem = new MemoryStream(this.BufferSize + 1024);
+            this.m_Bin = new BinaryWriter(this.m_Mem, Utility.UTF8WithEncoding);
+        }
 
-			m_File = new FileStream( filename, FileMode.Create, FileAccess.Write, FileShare.None );
-			m_Mem = new MemoryStream( BufferSize + 1024 );
-			m_Bin = new BinaryWriter( m_Mem, Utility.UTF8WithEncoding );
-		}
+        private void Enqueue(MemoryStream mem)
+        {
+            this.m_WriteQueue.Enqueue(mem);
 
-		private void Enqueue( MemoryStream mem )
-		{
-			m_WriteQueue.Enqueue( mem );
+            if (this.m_WorkerThread == null || !this.m_WorkerThread.IsAlive)
+            {
+                this.m_WorkerThread = new Thread(new ThreadStart(new WorkerThread(this).Worker));
+                this.m_WorkerThread.Priority = ThreadPriority.BelowNormal;
+                this.m_WorkerThread.Start();
+            }
+        }
 
-			if( m_WorkerThread == null || !m_WorkerThread.IsAlive )
-			{
-				m_WorkerThread = new Thread( new ThreadStart( new WorkerThread( this ).Worker ) );
-				m_WorkerThread.Priority = ThreadPriority.BelowNormal;
-				m_WorkerThread.Start();
-			}
-		}
+        private class WorkerThread
+        {
+            private readonly AsyncWriter m_Owner;
 
-		private class WorkerThread
-		{
-			private AsyncWriter m_Owner;
+            public WorkerThread(AsyncWriter owner)
+            {
+                this.m_Owner = owner;
+            }
 
-			public WorkerThread( AsyncWriter owner )
-			{
-				m_Owner = owner;
-			}
+            public void Worker()
+            {
+                AsyncWriter.m_ThreadCount++;
+                while (this.m_Owner.m_WriteQueue.Count > 0)
+                {
+                    MemoryStream mem = (MemoryStream)this.m_Owner.m_WriteQueue.Dequeue();
 
-			public void Worker()
-			{
-				AsyncWriter.m_ThreadCount++;
-				while( m_Owner.m_WriteQueue.Count > 0 )
-				{
-					MemoryStream mem = (MemoryStream)m_Owner.m_WriteQueue.Dequeue();
+                    if (mem != null && mem.Length > 0)
+                        mem.WriteTo(this.m_Owner.m_File);
+                }
 
-					if( mem != null && mem.Length > 0 )
-						mem.WriteTo( m_Owner.m_File );
-				}
+                if (this.m_Owner.m_Closed)
+                    this.m_Owner.m_File.Close();
 
-				if( m_Owner.m_Closed )
-					m_Owner.m_File.Close();
+                AsyncWriter.m_ThreadCount--;
 
-				AsyncWriter.m_ThreadCount--;
+                if (AsyncWriter.m_ThreadCount <= 0)
+                    World.NotifyDiskWriteComplete();
+            }
+        }
 
-				if (AsyncWriter.m_ThreadCount <= 0)
-					World.NotifyDiskWriteComplete();
-			}
-		}
+        private void OnWrite()
+        {
+            long curlen = this.m_Mem.Length;
+            this.m_CurPos += curlen - this.m_LastPos;
+            this.m_LastPos = curlen;
+            if (curlen >= this.BufferSize)
+            {
+                this.Enqueue(m_Mem);
+                this.m_Mem = new MemoryStream(this.BufferSize + 1024);
+                this.m_Bin = new BinaryWriter(this.m_Mem, Utility.UTF8WithEncoding);
+                this.m_LastPos = 0;
+            }
+        }
 
-		private void OnWrite()
-		{
-			long curlen = m_Mem.Length;
-			m_CurPos += curlen - m_LastPos;
-			m_LastPos = curlen;
-			if( curlen >= BufferSize )
-			{
-				Enqueue( m_Mem );
-				m_Mem = new MemoryStream( BufferSize + 1024 );
-				m_Bin = new BinaryWriter( m_Mem, Utility.UTF8WithEncoding );
-				m_LastPos = 0;
-			}
-		}
+        public MemoryStream MemStream
+        {
+            get
+            {
+                return this.m_Mem;
+            }
+            set
+            {
+                if (this.m_Mem.Length > 0)
+                    this.Enqueue(m_Mem);
 
-		public MemoryStream MemStream
-		{
-			get
-			{
-				return m_Mem;
-			}
-			set
-			{
-				if( m_Mem.Length > 0 )
-					Enqueue( m_Mem );
+                this.m_Mem = value;
+                this.m_Bin = new BinaryWriter(this.m_Mem, Utility.UTF8WithEncoding);
+                this.m_LastPos = 0;
+                this.m_CurPos = this.m_Mem.Length;
+                this.m_Mem.Seek(0, SeekOrigin.End);
+            }
+        }
 
-				m_Mem = value;
-				m_Bin = new BinaryWriter( m_Mem, Utility.UTF8WithEncoding );
-				m_LastPos = 0;
-				m_CurPos = m_Mem.Length;
-				m_Mem.Seek( 0, SeekOrigin.End );
-			}
-		}
+        public override void Close()
+        {
+            this.Enqueue(m_Mem);
+            this.m_Closed = true;
+        }
 
-		public override void Close()
-		{
-			Enqueue( m_Mem );
-			m_Closed = true;
-		}
+        public override long Position
+        {
+            get
+            {
+                return this.m_CurPos;
+            }
+        }
 
-		public override long Position
-		{
-			get
-			{
-				return m_CurPos;
-			}
-		}
+        public override void Write(IPAddress value)
+        {
+            this.m_Bin.Write(Utility.GetLongAddressValue(value));
+            this.OnWrite();
+        }
 
-		public override void Write( IPAddress value )
-		{
-			m_Bin.Write( Utility.GetLongAddressValue( value ) );
-			OnWrite();
-		}
+        public override void Write(string value)
+        {
+            if (this.PrefixStrings)
+            {
+                if (value == null)
+                {
+                    this.m_Bin.Write((byte)0);
+                }
+                else
+                {
+                    this.m_Bin.Write((byte)1);
+                    this.m_Bin.Write(value);
+                }
+            }
+            else
+            {
+                this.m_Bin.Write(value);
+            }
+            this.OnWrite();
+        }
 
-		public override void Write( string value )
-		{
-			if( PrefixStrings )
-			{
-				if( value == null )
-				{
-					m_Bin.Write( (byte)0 );
-				}
-				else
-				{
-					m_Bin.Write( (byte)1 );
-					m_Bin.Write( value );
-				}
-			}
-			else
-			{
-				m_Bin.Write( value );
-			}
-			OnWrite();
-		}
+        public override void WriteDeltaTime(DateTime value)
+        {
+            long ticks = value.Ticks;
+            long now = DateTime.Now.Ticks;
 
-		public override void WriteDeltaTime( DateTime value )
-		{
-			long ticks = value.Ticks;
-			long now = DateTime.Now.Ticks;
+            TimeSpan d;
 
-			TimeSpan d;
+            try
+            {
+                d = new TimeSpan(ticks - now);
+            }
+            catch
+            {
+                d = TimeSpan.MaxValue;
+            }
 
-			try { d = new TimeSpan( ticks-now ); }
-			catch { if( ticks < now ) d = TimeSpan.MaxValue; else d = TimeSpan.MaxValue; }
+            this.Write(d);
+        }
 
-			Write( d );
-		}
+        public override void Write(DateTime value)
+        {
+            this.m_Bin.Write(value.Ticks);
+            this.OnWrite();
+        }
 
-		public override void Write( DateTime value )
-		{
-			m_Bin.Write( value.Ticks );
-			OnWrite();
-		}
+        public override void Write(DateTimeOffset value)
+        {
+            this.m_Bin.Write(value.Ticks);
+            this.m_Bin.Write(value.Offset.Ticks);
+            this.OnWrite();
+        }
 
-		public override void Write( DateTimeOffset value )
-		{
-			m_Bin.Write( value.Ticks );
-			m_Bin.Write( value.Offset.Ticks );
-			OnWrite();
-		}
+        public override void Write(TimeSpan value)
+        {
+            this.m_Bin.Write(value.Ticks);
+            this.OnWrite();
+        }
 
-		public override void Write( TimeSpan value )
-		{
-			m_Bin.Write( value.Ticks );
-			OnWrite();
-		}
+        public override void Write(decimal value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( decimal value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(long value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( long value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(ulong value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( ulong value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void WriteEncodedInt(int value)
+        {
+            uint v = (uint)value;
 
-		public override void WriteEncodedInt( int value )
-		{
-			uint v = (uint)value;
+            while (v >= 0x80)
+            {
+                this.m_Bin.Write((byte)(v | 0x80));
+                v >>= 7;
+            }
 
-			while( v >= 0x80 )
-			{
-				m_Bin.Write( (byte)(v | 0x80) );
-				v >>= 7;
-			}
+            this.m_Bin.Write((byte)v);
+            this.OnWrite();
+        }
 
-			m_Bin.Write( (byte)v );
-			OnWrite();
-		}
+        public override void Write(int value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( int value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(uint value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( uint value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(short value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( short value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(ushort value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( ushort value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(double value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( double value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(float value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( float value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(char value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( char value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(byte value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( byte value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(sbyte value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( sbyte value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(bool value)
+        {
+            this.m_Bin.Write(value);
+            this.OnWrite();
+        }
 
-		public override void Write( bool value )
-		{
-			m_Bin.Write( value );
-			OnWrite();
-		}
+        public override void Write(Point3D value)
+        {
+            this.Write(value.m_X);
+            this.Write(value.m_Y);
+            this.Write(value.m_Z);
+        }
 
-		public override void Write( Point3D value )
-		{
-			Write( value.m_X );
-			Write( value.m_Y );
-			Write( value.m_Z );
-		}
+        public override void Write(Point2D value)
+        {
+            this.Write(value.m_X);
+            this.Write(value.m_Y);
+        }
 
-		public override void Write( Point2D value )
-		{
-			Write( value.m_X );
-			Write( value.m_Y );
-		}
+        public override void Write(Rectangle2D value)
+        {
+            this.Write(value.Start);
+            this.Write(value.End);
+        }
 
-		public override void Write( Rectangle2D value )
-		{
-			Write( value.Start );
-			Write( value.End );
-		}
+        public override void Write(Rectangle3D value)
+        {
+            this.Write(value.Start);
+            this.Write(value.End);
+        }
 
-		public override void Write( Rectangle3D value )
-		{
-			Write( value.Start );
-			Write( value.End );
-		}
+        public override void Write(Map value)
+        {
+            if (value != null)
+                this.Write((byte)value.MapIndex);
+            else
+                this.Write((byte)0xFF);
+        }
 
-		public override void Write( Map value )
-		{
-			if( value != null )
-				Write( (byte)value.MapIndex );
-			else
-				Write( (byte)0xFF );
-		}
+        public override void Write(Race value)
+        {
+            if (value != null)
+                this.Write((byte)value.RaceIndex);
+            else
+                this.Write((byte)0xFF);
+        }
 
-		public override void Write( Race value )
-		{
-			if( value != null )
-				Write( (byte)value.RaceIndex );
-			else
-				Write( (byte)0xFF );
-		}
+        public override void Write(Item value)
+        {
+            if (value == null || value.Deleted)
+                this.Write(Serial.MinusOne);
+            else
+                this.Write(value.Serial);
+        }
 
-		public override void Write( Item value )
-		{
-			if( value == null || value.Deleted )
-				Write( Serial.MinusOne );
-			else
-				Write( value.Serial );
-		}
+        public override void Write(Mobile value)
+        {
+            if (value == null || value.Deleted)
+                this.Write(Serial.MinusOne);
+            else
+                this.Write(value.Serial);
+        }
 
-		public override void Write( Mobile value )
-		{
-			if( value == null || value.Deleted )
-				Write( Serial.MinusOne );
-			else
-				Write( value.Serial );
-		}
-
-		public override void Write( BaseGuild value )
-		{
-			if( value == null )
-				Write( 0 );
-			else
-				Write( value.Id );
-		}
+        public override void Write(BaseGuild value)
+        {
+            if (value == null)
+                this.Write(0);
+            else
+                this.Write(value.Id);
+        }
 
         public override void Write(BaseCore value)
         {
             if (value == null || value.Deleted)
-                Write(CustomSerial.MinusOne);
+                this.Write(CustomSerial.MinusOne);
             else
-                Write(value.Serial);
+                this.Write(value.Serial);
         }
 
         public override void Write(BaseModule value)
         {
             if (value == null || value.Deleted)
-                Write(CustomSerial.MinusOne);
+                this.Write(CustomSerial.MinusOne);
             else
-                Write(value.Serial);
+                this.Write(value.Serial);
         }
 
         public override void Write(BaseService value)
         {
             if (value == null)
-                Write(CustomSerial.MinusOne);
+                this.Write(CustomSerial.MinusOne);
             else
-                Write(value.Serial);
+                this.Write(value.Serial);
         }
 
-		public override void WriteItem<T>( T value )
-		{
-			Write( value );
-		}
+        public override void WriteItem<T>(T value)
+        {
+            this.Write(value);
+        }
 
-		public override void WriteMobile<T>( T value )
-		{
-			Write( value );
-		}
+        public override void WriteMobile<T>(T value)
+        {
+            this.Write(value);
+        }
 
-		public override void WriteGuild<T>( T value )
-		{
-			Write( value );
-		}
+        public override void WriteGuild<T>(T value)
+        {
+            this.Write(value);
+        }
 
         public override void WriteCore<T>(T value)
         {
-            Write(value);
+            this.Write(value);
         }
 
         public override void WriteModule<T>(T value)
         {
-            Write(value);
+            this.Write(value);
         }
 
         public override void WriteService<T>(T value)
         {
-            Write(value);
+            this.Write(value);
         }
 
-		public override void WriteMobileList( ArrayList list )
-		{
-			WriteMobileList( list, false );
-		}
-		public override void WriteMobileList( ArrayList list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( ((Mobile)list[i]).Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+        public override void WriteMobileList(ArrayList list)
+        {
+            this.WriteMobileList(list, false);
+        }
 
-			Write( list.Count );
+        public override void WriteMobileList(ArrayList list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (((Mobile)list[i]).Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( (Mobile)list[i] );
-		}
+            this.Write(list.Count);
 
-		public override void WriteItemList( ArrayList list )
-		{
-			WriteItemList( list, false );
-		}
-		public override void WriteItemList( ArrayList list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( ((Item)list[i]).Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+            for (int i = 0; i < list.Count; ++i)
+                this.Write((Mobile)list[i]);
+        }
 
-			Write( list.Count );
+        public override void WriteItemList(ArrayList list)
+        {
+            this.WriteItemList(list, false);
+        }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( (Item)list[i] );
-		}
+        public override void WriteItemList(ArrayList list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (((Item)list[i]).Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
 
-		public override void WriteGuildList( ArrayList list )
-		{
-			WriteGuildList( list, false );
-		}
-		public override void WriteGuildList( ArrayList list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( ((BaseGuild)list[i]).Disbanded )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+            this.Write(list.Count);
 
-			Write( list.Count );
+            for (int i = 0; i < list.Count; ++i)
+                this.Write((Item)list[i]);
+        }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( (BaseGuild)list[i] );
-		}
+        public override void WriteGuildList(ArrayList list)
+        {
+            this.WriteGuildList(list, false);
+        }
+
+        public override void WriteGuildList(ArrayList list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (((BaseGuild)list[i]).Disbanded)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            this.Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                this.Write((BaseGuild)list[i]);
+        }
 
         public override void WriteCoreList(ArrayList list)
         {
-            WriteCoreList(list, false);
+            this.WriteCoreList(list, false);
         }
 
         public override void WriteCoreList(ArrayList list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (((BaseCore)list[i]).Deleted)
                         list.RemoveAt(i);
@@ -2490,22 +2674,22 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write((BaseCore)list[i]);
+                this.Write((BaseCore)list[i]);
         }
 
         public override void WriteModuleList(ArrayList list)
         {
-            WriteModuleList(list, false);
+            this.WriteModuleList(list, false);
         }
 
         public override void WriteModuleList(ArrayList list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (((BaseModule)list[i]).Deleted)
                         list.RemoveAt(i);
@@ -2514,283 +2698,294 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write((BaseModule)list[i]);
+                this.Write((BaseModule)list[i]);
         }
 
         public override void WriteServiceList(ArrayList list)
         {
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write((BaseService)list[i]);
+                this.Write((BaseService)list[i]);
         }
 
         public override void Write(List<Item> list)
-		{
-			Write( list, false );
-		}
-		public override void Write( List<Item> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+        {
+            this.Write(list, false);
+        }
 
-			Write( list.Count );
+        public override void Write(List<Item> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
+            this.Write(list.Count);
 
-		public override void WriteItemList<T>( List<T> list )
-		{
-			WriteItemList<T>( list, false );
-		}
-		public override void WriteItemList<T>( List<T> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
 
-			Write( list.Count );
+        public override void WriteItemList<T>(List<T> list)
+        {
+            this.WriteItemList<T>(list, false);
+        }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
+        public override void WriteItemList<T>(List<T> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
 
-		public override void Write( HashSet<Item> set )
-		{
-			Write( set, false );
-		}
-		public override void Write( HashSet<Item> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( item => item.Deleted );
-			}
+            this.Write(list.Count);
 
-			Write( set.Count );
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
 
-			foreach( Item item in set )
-			{
-				Write( item );
-			}
-		}
+        public override void Write(HashSet<Item> set)
+        {
+            this.Write(set, false);
+        }
 
-		public override void WriteItemSet<T>( HashSet<T> set )
-		{
-			WriteItemSet( set, false );
-		}
-		public override void WriteItemSet<T>( HashSet<T> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( item => item.Deleted );
-			}
+        public override void Write(HashSet<Item> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(item => item.Deleted);
+            }
 
-			Write( set.Count );
+            this.Write(set.Count);
 
-			foreach( Item item in set )
-			{
-				Write( item );
-			}
-		}
+            foreach (Item item in set)
+            {
+                this.Write(item);
+            }
+        }
 
-		public override void Write( List<Mobile> list )
-		{
-			Write( list, false );
-		}
-		public override void Write( List<Mobile> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+        public override void WriteItemSet<T>(HashSet<T> set)
+        {
+            this.WriteItemSet(set, false);
+        }
 
-			Write( list.Count );
+        public override void WriteItemSet<T>(HashSet<T> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(item => item.Deleted);
+            }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
+            this.Write(set.Count);
 
-		public override void WriteMobileList<T>( List<T> list )
-		{
-			WriteMobileList<T>( list, false );
-		}
-		public override void WriteMobileList<T>( List<T> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Deleted )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+            foreach (Item item in set)
+            {
+                this.Write(item);
+            }
+        }
 
-			Write( list.Count );
+        public override void Write(List<Mobile> list)
+        {
+            this.Write(list, false);
+        }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
+        public override void Write(List<Mobile> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
 
-		public override void Write( HashSet<Mobile> set )
-		{
-			Write( set, false );
-		}
-		public override void Write( HashSet<Mobile> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( mobile => mobile.Deleted );
-			}
+            this.Write(list.Count);
 
-			Write( set.Count );
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
 
-			foreach( Mobile mob in set )
-			{
-				Write( mob );
-			}
-		}
+        public override void WriteMobileList<T>(List<T> list)
+        {
+            this.WriteMobileList<T>(list, false);
+        }
 
-		public override void WriteMobileSet<T>( HashSet<T> set )
-		{
-			WriteMobileSet( set, false );
-		}
-		public override void WriteMobileSet<T>( HashSet<T> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( mob => mob.Deleted );
-			}
+        public override void WriteMobileList<T>(List<T> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Deleted)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
 
-			Write( set.Count );
+            this.Write(list.Count);
 
-			foreach( Mobile mob in set )
-			{
-				Write( mob );
-			}
-		}
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
 
-		public override void Write( List<BaseGuild> list )
-		{
-			Write( list, false );
-		}
-		public override void Write( List<BaseGuild> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Disbanded )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+        public override void Write(HashSet<Mobile> set)
+        {
+            this.Write(set, false);
+        }
 
-			Write( list.Count );
+        public override void Write(HashSet<Mobile> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(mobile => mobile.Deleted);
+            }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
+            this.Write(set.Count);
 
-		public override void WriteGuildList<T>( List<T> list )
-		{
-			WriteGuildList<T>( list, false );
-		}
-		public override void WriteGuildList<T>( List<T> list, bool tidy )
-		{
-			if( tidy )
-			{
-				for( int i = 0; i < list.Count; )
-				{
-					if( list[i].Disbanded )
-						list.RemoveAt( i );
-					else
-						++i;
-				}
-			}
+            foreach (Mobile mob in set)
+            {
+                this.Write(mob);
+            }
+        }
 
-			Write( list.Count );
+        public override void WriteMobileSet<T>(HashSet<T> set)
+        {
+            this.WriteMobileSet(set, false);
+        }
 
-			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );
-		}
+        public override void WriteMobileSet<T>(HashSet<T> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(mob => mob.Deleted);
+            }
 
-		public override void Write( HashSet<BaseGuild> set )
-		{
-			Write( set, false );
-		}
-		public override void Write( HashSet<BaseGuild> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( guild => guild.Disbanded );
-			}
+            this.Write(set.Count);
 
-			Write( set.Count );
+            foreach (Mobile mob in set)
+            {
+                this.Write(mob);
+            }
+        }
 
-			foreach( BaseGuild guild in set )
-			{
-				Write( guild );
-			}
-		}
+        public override void Write(List<BaseGuild> list)
+        {
+            this.Write(list, false);
+        }
 
-		public override void WriteGuildSet<T>( HashSet<T> set )
-		{
-			WriteGuildSet( set, false );
-		}
-		public override void WriteGuildSet<T>( HashSet<T> set, bool tidy )
-		{
-			if( tidy )
-			{
-				set.RemoveWhere( guild => guild.Disbanded );
-			}
+        public override void Write(List<BaseGuild> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Disbanded)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
 
-			Write( set.Count );
+            this.Write(list.Count);
 
-			foreach( BaseGuild guild in set )
-			{
-				Write( guild );
-			}
-		}
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
 
+        public override void WriteGuildList<T>(List<T> list)
+        {
+            this.WriteGuildList<T>(list, false);
+        }
+
+        public override void WriteGuildList<T>(List<T> list, bool tidy)
+        {
+            if (tidy)
+            {
+                for (int i = 0; i < list.Count;)
+                {
+                    if (list[i].Disbanded)
+                        list.RemoveAt(i);
+                    else
+                        ++i;
+                }
+            }
+
+            this.Write(list.Count);
+
+            for (int i = 0; i < list.Count; ++i)
+                this.Write(list[i]);
+        }
+
+        public override void Write(HashSet<BaseGuild> set)
+        {
+            this.Write(set, false);
+        }
+
+        public override void Write(HashSet<BaseGuild> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(guild => guild.Disbanded);
+            }
+
+            this.Write(set.Count);
+
+            foreach (BaseGuild guild in set)
+            {
+                this.Write(guild);
+            }
+        }
+
+        public override void WriteGuildSet<T>(HashSet<T> set)
+        {
+            this.WriteGuildSet(set, false);
+        }
+
+        public override void WriteGuildSet<T>(HashSet<T> set, bool tidy)
+        {
+            if (tidy)
+            {
+                set.RemoveWhere(guild => guild.Disbanded);
+            }
+
+            this.Write(set.Count);
+
+            foreach (BaseGuild guild in set)
+            {
+                this.Write(guild);
+            }
+        }
 
         public override void Write(List<BaseCore> list)
         {
-            Write(list, false);
+            this.Write(list, false);
         }
 
         public override void Write(List<BaseCore> list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (list[i].Deleted)
                         list.RemoveAt(i);
@@ -2799,22 +2994,22 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void WriteCoreList<T>(List<T> list)
         {
-            WriteCoreList<T>(list, false);
+            this.WriteCoreList<T>(list, false);
         }
 
         public override void WriteCoreList<T>(List<T> list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (list[i].Deleted)
                         list.RemoveAt(i);
@@ -2823,15 +3018,15 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void Write(HashSet<BaseCore> set)
         {
-            Write(set, false);
+            this.Write(set, false);
         }
 
         public override void Write(HashSet<BaseCore> set, bool tidy)
@@ -2839,15 +3034,15 @@ namespace Server
             if (tidy)
                 set.RemoveWhere(core => core.Deleted);
 
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseCore core in set)
-                Write(core);
+                this.Write(core);
         }
 
         public override void WriteCoreSet<T>(HashSet<T> set)
         {
-            WriteCoreSet(set, false);
+            this.WriteCoreSet(set, false);
         }
 
         public override void WriteCoreSet<T>(HashSet<T> set, bool tidy)
@@ -2855,22 +3050,22 @@ namespace Server
             if (tidy)
                 set.RemoveWhere(core => core.Deleted);
 
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseCore core in set)
-                Write(core);
+                this.Write(core);
         }
 
         public override void Write(List<BaseModule> list)
         {
-            Write(list, false);
+            this.Write(list, false);
         }
 
         public override void Write(List<BaseModule> list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (list[i].Deleted)
                         list.RemoveAt(i);
@@ -2879,22 +3074,22 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void WriteModuleList<T>(List<T> list)
         {
-            WriteModuleList<T>(list, false);
+            this.WriteModuleList<T>(list, false);
         }
 
         public override void WriteModuleList<T>(List<T> list, bool tidy)
         {
             if (tidy)
             {
-                for (int i = 0; i < list.Count; )
+                for (int i = 0; i < list.Count;)
                 {
                     if (list[i].Deleted)
                         list.RemoveAt(i);
@@ -2903,15 +3098,15 @@ namespace Server
                 }
             }
 
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void Write(HashSet<BaseModule> set)
         {
-            Write(set, false);
+            this.Write(set, false);
         }
 
         public override void Write(HashSet<BaseModule> set, bool tidy)
@@ -2919,15 +3114,15 @@ namespace Server
             if (tidy)
                 set.RemoveWhere(module => module.Deleted);
 
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseModule module in set)
-                Write(module);
+                this.Write(module);
         }
 
         public override void WriteModuleSet<T>(HashSet<T> set)
         {
-            WriteModuleSet(set, false);
+            this.WriteModuleSet(set, false);
         }
 
         public override void WriteModuleSet<T>(HashSet<T> set, bool tidy)
@@ -2935,49 +3130,49 @@ namespace Server
             if (tidy)
                 set.RemoveWhere(module => module.Deleted);
 
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseModule module in set)
-                Write(module);
+                this.Write(module);
         }
 
         public override void Write(List<BaseService> list)
         {
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void WriteServiceList<T>(List<T> list)
         {
-            Write(list.Count);
+            this.Write(list.Count);
 
             for (int i = 0; i < list.Count; ++i)
-                Write(list[i]);
+                this.Write(list[i]);
         }
 
         public override void Write(HashSet<BaseService> set)
         {
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseService service in set)
-                Write(service);
+                this.Write(service);
         }
 
         public override void WriteServiceSet<T>(HashSet<T> set)
         {
-            Write(set.Count);
+            this.Write(set.Count);
 
             foreach (BaseService service in set)
-                Write(service);
+                this.Write(service);
         }
-	}
+    }
 
-	public interface ISerializable
-	{
-		int TypeReference { get; }
-		int SerialIdentity { get; }
-		void Serialize( GenericWriter writer );
-	}
+    public interface ISerializable
+    {
+        int TypeReference { get; }
+        int SerialIdentity { get; }
+        void Serialize(GenericWriter writer);
+    }
 }

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using Server;
 using Server.Gumps;
 
 namespace CustomsFramework
 {
-	public class BaseCore : ICustomsEntity, IComparable<BaseCore>, ISerializable
+    public class BaseCore : ICustomsEntity, IComparable<BaseCore>, ISerializable
     {
         #region CompareTo
         public int CompareTo(ICustomsEntity other)
@@ -13,7 +12,7 @@ namespace CustomsFramework
             if (other == null)
                 return -1;
 
-            return _Serial.CompareTo(other.Serial);
+            return this._Serial.CompareTo(other.Serial);
         }
 
         public int CompareTo(BaseCore other)
@@ -28,11 +27,12 @@ namespace CustomsFramework
 
             throw new ArgumentException();
         }
+
         #endregion
 
         public override string ToString()
         {
-            return Name;
+            return this.Name;
         }
 
         internal int _TypeID;
@@ -41,7 +41,7 @@ namespace CustomsFramework
         {
             get
             {
-                return _TypeID;
+                return this._TypeID;
             }
         }
 
@@ -49,7 +49,7 @@ namespace CustomsFramework
         {
             get
             {
-                return _Serial;
+                return this._Serial;
             }
         }
 
@@ -62,11 +62,11 @@ namespace CustomsFramework
         {
             get
             {
-                return _Enabled;
+                return this._Enabled;
             }
             set
             {
-                _Enabled = value;
+                this._Enabled = value;
             }
         }
 
@@ -75,11 +75,11 @@ namespace CustomsFramework
         {
             get
             {
-                return _Deleted;
+                return this._Deleted;
             }
             set
             {
-                _Deleted = value;
+                this._Deleted = value;
             }
         }
 
@@ -88,59 +88,87 @@ namespace CustomsFramework
         {
             get
             {
-                return _Serial;
+                return this._Serial;
             }
             set
             {
-                _Serial = value;
+                this._Serial = value;
             }
         }
 
-        public virtual string Name { get { return @"Base Core"; } }
-        public virtual string Description { get { return @"Base Core, inherit from this class and override the interface items."; } }
-        public virtual string Version { get { return "1.0"; } }
-        public virtual AccessLevel EditLevel { get { return AccessLevel.Developer; } }
-        public virtual Gump SettingsGump { get { return null; } }
+        public virtual string Name
+        {
+            get
+            {
+                return @"Base Core";
+            }
+        }
+        public virtual string Description
+        {
+            get
+            {
+                return @"Base Core, inherit from this class and override the interface items.";
+            }
+        }
+        public virtual string Version
+        {
+            get
+            {
+                return "1.0";
+            }
+        }
+        public virtual AccessLevel EditLevel
+        {
+            get
+            {
+                return AccessLevel.Developer;
+            }
+        }
+        public virtual Gump SettingsGump
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         public BaseCore(CustomSerial serial)
         {
-            _Serial = serial;
+            this._Serial = serial;
             
             Type coreType = this.GetType();
-            _TypeID = World._CoreTypes.IndexOf(coreType);
+            this._TypeID = World._CoreTypes.IndexOf(coreType);
 
-            if (_TypeID == -1)
+            if (this._TypeID == -1)
             {
                 World._CoreTypes.Add(coreType);
-                _TypeID = World._CoreTypes.Count -1;
+                this._TypeID = World._CoreTypes.Count - 1;
             }
         }
 
         public BaseCore()
         {
-            _Serial = CustomSerial.NewCore;
+            this._Serial = CustomSerial.NewCore;
 
             World.AddCore(this);
 
             Type coreType = this.GetType();
-            _TypeID = World._CoreTypes.IndexOf(coreType);
+            this._TypeID = World._CoreTypes.IndexOf(coreType);
 
-            if (_TypeID == -1)
+            if (this._TypeID == -1)
             {
                 World._CoreTypes.Add(coreType);
-                _TypeID = World._CoreTypes.Count - 1;
+                this._TypeID = World._CoreTypes.Count - 1;
             }
             Console.WriteLine("A Core has been created.");
         }
 
         public virtual void Prep()
         {
-
         }
 
         public virtual void Delete()
         {
-
         }
 
         public virtual void Serialize(GenericWriter writer)
@@ -148,8 +176,8 @@ namespace CustomsFramework
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_Deleted);
-            writer.Write(_Enabled);
+            writer.Write(this._Deleted);
+            writer.Write(this._Enabled);
         }
 
         public virtual void Deserialize(GenericReader reader)
@@ -160,11 +188,11 @@ namespace CustomsFramework
             {
                 case 0:
                     {
-                        _Deleted = reader.ReadBool();
-                        _Enabled = reader.ReadBool();
+                        this._Deleted = reader.ReadBool();
+                        this._Enabled = reader.ReadBool();
                         break;
                     }
             }
         }
-	}
+    }
 }

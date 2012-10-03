@@ -1,111 +1,108 @@
 using System;
-using System.Collections;
-using Server;
-using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName("an interred grizzle corpse")]
-	public class InterredGrizzle  : BaseCreature
-	{
-		[Constructable]
-		public  InterredGrizzle () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Name = "an interred grizzle";
-			Body = 259;
+    [CorpseName("an interred grizzle corpse")]
+    public class InterredGrizzle : BaseCreature
+    {
+        [Constructable]
+        public InterredGrizzle() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            this.Name = "an interred grizzle";
+            this.Body = 259;
 
-			SetStr( 451, 500 );
-			SetDex( 201, 250 );
-			SetInt( 801, 850 );
+            this.SetStr(451, 500);
+            this.SetDex(201, 250);
+            this.SetInt(801, 850);
 
-			SetHits( 1500 );
-			SetStam( 150 );
+            this.SetHits(1500);
+            this.SetStam(150);
 
-			SetDamage( 16, 19 );
+            this.SetDamage(16, 19);
 
-			SetDamageType( ResistanceType.Physical, 30 );
-			SetDamageType( ResistanceType.Fire, 70 );
+            this.SetDamageType(ResistanceType.Physical, 30);
+            this.SetDamageType(ResistanceType.Fire, 70);
 
-			SetResistance( ResistanceType.Physical, 35, 55 );
-			SetResistance( ResistanceType.Fire, 20, 65 );
-			SetResistance( ResistanceType.Cold, 55, 80 );
-			SetResistance( ResistanceType.Poison, 20, 35 );
-			SetResistance( ResistanceType.Energy, 60, 80 );
+            this.SetResistance(ResistanceType.Physical, 35, 55);
+            this.SetResistance(ResistanceType.Fire, 20, 65);
+            this.SetResistance(ResistanceType.Cold, 55, 80);
+            this.SetResistance(ResistanceType.Poison, 20, 35);
+            this.SetResistance(ResistanceType.Energy, 60, 80);
 
-			SetSkill(SkillName.Meditation, 77.7, 84.0 );
-			SetSkill(SkillName.EvalInt, 72.2, 79.6 );
-			SetSkill(SkillName.Magery, 83.7, 89.6);
-			SetSkill(SkillName.Poisoning, 0 );
-			SetSkill(SkillName.Anatomy, 0 );
-			SetSkill( SkillName.MagicResist, 80.2, 87.3 );
-			SetSkill( SkillName.Tactics, 104.5, 105.1 );
-			SetSkill( SkillName.Wrestling, 105.1, 109.4 );
+            this.SetSkill(SkillName.Meditation, 77.7, 84.0);
+            this.SetSkill(SkillName.EvalInt, 72.2, 79.6);
+            this.SetSkill(SkillName.Magery, 83.7, 89.6);
+            this.SetSkill(SkillName.Poisoning, 0);
+            this.SetSkill(SkillName.Anatomy, 0);
+            this.SetSkill(SkillName.MagicResist, 80.2, 87.3);
+            this.SetSkill(SkillName.Tactics, 104.5, 105.1);
+            this.SetSkill(SkillName.Wrestling, 105.1, 109.4);
 
-			Fame = 3700;  // Guessed
-			Karma = -3700;  // Guessed
-		}
+            this.Fame = 3700;  // Guessed
+            this.Karma = -3700;  // Guessed
+        }
 
-		public override void GenerateLoot() // -- Need to verify
-		{
-			AddLoot( LootPack.FilthyRich );
-		}
+        public override void GenerateLoot() // -- Need to verify
+        {
+            this.AddLoot(LootPack.FilthyRich);
+        }
 
-		// TODO: Acid Blood
-		/*
-		 * Message: 1070820
-		 * Spits pool of acid (blood, hue 0x3F), hits lost 6-10 per second/step
-		 * Damage is resistable (physical)
-		 * Acid last 10 seconds
-		 */
+        // TODO: Acid Blood
+        /*
+        * Message: 1070820
+        * Spits pool of acid (blood, hue 0x3F), hits lost 6-10 per second/step
+        * Damage is resistable (physical)
+        * Acid last 10 seconds
+        */
 		 
-		public override int GetAngerSound()
-		{
-			return 0x581;
-		}
+        public override int GetAngerSound()
+        {
+            return 0x581;
+        }
 
-		public override int GetIdleSound()
-		{
-			return 0x582;
-		}
+        public override int GetIdleSound()
+        {
+            return 0x582;
+        }
 
-		public override int GetAttackSound()
-		{
-			return 0x580;
-		}
+        public override int GetAttackSound()
+        {
+            return 0x580;
+        }
 
-		public override int GetHurtSound()
-		{
-			return 0x583;
-		}
+        public override int GetHurtSound()
+        {
+            return 0x583;
+        }
 
-		public override int GetDeathSound()
-		{
-			return 0x584;
-		}
+        public override int GetDeathSound()
+        {
+            return 0x584;
+        }
 
-		/*
-		public override bool OnBeforeDeath()
-		{
-			SpillAcid( 1, 4, 10, 6, 10 );
+        /*
+        public override bool OnBeforeDeath()
+        {
+        SpillAcid( 1, 4, 10, 6, 10 );
 
-			return base.OnBeforeDeath();
-		}
-		*/
+        return base.OnBeforeDeath();
+        }
+        */
 
-		public  InterredGrizzle ( Serial serial ) : base( serial )
-		{
-		}
+        public InterredGrizzle(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write((int)0);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+            int version = reader.ReadInt();
+        }
+    }
 }

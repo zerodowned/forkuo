@@ -1,24 +1,24 @@
 using System;
-using Server;
 
 namespace Server.Items
 {
-	interface IDurability
-	{
-		bool CanFortify { get; }
+    interface IDurability
+    {
+        bool CanFortify { get; }
 
-		int InitMinHits { get; }
-		int InitMaxHits { get; }
+        int InitMinHits { get; }
+        int InitMaxHits { get; }
 
-		int HitPoints { get; set; }
-		int MaxHitPoints { get; set; }
+        int HitPoints { get; set; }
+        int MaxHitPoints { get; set; }
 
-		void ScaleDurability();
-		void UnscaleDurability();
-	}
+        void ScaleDurability();
 
-	interface IWearableDurability : IDurability
-	{
-		int OnHit( BaseWeapon weapon, int damageTaken );
-	}
+        void UnscaleDurability();
+    }
+
+    interface IWearableDurability : IDurability
+    {
+        int OnHit(BaseWeapon weapon, int damageTaken);
+    }
 }

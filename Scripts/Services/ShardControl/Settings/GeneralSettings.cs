@@ -12,20 +12,20 @@ namespace CustomsFramework.Systems.ShardControl
         private string _Address;
         private int _Port;
         private Expansion _Expansion;
-        private AccessLevel _MaxPlayerLevel;
-        private AccessLevel _LowestStaffLevel;
-        private AccessLevel _LowestOwnerLevel;
+        private readonly AccessLevel _MaxPlayerLevel;
+        private readonly AccessLevel _LowestStaffLevel;
+        private readonly AccessLevel _LowestOwnerLevel;
 
         [CommandProperty(AccessLevel.Owner)]
         public string ShardName
         {
             get
             {
-                return _ShardName;
+                return this._ShardName;
             }
             set
             {
-                _ShardName = value;
+                this._ShardName = value;
             }
         }
 
@@ -34,11 +34,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _AutoDetect;
+                return this._AutoDetect;
             }
             set
             {
-                _AutoDetect = value;
+                this._AutoDetect = value;
             }
         }
 
@@ -47,11 +47,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _Address;
+                return this._Address;
             }
             set
             {
-                _Address = value;
+                this._Address = value;
             }
         }
 
@@ -60,11 +60,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _Port;
+                return this._Port;
             }
             set
             {
-                _Port = value;
+                this._Port = value;
             }
         }
 
@@ -73,11 +73,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _Expansion;
+                return this._Expansion;
             }
             set
             {
-                _Expansion = value;
+                this._Expansion = value;
             }
         }
         #endregion
@@ -85,11 +85,11 @@ namespace CustomsFramework.Systems.ShardControl
         public GeneralSettings(string shardName = "My Shard", bool autoDetect = true,
             string address = null, int port = 2593, Expansion expansion = Expansion.SA)
         {
-            _ShardName = shardName;
-            _AutoDetect = autoDetect;
-            _Address = address;
-            _Port = port;
-            _Expansion = expansion;
+            this._ShardName = shardName;
+            this._AutoDetect = autoDetect;
+            this._Address = address;
+            this._Port = port;
+            this._Expansion = expansion;
         }
 
         public override void Serialize(GenericWriter writer)
@@ -97,16 +97,16 @@ namespace CustomsFramework.Systems.ShardControl
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_ShardName);
-            writer.Write(_AutoDetect);
-            writer.Write(_Address);
-            writer.Write(_Port);
-            writer.Write((byte)_Expansion);
+            writer.Write(this._ShardName);
+            writer.Write(this._AutoDetect);
+            writer.Write(this._Address);
+            writer.Write(this._Port);
+            writer.Write((byte)this._Expansion);
         }
 
         public GeneralSettings(GenericReader reader)
         {
-            Deserialize(reader);
+            this.Deserialize(reader);
         }
 
         protected sealed override void Deserialize(GenericReader reader)
@@ -117,11 +117,11 @@ namespace CustomsFramework.Systems.ShardControl
             {
                 case 0:
                     {
-                        _ShardName = reader.ReadString();
-                        _AutoDetect = reader.ReadBool();
-                        _Address = reader.ReadString();
-                        _Port = reader.ReadInt();
-                        _Expansion = (Expansion)reader.ReadByte();
+                        this._ShardName = reader.ReadString();
+                        this._AutoDetect = reader.ReadBool();
+                        this._Address = reader.ReadString();
+                        this._Port = reader.ReadInt();
+                        this._Expansion = (Expansion)reader.ReadByte();
                         break;
                     }
             }
@@ -131,5 +131,5 @@ namespace CustomsFramework.Systems.ShardControl
         {
             return @"General Settings";
         }
-	}
+    }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using Server;
-using Server.Mobiles;
 using Server.Commands;
+using Server.Mobiles;
 
 namespace CustomsFramework.Systems.VIPSystem
 {

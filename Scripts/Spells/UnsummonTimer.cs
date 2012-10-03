@@ -3,22 +3,22 @@ using Server.Mobiles;
 
 namespace Server.Spells
 {
-	class UnsummonTimer : Timer
-	{
-		private BaseCreature m_Creature;
-		private Mobile m_Caster;
+    class UnsummonTimer : Timer
+    {
+        private readonly BaseCreature m_Creature;
+        private readonly Mobile m_Caster;
 
-		public UnsummonTimer( Mobile caster, BaseCreature creature, TimeSpan delay ) : base( delay )
-		{
-			m_Caster = caster;
-			m_Creature = creature;
-			Priority = TimerPriority.OneSecond;
-		}
+        public UnsummonTimer(Mobile caster, BaseCreature creature, TimeSpan delay) : base(delay)
+        {
+            this.m_Caster = caster;
+            this.m_Creature = creature;
+            this.Priority = TimerPriority.OneSecond;
+        }
 
-		protected override void OnTick()
-		{
-			if ( !m_Creature.Deleted )
-				m_Creature.Delete();
-		}
-	}
+        protected override void OnTick()
+        {
+            if (!this.m_Creature.Deleted)
+                this.m_Creature.Delete();
+        }
+    }
 }

@@ -1,187 +1,196 @@
 using System;
-using System.Collections;
-using Server;
-using Server.Gumps;
-using Server.Multis;
-using Server.Targeting;
 using System.Collections.Generic;
 using Server.ContextMenus;
+using Server.Gumps;
+using Server.Multis;
 
 namespace Server.Items
 {
-	public class HouseTeleporter : Item, ISecurable
-	{
-		private Item m_Target;
-		private SecureLevel m_Level;
+    public class HouseTeleporter : Item, ISecurable
+    {
+        private Item m_Target;
+        private SecureLevel m_Level;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Item Target
-		{
-			get{ return m_Target; }
-			set{ m_Target = value; }
-		}
+        [CommandProperty(AccessLevel.GameMaster)]
+        public Item Target
+        {
+            get
+            {
+                return this.m_Target;
+            }
+            set
+            {
+                this.m_Target = value;
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get{ return m_Level; }
-			set{ m_Level = value; }
-		}
+        [CommandProperty(AccessLevel.GameMaster)]
+        public SecureLevel Level
+        {
+            get
+            {
+                return this.m_Level;
+            }
+            set
+            {
+                this.m_Level = value;
+            }
+        }
 
-		[Constructable]
-		public HouseTeleporter( int itemID ) : this( itemID, null )
-		{
-		}
+        [Constructable]
+        public HouseTeleporter(int itemID) : this(itemID, null)
+        {
+        }
 
-		public HouseTeleporter( int itemID, Item target ) : base( itemID )
-		{
-			Movable = false;
+        public HouseTeleporter(int itemID, Item target) : base(itemID)
+        {
+            this.Movable = false;
 
-			m_Level = SecureLevel.Anyone;
+            this.m_Level = SecureLevel.Anyone;
 
-			m_Target = target;
-		}
+            this.m_Target = target;
+        }
 
-		public bool CheckAccess( Mobile m )
-		{
-			BaseHouse house = BaseHouse.FindHouseAt( this );
+        public bool CheckAccess(Mobile m)
+        {
+            BaseHouse house = BaseHouse.FindHouseAt(this);
 
-			if ( house != null && (house.Public ? house.IsBanned( m ) : !house.HasAccess( m )) )
-				return false;
+            if (house != null && (house.Public ? house.IsBanned(m) : !house.HasAccess(m)))
+                return false;
 
-			return ( house != null && house.HasSecureAccess( m, m_Level ) );
-		}
+            return (house != null && house.HasSecureAccess(m, this.m_Level));
+        }
 
-		public override bool OnMoveOver( Mobile m )
-		{
-			if ( m_Target != null && !m_Target.Deleted )
-			{
-				if ( CheckAccess( m ) )
-				{
-					if ( !m.Hidden || m.IsPlayer() )
-						new EffectTimer( Location, Map, 2023, 0x1F0, TimeSpan.FromSeconds( 0.4 ) ).Start();
+        public override bool OnMoveOver(Mobile m)
+        {
+            if (this.m_Target != null && !this.m_Target.Deleted)
+            {
+                if (this.CheckAccess(m))
+                {
+                    if (!m.Hidden || m.IsPlayer())
+                        new EffectTimer(this.Location, this.Map, 2023, 0x1F0, TimeSpan.FromSeconds(0.4)).Start();
 
-					new DelayTimer( this, m ).Start();
-				}
-				else
-				{
-					m.SendLocalizedMessage( 1061637 ); // You are not allowed to access this.
-				}
-			}
+                    new DelayTimer(this, m).Start();
+                }
+                else
+                {
+                    m.SendLocalizedMessage(1061637); // You are not allowed to access this.
+                }
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
-			SetSecureLevelEntry.AddTo( from, this, list );
-		}
+        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        {
+            base.GetContextMenuEntries(from, list);
+            SetSecureLevelEntry.AddTo(from, this, list);
+        }
 
-		public HouseTeleporter( Serial serial ) : base( serial )
-		{
-		}
+        public HouseTeleporter(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.Write( (int) 1 ); // version
+            writer.Write((int)1); // version
 
-			writer.Write( (int) m_Level );
+            writer.Write((int)this.m_Level);
 
-			writer.Write( (Item) m_Target );
-		}
+            writer.Write((Item)this.m_Target);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+            int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 1:
-				{
-					m_Level = (SecureLevel)reader.ReadInt();
-					goto case 0;
-				}
-				case 0:
-				{
-					m_Target = reader.ReadItem();
+            switch ( version )
+            {
+                case 1:
+                    {
+                        this.m_Level = (SecureLevel)reader.ReadInt();
+                        goto case 0;
+                    }
+                case 0:
+                    {
+                        this.m_Target = reader.ReadItem();
 
-					if ( version < 0 )
-						m_Level = SecureLevel.Anyone;
+                        if (version < 0)
+                            this.m_Level = SecureLevel.Anyone;
 
-					break;
-				}
-			}
-		}
+                        break;
+                    }
+            }
+        }
 
-		private class EffectTimer : Timer
-		{
-			private Point3D m_Location;
-			private Map m_Map;
-			private int m_EffectID;
-			private int m_SoundID;
+        private class EffectTimer : Timer
+        {
+            private readonly Point3D m_Location;
+            private readonly Map m_Map;
+            private readonly int m_EffectID;
+            private readonly int m_SoundID;
 
-			public EffectTimer( Point3D p, Map map, int effectID, int soundID, TimeSpan delay ) : base( delay )
-			{
-				m_Location = p;
-				m_Map = map;
-				m_EffectID = effectID;
-				m_SoundID = soundID;
-			}
+            public EffectTimer(Point3D p, Map map, int effectID, int soundID, TimeSpan delay) : base(delay)
+            {
+                this.m_Location = p;
+                this.m_Map = map;
+                this.m_EffectID = effectID;
+                this.m_SoundID = soundID;
+            }
 
-			protected override void OnTick()
-			{
-				Effects.SendLocationParticles( EffectItem.Create( m_Location, m_Map, EffectItem.DefaultDuration ), 0x3728, 10, 10, m_EffectID, 0 );
+            protected override void OnTick()
+            {
+                Effects.SendLocationParticles(EffectItem.Create(this.m_Location, this.m_Map, EffectItem.DefaultDuration), 0x3728, 10, 10, this.m_EffectID, 0);
 
-				if ( m_SoundID != -1 )
-					Effects.PlaySound( m_Location, m_Map, m_SoundID );
-			}
-		}
+                if (this.m_SoundID != -1)
+                    Effects.PlaySound(this.m_Location, this.m_Map, this.m_SoundID);
+            }
+        }
 
-		private class DelayTimer : Timer
-		{
-			private HouseTeleporter m_Teleporter;
-			private Mobile m_Mobile;
+        private class DelayTimer : Timer
+        {
+            private readonly HouseTeleporter m_Teleporter;
+            private readonly Mobile m_Mobile;
 
-			public DelayTimer( HouseTeleporter tp, Mobile m ) : base( TimeSpan.FromSeconds( 1.0 ) )
-			{
-				m_Teleporter = tp;
-				m_Mobile = m;
-			}
+            public DelayTimer(HouseTeleporter tp, Mobile m) : base(TimeSpan.FromSeconds(1.0))
+            {
+                this.m_Teleporter = tp;
+                this.m_Mobile = m;
+            }
 
-			protected override void OnTick()
-			{
-				Item target = m_Teleporter.m_Target;
+            protected override void OnTick()
+            {
+                Item target = this.m_Teleporter.m_Target;
 
-				if ( target != null && !target.Deleted )
-				{
-					Mobile m = m_Mobile;
+                if (target != null && !target.Deleted)
+                {
+                    Mobile m = this.m_Mobile;
 
-					if ( m.Location == m_Teleporter.Location && m.Map == m_Teleporter.Map )
-					{
-						Point3D p = target.GetWorldTop();
-						Map map = target.Map;
+                    if (m.Location == this.m_Teleporter.Location && m.Map == this.m_Teleporter.Map)
+                    {
+                        Point3D p = target.GetWorldTop();
+                        Map map = target.Map;
 
-						Server.Mobiles.BaseCreature.TeleportPets( m, p, map );
+                        Server.Mobiles.BaseCreature.TeleportPets(m, p, map);
 
-						m.MoveToWorld( p, map );
+                        m.MoveToWorld(p, map);
 
-						if ( !m.Hidden || m.IsPlayer() )
-						{
-							Effects.PlaySound( target.Location, target.Map, 0x1FE );
+                        if (!m.Hidden || m.IsPlayer())
+                        {
+                            Effects.PlaySound(target.Location, target.Map, 0x1FE);
 
-							Effects.SendLocationParticles( EffectItem.Create( m_Teleporter.Location, m_Teleporter.Map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 2023, 0 );
-							Effects.SendLocationParticles( EffectItem.Create( target.Location, target.Map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 5023, 0 );
+                            Effects.SendLocationParticles(EffectItem.Create(this.m_Teleporter.Location, this.m_Teleporter.Map, EffectItem.DefaultDuration), 0x3728, 10, 10, 2023, 0);
+                            Effects.SendLocationParticles(EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration), 0x3728, 10, 10, 5023, 0);
 
-							new EffectTimer( target.Location, target.Map, 2023, -1, TimeSpan.FromSeconds( 0.4 ) ).Start();
-						}
-					}
-				}
-			}
-		}
-	}
+                            new EffectTimer(target.Location, target.Map, 2023, -1, TimeSpan.FromSeconds(0.4)).Start();
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

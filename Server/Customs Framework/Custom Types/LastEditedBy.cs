@@ -13,11 +13,11 @@ namespace Server
         {
             get
             {
-                return _Mobile;
+                return this._Mobile;
             }
             set
             {
-                _Mobile = value;
+                this._Mobile = value;
             }
         }
 
@@ -26,18 +26,18 @@ namespace Server
         {
             get
             {
-                return _Time;
+                return this._Time;
             }
             set
             {
-                _Time = value;
+                this._Time = value;
             }
         }
 
         public LastEditedBy(Mobile mobile)
         {
-            _Mobile = mobile;
-            _Time = DateTime.Now;
+            this._Mobile = mobile;
+            this._Time = DateTime.Now;
         }
 
         public void Serialize(GenericWriter writer)
@@ -45,13 +45,13 @@ namespace Server
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_Mobile);
-            writer.Write(_Time);
+            writer.Write(this._Mobile);
+            writer.Write(this._Time);
         }
 
         public LastEditedBy(GenericReader reader)
         {
-            Deserialize(reader);
+            this.Deserialize(reader);
         }
 
         private void Deserialize(GenericReader reader)
@@ -62,8 +62,8 @@ namespace Server
             {
                 case 0:
                     {
-                        _Mobile = reader.ReadMobile();
-                        _Time = reader.ReadDateTime();
+                        this._Mobile = reader.ReadMobile();
+                        this._Time = reader.ReadDateTime();
                         break;
                     }
             }

@@ -13,20 +13,18 @@ namespace CustomsFramework.Systems.VIPSystem
         }
 
         [Constructable(AccessLevel.Developer)]
-        public SilverVIPDeed()
-            : base()
+        public SilverVIPDeed() : base()
         {
-            Hue = 2407;
-            Tier = VIPTier.Silver;
-            Bonuses.FullLRC.Enabled = true;
-            Bonuses.BankIncrease.Enabled = true;
-            Bonuses.LifeStoneNoUses.Enabled = true;
-            Bonuses.LootGoldFromGround.Enabled = true;
-            Bonuses.DoubleResources.Enabled = true;
+            this.Hue = 2407;
+            this.Tier = VIPTier.Silver;
+            this.Bonuses.FullLRC.Enabled = true;
+            this.Bonuses.BankIncrease.Enabled = true;
+            this.Bonuses.LifeStoneNoUses.Enabled = true;
+            this.Bonuses.LootGoldFromGround.Enabled = true;
+            this.Bonuses.DoubleResources.Enabled = true;
         }
 
-        public SilverVIPDeed(Serial serial)
-            : base(serial)
+        public SilverVIPDeed(Serial serial) : base(serial)
         {
         }
 
@@ -47,7 +45,6 @@ namespace CustomsFramework.Systems.VIPSystem
             {
                 case 0:
                     {
-
                         break;
                     }
             }

@@ -1,72 +1,95 @@
 using System;
-using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an alligator corpse" )]
-	public class Alligator : BaseCreature
-	{
-		[Constructable]
-		public Alligator() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Name = "an alligator";
-			Body = 0xCA;
-			BaseSoundID = 660;
+    [CorpseName("an alligator corpse")]
+    public class Alligator : BaseCreature
+    {
+        [Constructable]
+        public Alligator() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            this.Name = "an alligator";
+            this.Body = 0xCA;
+            this.BaseSoundID = 660;
 
-			SetStr( 76, 100 );
-			SetDex( 6, 25 );
-			SetInt( 11, 20 );
+            this.SetStr(76, 100);
+            this.SetDex(6, 25);
+            this.SetInt(11, 20);
 
-			SetHits( 46, 60 );
-			SetStam( 46, 65 );
-			SetMana( 0 );
+            this.SetHits(46, 60);
+            this.SetStam(46, 65);
+            this.SetMana(0);
 
-			SetDamage( 5, 15 );
+            this.SetDamage(5, 15);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+            this.SetDamageType(ResistanceType.Physical, 100);
 
-			SetResistance( ResistanceType.Physical, 25, 35 );
-			SetResistance( ResistanceType.Fire, 5, 10 );
-			SetResistance( ResistanceType.Poison, 5, 10 );
+            this.SetResistance(ResistanceType.Physical, 25, 35);
+            this.SetResistance(ResistanceType.Fire, 5, 10);
+            this.SetResistance(ResistanceType.Poison, 5, 10);
 
-			SetSkill( SkillName.MagicResist, 25.1, 40.0 );
-			SetSkill( SkillName.Tactics, 40.1, 60.0 );
-			SetSkill( SkillName.Wrestling, 40.1, 60.0 );
+            this.SetSkill(SkillName.MagicResist, 25.1, 40.0);
+            this.SetSkill(SkillName.Tactics, 40.1, 60.0);
+            this.SetSkill(SkillName.Wrestling, 40.1, 60.0);
 
-			Fame = 600;
-			Karma = -600;
+            this.Fame = 600;
+            this.Karma = -600;
 
-			VirtualArmor = 30;
+            this.VirtualArmor = 30;
 
-			Tamable = true;
-			ControlSlots = 1;
-			MinTameSkill = 47.1;
-		}
+            this.Tamable = true;
+            this.ControlSlots = 1;
+            this.MinTameSkill = 47.1;
+        }
 
-		public override int Meat{ get{ return 1; } }
-		public override int Hides{ get{ return 12; } }
-		public override HideType HideType{ get{ return HideType.Spined; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Fish; } }
+        public override int Meat
+        {
+            get
+            {
+                return 1;
+            }
+        }
+        public override int Hides
+        {
+            get
+            {
+                return 12;
+            }
+        }
+        public override HideType HideType
+        {
+            get
+            {
+                return HideType.Spined;
+            }
+        }
+        public override FoodType FavoriteFood
+        {
+            get
+            {
+                return FoodType.Meat | FoodType.Fish;
+            }
+        }
 
-		public Alligator(Serial serial) : base(serial)
-		{
-		}
+        public Alligator(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.Write((int) 0);
-		}
+            writer.Write((int)0);
+        }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+            int version = reader.ReadInt();
 
-			if ( BaseSoundID == 0x5A )
-				BaseSoundID = 660;
-		}
-	}
+            if (this.BaseSoundID == 0x5A)
+                this.BaseSoundID = 660;
+        }
+    }
 }

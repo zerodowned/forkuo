@@ -1,280 +1,378 @@
 using System;
-using System.Collections;
-using Server;
-using Server.Items;
 using System.Collections.Generic;
+using Server.Items;
 
 namespace Server.Engines.BulkOrders
 {
-	[TypeAlias( "Scripts.Engines.BulkOrders.SmallBOD" )]
-	public abstract class SmallBOD : Item
-	{
-		private int m_AmountCur, m_AmountMax;
-		private Type m_Type;
-		private int m_Number;
-		private int m_Graphic;
-		private bool m_RequireExceptional;
-		private BulkMaterialType m_Material;
+    [TypeAlias("Scripts.Engines.BulkOrders.SmallBOD")]
+    public abstract class SmallBOD : Item
+    {
+        private int m_AmountCur, m_AmountMax;
+        private Type m_Type;
+        private int m_Number;
+        private int m_Graphic;
+        private bool m_RequireExceptional;
+        private BulkMaterialType m_Material;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int AmountCur{ get{ return m_AmountCur; } set{ m_AmountCur = value; InvalidateProperties(); } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int AmountCur
+        {
+            get
+            {
+                return this.m_AmountCur;
+            }
+            set
+            {
+                this.m_AmountCur = value;
+                this.InvalidateProperties();
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int AmountMax{ get{ return m_AmountMax; } set{ m_AmountMax = value; InvalidateProperties(); } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int AmountMax
+        {
+            get
+            {
+                return this.m_AmountMax;
+            }
+            set
+            {
+                this.m_AmountMax = value;
+                this.InvalidateProperties();
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Type Type{ get{ return m_Type; } set{ m_Type = value; } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public Type Type
+        {
+            get
+            {
+                return this.m_Type;
+            }
+            set
+            {
+                this.m_Type = value;
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Number{ get{ return m_Number; } set{ m_Number = value; InvalidateProperties(); } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Number
+        {
+            get
+            {
+                return this.m_Number;
+            }
+            set
+            {
+                this.m_Number = value;
+                this.InvalidateProperties();
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Graphic{ get{ return m_Graphic; } set{ m_Graphic = value; } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Graphic
+        {
+            get
+            {
+                return this.m_Graphic;
+            }
+            set
+            {
+                this.m_Graphic = value;
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool RequireExceptional{ get{ return m_RequireExceptional; } set{ m_RequireExceptional = value; InvalidateProperties(); } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool RequireExceptional
+        {
+            get
+            {
+                return this.m_RequireExceptional;
+            }
+            set
+            {
+                this.m_RequireExceptional = value;
+                this.InvalidateProperties();
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public BulkMaterialType Material{ get{ return m_Material; } set{ m_Material = value; InvalidateProperties(); } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public BulkMaterialType Material
+        {
+            get
+            {
+                return this.m_Material;
+            }
+            set
+            {
+                this.m_Material = value;
+                this.InvalidateProperties();
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Complete{ get{ return ( m_AmountCur == m_AmountMax ); } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool Complete
+        {
+            get
+            {
+                return (this.m_AmountCur == this.m_AmountMax);
+            }
+        }
 
-		public override int LabelNumber{ get{ return 1045151; } } // a bulk order deed
+        public override int LabelNumber
+        {
+            get
+            {
+                return 1045151;
+            }
+        }// a bulk order deed
 
-		[Constructable]
-		public SmallBOD( int hue, int amountMax, Type type, int number, int graphic, bool requireExeptional, BulkMaterialType material ) : base( Core.AOS ? 0x2258 : 0x14EF )
-		{
-			Weight = 1.0;
-			Hue = hue; // Blacksmith: 0x44E; Tailoring: 0x483
-			LootType = LootType.Blessed;
+        [Constructable]
+        public SmallBOD(int hue, int amountMax, Type type, int number, int graphic, bool requireExeptional, BulkMaterialType material) : base(Core.AOS ? 0x2258 : 0x14EF)
+        {
+            this.Weight = 1.0;
+            this.Hue = hue; // Blacksmith: 0x44E; Tailoring: 0x483
+            this.LootType = LootType.Blessed;
 
-			m_AmountMax = amountMax;
-			m_Type = type;
-			m_Number = number;
-			m_Graphic = graphic;
-			m_RequireExceptional = requireExeptional;
-			m_Material = material;
-		}
+            this.m_AmountMax = amountMax;
+            this.m_Type = type;
+            this.m_Number = number;
+            this.m_Graphic = graphic;
+            this.m_RequireExceptional = requireExeptional;
+            this.m_Material = material;
+        }
 
-		public SmallBOD() : base( Core.AOS ? 0x2258 : 0x14EF )
-		{
-			Weight = 1.0;
-			LootType = LootType.Blessed;
-		}
+        public SmallBOD() : base(Core.AOS ? 0x2258 : 0x14EF)
+        {
+            this.Weight = 1.0;
+            this.LootType = LootType.Blessed;
+        }
 
-		public static BulkMaterialType GetRandomMaterial( BulkMaterialType start, double[] chances )
-		{
-			double random = Utility.RandomDouble();
+        public static BulkMaterialType GetRandomMaterial(BulkMaterialType start, double[] chances)
+        {
+            double random = Utility.RandomDouble();
 
-			for ( int i = 0; i < chances.Length; ++i )
-			{
-				if ( random < chances[i] )
-					return ( i == 0 ? BulkMaterialType.None : start + (i - 1) );
+            for (int i = 0; i < chances.Length; ++i)
+            {
+                if (random < chances[i])
+                    return (i == 0 ? BulkMaterialType.None : start + (i - 1));
 
-				random -= chances[i];
-			}
+                random -= chances[i];
+            }
 
-			return BulkMaterialType.None;
-		}
+            return BulkMaterialType.None;
+        }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+        public override void GetProperties(ObjectPropertyList list)
+        {
+            base.GetProperties(list);
 
-			list.Add( 1060654 ); // small bulk order
+            list.Add(1060654); // small bulk order
 
-			if ( m_RequireExceptional )
-				list.Add( 1045141 ); // All items must be exceptional.
+            if (this.m_RequireExceptional)
+                list.Add(1045141); // All items must be exceptional.
 
-			if ( m_Material != BulkMaterialType.None )
-				list.Add( SmallBODGump.GetMaterialNumberFor( m_Material ) ); // All items must be made with x material.
+            if (this.m_Material != BulkMaterialType.None)
+                list.Add(SmallBODGump.GetMaterialNumberFor(this.m_Material)); // All items must be made with x material.
 
-			list.Add( 1060656, m_AmountMax.ToString() ); // amount to make: ~1_val~
-			list.Add( 1060658, "#{0}\t{1}", m_Number, m_AmountCur ); // ~1_val~: ~2_val~
-		}
+            list.Add(1060656, this.m_AmountMax.ToString()); // amount to make: ~1_val~
+            list.Add(1060658, "#{0}\t{1}", this.m_Number, this.m_AmountCur); // ~1_val~: ~2_val~
+        }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( IsChildOf( from.Backpack ) )
-				from.SendGump( new SmallBODGump( from, this ) );
-			else
-				from.SendLocalizedMessage( 1045156 ); // You must have the deed in your backpack to use it.
-		}
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (this.IsChildOf(from.Backpack))
+                from.SendGump(new SmallBODGump(from, this));
+            else
+                from.SendLocalizedMessage(1045156); // You must have the deed in your backpack to use it.
+        }
 
-		public void BeginCombine( Mobile from )
-		{
-			if ( m_AmountCur < m_AmountMax )
-				from.Target = new SmallBODTarget( this );
-			else
-				from.SendLocalizedMessage( 1045166 ); // The maximum amount of requested items have already been combined to this deed.
-		}
+        public void BeginCombine(Mobile from)
+        {
+            if (this.m_AmountCur < this.m_AmountMax)
+                from.Target = new SmallBODTarget(this);
+            else
+                from.SendLocalizedMessage(1045166); // The maximum amount of requested items have already been combined to this deed.
+        }
 
-		public abstract List<Item> ComputeRewards( bool full );
-		public abstract int ComputeGold();
-		public abstract int ComputeFame();
+        public abstract List<Item> ComputeRewards(bool full);
 
-		public virtual void GetRewards( out Item reward, out int gold, out int fame )
-		{
-			reward = null;
-			gold = ComputeGold();
-			fame = ComputeFame();
+        public abstract int ComputeGold();
 
-			List<Item> rewards = ComputeRewards( false );
+        public abstract int ComputeFame();
 
-			if ( rewards.Count > 0 )
-			{
-				reward = rewards[Utility.Random( rewards.Count )];
+        public virtual void GetRewards(out Item reward, out int gold, out int fame)
+        {
+            reward = null;
+            gold = this.ComputeGold();
+            fame = this.ComputeFame();
 
-				for ( int i = 0; i < rewards.Count; ++i )
-				{
-					if ( rewards[i] != reward )
-						rewards[i].Delete();
-				}
-			}
-		}
+            List<Item> rewards = this.ComputeRewards(false);
 
-		public static BulkMaterialType GetMaterial( CraftResource resource )
-		{
-			switch ( resource )
-			{
-				case CraftResource.DullCopper:		return BulkMaterialType.DullCopper;
-				case CraftResource.ShadowIron:		return BulkMaterialType.ShadowIron;
-				case CraftResource.Copper:			return BulkMaterialType.Copper;
-				case CraftResource.Bronze:			return BulkMaterialType.Bronze;
-				case CraftResource.Gold:			return BulkMaterialType.Gold;
-				case CraftResource.Agapite:			return BulkMaterialType.Agapite;
-				case CraftResource.Verite:			return BulkMaterialType.Verite;
-				case CraftResource.Valorite:		return BulkMaterialType.Valorite;
-				case CraftResource.SpinedLeather:	return BulkMaterialType.Spined;
-				case CraftResource.HornedLeather:	return BulkMaterialType.Horned;
-				case CraftResource.BarbedLeather:	return BulkMaterialType.Barbed;
-			}
+            if (rewards.Count > 0)
+            {
+                reward = rewards[Utility.Random(rewards.Count)];
 
-			return BulkMaterialType.None;
-		}
+                for (int i = 0; i < rewards.Count; ++i)
+                {
+                    if (rewards[i] != reward)
+                        rewards[i].Delete();
+                }
+            }
+        }
 
-		public void EndCombine( Mobile from, object o )
-		{
-			if ( o is Item && ((Item)o).IsChildOf( from.Backpack ) )
-			{
-				Type objectType = o.GetType();
+        public static BulkMaterialType GetMaterial(CraftResource resource)
+        {
+            switch ( resource )
+            {
+                case CraftResource.DullCopper:
+                    return BulkMaterialType.DullCopper;
+                case CraftResource.ShadowIron:
+                    return BulkMaterialType.ShadowIron;
+                case CraftResource.Copper:
+                    return BulkMaterialType.Copper;
+                case CraftResource.Bronze:
+                    return BulkMaterialType.Bronze;
+                case CraftResource.Gold:
+                    return BulkMaterialType.Gold;
+                case CraftResource.Agapite:
+                    return BulkMaterialType.Agapite;
+                case CraftResource.Verite:
+                    return BulkMaterialType.Verite;
+                case CraftResource.Valorite:
+                    return BulkMaterialType.Valorite;
+                case CraftResource.SpinedLeather:
+                    return BulkMaterialType.Spined;
+                case CraftResource.HornedLeather:
+                    return BulkMaterialType.Horned;
+                case CraftResource.BarbedLeather:
+                    return BulkMaterialType.Barbed;
+            }
 
-				if ( m_AmountCur >= m_AmountMax )
-				{
-					from.SendLocalizedMessage( 1045166 ); // The maximum amount of requested items have already been combined to this deed.
-				}
-				else if ( m_Type == null || (objectType != m_Type && !objectType.IsSubclassOf( m_Type )) || (!(o is BaseWeapon) && !(o is BaseArmor) && !(o is BaseClothing)) )
-				{
-					from.SendLocalizedMessage( 1045169 ); // The item is not in the request.
-				}
-				else
-				{
-					BulkMaterialType material = BulkMaterialType.None;
+            return BulkMaterialType.None;
+        }
 
-					if ( o is BaseArmor )
-						material = GetMaterial( ((BaseArmor)o).Resource );
-					else if ( o is BaseClothing )
-						material = GetMaterial( ((BaseClothing)o).Resource );
+        public void EndCombine(Mobile from, object o)
+        {
+            if (o is Item && ((Item)o).IsChildOf(from.Backpack))
+            {
+                Type objectType = o.GetType();
 
-					if ( m_Material >= BulkMaterialType.DullCopper && m_Material <= BulkMaterialType.Valorite && material != m_Material )
-					{
-						from.SendLocalizedMessage( 1045168 ); // The item is not made from the requested ore.
-					}
-					else if ( m_Material >= BulkMaterialType.Spined && m_Material <= BulkMaterialType.Barbed && material != m_Material )
-					{
-						from.SendLocalizedMessage( 1049352 ); // The item is not made from the requested leather type.
-					}
-					else
-					{
-						bool isExceptional = false;
+                if (this.m_AmountCur >= this.m_AmountMax)
+                {
+                    from.SendLocalizedMessage(1045166); // The maximum amount of requested items have already been combined to this deed.
+                }
+                else if (this.m_Type == null || (objectType != this.m_Type && !objectType.IsSubclassOf(this.m_Type)) || (!(o is BaseWeapon) && !(o is BaseArmor) && !(o is BaseClothing)))
+                {
+                    from.SendLocalizedMessage(1045169); // The item is not in the request.
+                }
+                else
+                {
+                    BulkMaterialType material = BulkMaterialType.None;
 
-						if ( o is BaseWeapon )
-							isExceptional = ( ((BaseWeapon)o).Quality == WeaponQuality.Exceptional );
-						else if ( o is BaseArmor )
-							isExceptional = ( ((BaseArmor)o).Quality == ArmorQuality.Exceptional );
-						else if ( o is BaseClothing )
-							isExceptional = ( ((BaseClothing)o).Quality == ClothingQuality.Exceptional );
+                    if (o is BaseArmor)
+                        material = GetMaterial(((BaseArmor)o).Resource);
+                    else if (o is BaseClothing)
+                        material = GetMaterial(((BaseClothing)o).Resource);
 
-						if ( m_RequireExceptional && !isExceptional )
-						{
-							from.SendLocalizedMessage( 1045167 ); // The item must be exceptional.
-						}
-						else
-						{
-							((Item)o).Delete();
-							++AmountCur;
+                    if (this.m_Material >= BulkMaterialType.DullCopper && this.m_Material <= BulkMaterialType.Valorite && material != this.m_Material)
+                    {
+                        from.SendLocalizedMessage(1045168); // The item is not made from the requested ore.
+                    }
+                    else if (this.m_Material >= BulkMaterialType.Spined && this.m_Material <= BulkMaterialType.Barbed && material != this.m_Material)
+                    {
+                        from.SendLocalizedMessage(1049352); // The item is not made from the requested leather type.
+                    }
+                    else
+                    {
+                        bool isExceptional = false;
 
-							from.SendLocalizedMessage( 1045170 ); // The item has been combined with the deed.
+                        if (o is BaseWeapon)
+                            isExceptional = (((BaseWeapon)o).Quality == WeaponQuality.Exceptional);
+                        else if (o is BaseArmor)
+                            isExceptional = (((BaseArmor)o).Quality == ArmorQuality.Exceptional);
+                        else if (o is BaseClothing)
+                            isExceptional = (((BaseClothing)o).Quality == ClothingQuality.Exceptional);
 
-							from.SendGump( new SmallBODGump( from, this ) );
+                        if (this.m_RequireExceptional && !isExceptional)
+                        {
+                            from.SendLocalizedMessage(1045167); // The item must be exceptional.
+                        }
+                        else
+                        {
+                            ((Item)o).Delete();
+                            ++this.AmountCur;
 
-							if ( m_AmountCur < m_AmountMax )
-								BeginCombine( from );
-						}
-					}
-				}
-			}
-			else
-			{
-				from.SendLocalizedMessage( 1045158 ); // You must have the item in your backpack to target it.
-			}
-		}
+                            from.SendLocalizedMessage(1045170); // The item has been combined with the deed.
 
-		public SmallBOD( Serial serial ) : base( serial )
-		{
-		}
+                            from.SendGump(new SmallBODGump(from, this));
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+                            if (this.m_AmountCur < this.m_AmountMax)
+                                this.BeginCombine(from);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                from.SendLocalizedMessage(1045158); // You must have the item in your backpack to target it.
+            }
+        }
 
-			writer.Write( (int) 0 ); // version
+        public SmallBOD(Serial serial) : base(serial)
+        {
+        }
 
-			writer.Write( m_AmountCur );
-			writer.Write( m_AmountMax );
-			writer.Write( m_Type == null ? null : m_Type.FullName );
-			writer.Write( m_Number );
-			writer.Write( m_Graphic );
-			writer.Write( m_RequireExceptional );
-			writer.Write( (int) m_Material );
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+            writer.Write((int)0); // version
 
-			int version = reader.ReadInt();
+            writer.Write(this.m_AmountCur);
+            writer.Write(this.m_AmountMax);
+            writer.Write(this.m_Type == null ? null : this.m_Type.FullName);
+            writer.Write(this.m_Number);
+            writer.Write(this.m_Graphic);
+            writer.Write(this.m_RequireExceptional);
+            writer.Write((int)this.m_Material);
+        }
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_AmountCur = reader.ReadInt();
-					m_AmountMax = reader.ReadInt();
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-					string type = reader.ReadString();
+            int version = reader.ReadInt();
 
-					if ( type != null )
-						m_Type = ScriptCompiler.FindTypeByFullName( type );
+            switch ( version )
+            {
+                case 0:
+                    {
+                        this.m_AmountCur = reader.ReadInt();
+                        this.m_AmountMax = reader.ReadInt();
 
-					m_Number = reader.ReadInt();
-					m_Graphic = reader.ReadInt();
-					m_RequireExceptional = reader.ReadBool();
-					m_Material = (BulkMaterialType)reader.ReadInt();
+                        string type = reader.ReadString();
 
-					break;
-				}
-			}
+                        if (type != null)
+                            this.m_Type = ScriptCompiler.FindTypeByFullName(type);
 
-			if ( Weight == 0.0 )
-				Weight = 1.0;
+                        this.m_Number = reader.ReadInt();
+                        this.m_Graphic = reader.ReadInt();
+                        this.m_RequireExceptional = reader.ReadBool();
+                        this.m_Material = (BulkMaterialType)reader.ReadInt();
 
-			if ( Core.AOS && ItemID == 0x14EF )
-				ItemID = 0x2258;
+                        break;
+                    }
+            }
 
-			if ( Parent == null && Map == Map.Internal && Location == Point3D.Zero )
-				Delete();
-		}
-	}
+            if (this.Weight == 0.0)
+                this.Weight = 1.0;
+
+            if (Core.AOS && this.ItemID == 0x14EF)
+                this.ItemID = 0x2258;
+
+            if (this.Parent == null && this.Map == Map.Internal && this.Location == Point3D.Zero)
+                this.Delete();
+        }
+    }
 }

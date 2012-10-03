@@ -1,297 +1,299 @@
 /***************************************************************************
- *                               SecureTrade.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: SecureTrade.cs 521 2010-06-17 07:11:43Z mark $
- *
- ***************************************************************************/
+*                               SecureTrade.cs
+*                            -------------------
+*   begin                : May 1, 2002
+*   copyright            : (C) The RunUO Software Team
+*   email                : info@runuo.com
+*
+*   $Id: SecureTrade.cs 521 2010-06-17 07:11:43Z mark $
+*
+***************************************************************************/
 
 /***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+*
+*   This program is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation; either version 2 of the License, or
+*   (at your option) any later version.
+*
+***************************************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Items;
 using Server.Network;
 
 namespace Server
 {
-	public class SecureTrade
-	{
-		private SecureTradeInfo m_From, m_To;
-		private bool m_Valid;
+    public class SecureTrade
+    {
+        private readonly SecureTradeInfo m_From;
 
-		public SecureTradeInfo From
-		{
-			get
-			{
-				return m_From;
-			}
-		}
+        private readonly SecureTradeInfo m_To;
 
-		public SecureTradeInfo To
-		{
-			get
-			{
-				return m_To;
-			}
-		}
+        private bool m_Valid;
 
-		public bool Valid
-		{
-			get
-			{
-				return m_Valid;
-			}
-		}
+        public SecureTradeInfo From
+        {
+            get
+            {
+                return this.m_From;
+            }
+        }
 
-		public void Cancel()
-		{
-			if ( !m_Valid )
-				return;
+        public SecureTradeInfo To
+        {
+            get
+            {
+                return this.m_To;
+            }
+        }
 
-			List<Item> list = m_From.Container.Items;
+        public bool Valid
+        {
+            get
+            {
+                return this.m_Valid;
+            }
+        }
 
-			for ( int i = list.Count - 1; i >= 0; --i )
-			{
-				if ( i < list.Count )
-				{
-					Item item = list[i];
+        public void Cancel()
+        {
+            if (!this.m_Valid)
+                return;
 
-					item.OnSecureTrade( m_From.Mobile, m_To.Mobile, m_From.Mobile, false );
+            List<Item> list = this.m_From.Container.Items;
 
-					if ( !item.Deleted )
-						m_From.Mobile.AddToBackpack( item );
-				}
-			}
+            for (int i = list.Count - 1; i >= 0; --i)
+            {
+                if (i < list.Count)
+                {
+                    Item item = list[i];
 
-			list = m_To.Container.Items;
+                    item.OnSecureTrade(this.m_From.Mobile, this.m_To.Mobile, this.m_From.Mobile, false);
 
-			for ( int i = list.Count - 1; i >= 0; --i )
-			{
-				if ( i < list.Count )
-				{
-					Item item = list[i];
+                    if (!item.Deleted)
+                        this.m_From.Mobile.AddToBackpack(item);
+                }
+            }
 
-					item.OnSecureTrade( m_To.Mobile, m_From.Mobile, m_To.Mobile, false );
+            list = this.m_To.Container.Items;
 
-					if ( !item.Deleted )
-						m_To.Mobile.AddToBackpack( item );
-				}
-			}
+            for (int i = list.Count - 1; i >= 0; --i)
+            {
+                if (i < list.Count)
+                {
+                    Item item = list[i];
 
-			Close();
-		}
+                    item.OnSecureTrade(this.m_To.Mobile, this.m_From.Mobile, this.m_To.Mobile, false);
 
-		public void Close()
-		{
-			if ( !m_Valid )
-				return;
+                    if (!item.Deleted)
+                        this.m_To.Mobile.AddToBackpack(item);
+                }
+            }
 
-			m_From.Mobile.Send( new CloseSecureTrade( m_From.Container ) );
-			m_To.Mobile.Send( new CloseSecureTrade( m_To.Container ) );
+            this.Close();
+        }
 
-			m_Valid = false;
+        public void Close()
+        {
+            if (!this.m_Valid)
+                return;
 
-			NetState ns = m_From.Mobile.NetState;
+            this.m_From.Mobile.Send(new CloseSecureTrade(this.m_From.Container));
+            this.m_To.Mobile.Send(new CloseSecureTrade(this.m_To.Container));
 
-			if ( ns != null )
-				ns.RemoveTrade( this );
+            this.m_Valid = false;
 
-			ns = m_To.Mobile.NetState;
+            NetState ns = this.m_From.Mobile.NetState;
 
-			if ( ns != null )
-				ns.RemoveTrade( this );
+            if (ns != null)
+                ns.RemoveTrade(this);
 
-			Timer.DelayCall( TimeSpan.Zero, delegate{ m_From.Container.Delete(); } );
-			Timer.DelayCall( TimeSpan.Zero, delegate{ m_To.Container.Delete(); } );
-		}
+            ns = this.m_To.Mobile.NetState;
 
-		public void Update()
-		{
-			if ( !m_Valid )
-				return;
+            if (ns != null)
+                ns.RemoveTrade(this);
 
-			if ( m_From.Accepted && m_To.Accepted )
-			{
-				List<Item> list = m_From.Container.Items;
+            Timer.DelayCall(TimeSpan.Zero, delegate { this.m_From.Container.Delete(); });
+            Timer.DelayCall(TimeSpan.Zero, delegate { this.m_To.Container.Delete(); });
+        }
 
-				bool allowed = true;
+        public void Update()
+        {
+            if (!this.m_Valid)
+                return;
 
-				for ( int i = list.Count - 1; allowed && i >= 0; --i )
-				{
-					if ( i < list.Count )
-					{
-						Item item = list[i];
+            if (this.m_From.Accepted && this.m_To.Accepted)
+            {
+                List<Item> list = this.m_From.Container.Items;
 
-						if ( !item.AllowSecureTrade( m_From.Mobile, m_To.Mobile, m_To.Mobile, true ) )
-							allowed = false;
-					}
-				}
+                bool allowed = true;
 
-				list = m_To.Container.Items;
+                for (int i = list.Count - 1; allowed && i >= 0; --i)
+                {
+                    if (i < list.Count)
+                    {
+                        Item item = list[i];
 
-				for ( int i = list.Count - 1; allowed && i >= 0; --i )
-				{
-					if ( i < list.Count )
-					{
-						Item item = list[i];
+                        if (!item.AllowSecureTrade(this.m_From.Mobile, this.m_To.Mobile, this.m_To.Mobile, true))
+                            allowed = false;
+                    }
+                }
 
-						if ( !item.AllowSecureTrade( m_To.Mobile, m_From.Mobile, m_From.Mobile, true ) )
-							allowed = false;
-					}
-				}
+                list = this.m_To.Container.Items;
 
-				if ( !allowed )
-				{
-					m_From.Accepted = false;
-					m_To.Accepted = false;
+                for (int i = list.Count - 1; allowed && i >= 0; --i)
+                {
+                    if (i < list.Count)
+                    {
+                        Item item = list[i];
 
-					m_From.Mobile.Send( new UpdateSecureTrade( m_From.Container, m_From.Accepted, m_To.Accepted ) );
-					m_To.Mobile.Send( new UpdateSecureTrade( m_To.Container, m_To.Accepted, m_From.Accepted ) );
+                        if (!item.AllowSecureTrade(this.m_To.Mobile, this.m_From.Mobile, this.m_From.Mobile, true))
+                            allowed = false;
+                    }
+                }
 
-					return;
-				}
+                if (!allowed)
+                {
+                    this.m_From.Accepted = false;
+                    this.m_To.Accepted = false;
 
-				list = m_From.Container.Items;
+                    this.m_From.Mobile.Send(new UpdateSecureTrade(this.m_From.Container, this.m_From.Accepted, this.m_To.Accepted));
+                    this.m_To.Mobile.Send(new UpdateSecureTrade(this.m_To.Container, this.m_To.Accepted, this.m_From.Accepted));
 
-				for ( int i = list.Count - 1; i >= 0; --i )
-				{
-					if ( i < list.Count )
-					{
-						Item item = list[i];
+                    return;
+                }
 
-						item.OnSecureTrade( m_From.Mobile, m_To.Mobile, m_To.Mobile, true );
+                list = this.m_From.Container.Items;
 
-						if ( !item.Deleted )
-							m_To.Mobile.AddToBackpack( item );
-					}
-				}
+                for (int i = list.Count - 1; i >= 0; --i)
+                {
+                    if (i < list.Count)
+                    {
+                        Item item = list[i];
 
-				list = m_To.Container.Items;
+                        item.OnSecureTrade(this.m_From.Mobile, this.m_To.Mobile, this.m_To.Mobile, true);
 
-				for ( int i = list.Count - 1; i >= 0; --i )
-				{
-					if ( i < list.Count )
-					{
-						Item item = list[i];
+                        if (!item.Deleted)
+                            this.m_To.Mobile.AddToBackpack(item);
+                    }
+                }
 
-						item.OnSecureTrade( m_To.Mobile, m_From.Mobile, m_From.Mobile, true );
+                list = this.m_To.Container.Items;
 
-						if ( !item.Deleted )
-							m_From.Mobile.AddToBackpack( item );
-					}
-				}
+                for (int i = list.Count - 1; i >= 0; --i)
+                {
+                    if (i < list.Count)
+                    {
+                        Item item = list[i];
 
-				Close();
-			}
-			else
-			{
-				m_From.Mobile.Send( new UpdateSecureTrade( m_From.Container, m_From.Accepted, m_To.Accepted ) );
-				m_To.Mobile.Send( new UpdateSecureTrade( m_To.Container, m_To.Accepted, m_From.Accepted ) );
-			}
-		}
+                        item.OnSecureTrade(this.m_To.Mobile, this.m_From.Mobile, this.m_From.Mobile, true);
 
-		public SecureTrade( Mobile from, Mobile to )
-		{
-			m_Valid = true;
+                        if (!item.Deleted)
+                            this.m_From.Mobile.AddToBackpack(item);
+                    }
+                }
 
-			m_From = new SecureTradeInfo( this, from, new SecureTradeContainer( this ) );
-			m_To = new SecureTradeInfo( this, to, new SecureTradeContainer( this ) );
+                this.Close();
+            }
+            else
+            {
+                this.m_From.Mobile.Send(new UpdateSecureTrade(this.m_From.Container, this.m_From.Accepted, this.m_To.Accepted));
+                this.m_To.Mobile.Send(new UpdateSecureTrade(this.m_To.Container, this.m_To.Accepted, this.m_From.Accepted));
+            }
+        }
 
-			bool from6017 = ( from.NetState == null ? false : from.NetState.ContainerGridLines );
-			bool to6017   = ( to.NetState == null ? false : to.NetState.ContainerGridLines );
+        public SecureTrade(Mobile from, Mobile to)
+        {
+            this.m_Valid = true;
 
-			from.Send( new MobileStatus( from, to ) );
-			from.Send( new UpdateSecureTrade( m_From.Container, false, false ) );
-			if ( from6017 )
-				from.Send( new SecureTradeEquip6017( m_To.Container, to ) );
-			else
-				from.Send( new SecureTradeEquip( m_To.Container, to ) );
-			from.Send( new UpdateSecureTrade( m_From.Container, false, false ) );
-			if ( from6017 )
-				from.Send( new SecureTradeEquip6017( m_From.Container, from ) );
-			else
-				from.Send( new SecureTradeEquip( m_From.Container, from ) );
-			from.Send( new DisplaySecureTrade( to, m_From.Container, m_To.Container, to.Name ) );
-			from.Send( new UpdateSecureTrade( m_From.Container, false, false ) );
+            this.m_From = new SecureTradeInfo(this, from, new SecureTradeContainer(this));
+            this.m_To = new SecureTradeInfo(this, to, new SecureTradeContainer(this));
 
-			to.Send( new MobileStatus( to, from ) );
-			to.Send( new UpdateSecureTrade( m_To.Container, false, false ) );
-			if ( to6017 )
-				to.Send( new SecureTradeEquip6017( m_From.Container, from ) );
-			else
-				to.Send( new SecureTradeEquip( m_From.Container, from ) );
-			to.Send( new UpdateSecureTrade( m_To.Container, false, false ) );
-			if ( to6017 )
-				to.Send( new SecureTradeEquip6017( m_To.Container, to ) );
-			else
-				to.Send( new SecureTradeEquip( m_To.Container, to ) );
-			to.Send( new DisplaySecureTrade( from, m_To.Container, m_From.Container, from.Name ) );
-			to.Send( new UpdateSecureTrade( m_To.Container, false, false ) );
-		}
-	}
+            bool from6017 = (from.NetState == null ? false : from.NetState.ContainerGridLines);
+            bool to6017 = (to.NetState == null ? false : to.NetState.ContainerGridLines);
 
-	public class SecureTradeInfo
-	{
-		private SecureTrade m_Owner;
-		private Mobile m_Mobile;
-		private SecureTradeContainer m_Container;
-		private bool m_Accepted;
+            from.Send(new MobileStatus(from, to));
+            from.Send(new UpdateSecureTrade(this.m_From.Container, false, false));
+            if (from6017)
+                from.Send(new SecureTradeEquip6017(this.m_To.Container, to));
+            else
+                from.Send(new SecureTradeEquip(this.m_To.Container, to));
+            from.Send(new UpdateSecureTrade(this.m_From.Container, false, false));
+            if (from6017)
+                from.Send(new SecureTradeEquip6017(this.m_From.Container, from));
+            else
+                from.Send(new SecureTradeEquip(this.m_From.Container, from));
+            from.Send(new DisplaySecureTrade(to, this.m_From.Container, this.m_To.Container, to.Name));
+            from.Send(new UpdateSecureTrade(this.m_From.Container, false, false));
 
-		public SecureTradeInfo( SecureTrade owner, Mobile m, SecureTradeContainer c )
-		{
-			m_Owner = owner;
-			m_Mobile = m;
-			m_Container = c;
+            to.Send(new MobileStatus(to, from));
+            to.Send(new UpdateSecureTrade(this.m_To.Container, false, false));
+            if (to6017)
+                to.Send(new SecureTradeEquip6017(this.m_From.Container, from));
+            else
+                to.Send(new SecureTradeEquip(this.m_From.Container, from));
+            to.Send(new UpdateSecureTrade(this.m_To.Container, false, false));
+            if (to6017)
+                to.Send(new SecureTradeEquip6017(this.m_To.Container, to));
+            else
+                to.Send(new SecureTradeEquip(this.m_To.Container, to));
+            to.Send(new DisplaySecureTrade(from, this.m_To.Container, this.m_From.Container, from.Name));
+            to.Send(new UpdateSecureTrade(this.m_To.Container, false, false));
+        }
+    }
 
-			m_Mobile.AddItem( m_Container );
-		}
+    public class SecureTradeInfo
+    {
+        private readonly SecureTrade m_Owner;
+        private readonly Mobile m_Mobile;
+        private readonly SecureTradeContainer m_Container;
+        private bool m_Accepted;
 
-		public SecureTrade Owner
-		{
-			get
-			{
-				return m_Owner;
-			}
-		}
+        public SecureTradeInfo(SecureTrade owner, Mobile m, SecureTradeContainer c)
+        {
+            this.m_Owner = owner;
+            this.m_Mobile = m;
+            this.m_Container = c;
 
-		public Mobile Mobile
-		{
-			get
-			{
-				return m_Mobile;
-			}
-		}
+            this.m_Mobile.AddItem(this.m_Container);
+        }
 
-		public SecureTradeContainer Container
-		{
-			get
-			{
-				return m_Container;
-			}
-		}
+        public SecureTrade Owner
+        {
+            get
+            {
+                return this.m_Owner;
+            }
+        }
 
-		public bool Accepted
-		{
-			get
-			{
-				return m_Accepted;
-			}
-			set
-			{
-				m_Accepted = value;
-			}
-		}
-	}
+        public Mobile Mobile
+        {
+            get
+            {
+                return this.m_Mobile;
+            }
+        }
+
+        public SecureTradeContainer Container
+        {
+            get
+            {
+                return this.m_Container;
+            }
+        }
+
+        public bool Accepted
+        {
+            get
+            {
+                return this.m_Accepted;
+            }
+            set
+            {
+                this.m_Accepted = value;
+            }
+        }
+    }
 }

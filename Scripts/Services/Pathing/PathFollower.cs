@@ -1,204 +1,211 @@
 using System;
-using Server;
-using Server.Movement;
 using CalcMoves = Server.Movement.Movement;
 
 namespace Server
 {
-	public class PathFollower
-	{
-		// Should we use pathfinding? 'false' for not
-		private static bool Enabled = true;
+    public class PathFollower
+    {
+        // Should we use pathfinding? 'false' for not
+        private static readonly bool Enabled = true;
 
-		private Mobile m_From;
-		private IPoint3D m_Goal;
-		private MovementPath m_Path;
-		private int m_Index;
-		private Point3D m_Next, m_LastGoalLoc;
-		private DateTime m_LastPathTime;
-		private MoveMethod m_Mover;
+        private readonly Mobile m_From;
+        private readonly IPoint3D m_Goal;
+        private MovementPath m_Path;
+        private int m_Index;
+        private Point3D m_Next, m_LastGoalLoc;
+        private DateTime m_LastPathTime;
+        private MoveMethod m_Mover;
 
-		public MoveMethod Mover
-		{
-			get{ return m_Mover; }
-			set{ m_Mover = value; }
-		}
+        public MoveMethod Mover
+        {
+            get
+            {
+                return this.m_Mover;
+            }
+            set
+            {
+                this.m_Mover = value;
+            }
+        }
 
-		public IPoint3D Goal
-		{
-			get{ return m_Goal; }
-		}
+        public IPoint3D Goal
+        {
+            get
+            {
+                return this.m_Goal;
+            }
+        }
 
-		public PathFollower( Mobile from, IPoint3D goal )
-		{
-			m_From = from;
-			m_Goal = goal;
-		}
+        public PathFollower(Mobile from, IPoint3D goal)
+        {
+            this.m_From = from;
+            this.m_Goal = goal;
+        }
 
-		public MoveResult Move( Direction d )
-		{
-			if ( m_Mover == null )
-				return ( m_From.Move( d ) ? MoveResult.Success : MoveResult.Blocked );
+        public MoveResult Move(Direction d)
+        {
+            if (this.m_Mover == null)
+                return (this.m_From.Move(d) ? MoveResult.Success : MoveResult.Blocked);
 
-			return m_Mover( d );
-		}
+            return this.m_Mover(d);
+        }
 
-		public Point3D GetGoalLocation()
-		{
-			if ( m_Goal is Item )
-				return ((Item)m_Goal).GetWorldLocation();
+        public Point3D GetGoalLocation()
+        {
+            if (this.m_Goal is Item)
+                return ((Item)this.m_Goal).GetWorldLocation();
 
-			return new Point3D( m_Goal );
-		}
+            return new Point3D(this.m_Goal);
+        }
 
-		private static TimeSpan RepathDelay = TimeSpan.FromSeconds( 2.0 );
+        private static readonly TimeSpan RepathDelay = TimeSpan.FromSeconds(2.0);
 
-		public void Advance( ref Point3D p, int index )
-		{
-			if ( m_Path != null && m_Path.Success )
-			{
-				Direction[] dirs = m_Path.Directions;
+        public void Advance(ref Point3D p, int index)
+        {
+            if (this.m_Path != null && this.m_Path.Success)
+            {
+                Direction[] dirs = this.m_Path.Directions;
 
-				if ( index >= 0 && index < dirs.Length )
-				{
-					int x = p.X, y = p.Y;
+                if (index >= 0 && index < dirs.Length)
+                {
+                    int x = p.X, y = p.Y;
 
-					CalcMoves.Offset( dirs[index], ref x, ref y );
+                    CalcMoves.Offset(dirs[index], ref x, ref y);
 
-					p.X = x;
-					p.Y = y;
-				}
-			}
-		}
+                    p.X = x;
+                    p.Y = y;
+                }
+            }
+        }
 
-		public void ForceRepath()
-		{
-			m_Path = null;
-		}
+        public void ForceRepath()
+        {
+            this.m_Path = null;
+        }
 
-		public bool CheckPath()
-		{
-			if ( !Enabled )
-				return false;
+        public bool CheckPath()
+        {
+            if (!Enabled)
+                return false;
 
-			bool repath = false;
+            bool repath = false;
 
-			Point3D goal = GetGoalLocation();
+            Point3D goal = this.GetGoalLocation();
 
-			if ( m_Path == null )
-				repath = true;
-			else if ( (!m_Path.Success || goal != m_LastGoalLoc) && (m_LastPathTime + RepathDelay) <= DateTime.Now )
-				repath = true;
-			else if ( m_Path.Success && Check( m_From.Location, m_LastGoalLoc, 0 ) )
-				repath = true;
+            if (this.m_Path == null)
+                repath = true;
+            else if ((!this.m_Path.Success || goal != this.m_LastGoalLoc) && (this.m_LastPathTime + RepathDelay) <= DateTime.Now)
+                repath = true;
+            else if (this.m_Path.Success && this.Check(m_From.Location, m_LastGoalLoc, 0))
+                repath = true;
 
-			if ( !repath )
-				return false;
+            if (!repath)
+                return false;
 
-			m_LastPathTime = DateTime.Now;
-			m_LastGoalLoc = goal;
+            this.m_LastPathTime = DateTime.Now;
+            this.m_LastGoalLoc = goal;
 
-			m_Path = new MovementPath( m_From, goal );
+            this.m_Path = new MovementPath(this.m_From, goal);
 
-			m_Index = 0;
-			m_Next = m_From.Location;
+            this.m_Index = 0;
+            this.m_Next = this.m_From.Location;
 
-			Advance( ref m_Next, m_Index );
+            this.Advance(ref m_Next, m_Index);
 
-			return true;
-		}
+            return true;
+        }
 
-		public bool Check( Point3D loc, Point3D goal, int range )
-		{
-			if ( !Utility.InRange( loc, goal, range ) )
-				return false;
+        public bool Check(Point3D loc, Point3D goal, int range)
+        {
+            if (!Utility.InRange(loc, goal, range))
+                return false;
 
-			if ( range <= 1 && Math.Abs( loc.Z - goal.Z ) >= 16 )
-				return false;
+            if (range <= 1 && Math.Abs(loc.Z - goal.Z) >= 16)
+                return false;
 
-			return true;
-		}
+            return true;
+        }
 
-		public bool Follow( bool run, int range )
-		{
-			Point3D goal = GetGoalLocation();
-			Direction d;
+        public bool Follow(bool run, int range)
+        {
+            Point3D goal = this.GetGoalLocation();
+            Direction d;
 
-			if ( Check( m_From.Location, goal, range ) )
-				return true;
+            if (this.Check(m_From.Location, goal, range))
+                return true;
 
-			bool repathed = CheckPath();
+            bool repathed = this.CheckPath();
 
-			if ( !Enabled || !m_Path.Success )
-			{
-				d = m_From.GetDirectionTo( goal );
+            if (!Enabled || !this.m_Path.Success)
+            {
+                d = this.m_From.GetDirectionTo(goal);
 
-				if ( run )
-					d |= Direction.Running;
+                if (run)
+                    d |= Direction.Running;
 
-				m_From.SetDirection( d );
-				Move( d );
+                this.m_From.SetDirection(d);
+                this.Move(d);
 
-				return Check( m_From.Location, goal, range );
-			}
+                return this.Check(m_From.Location, goal, range);
+            }
 
-			d = m_From.GetDirectionTo( m_Next );
+            d = this.m_From.GetDirectionTo(this.m_Next);
 
-			if ( run )
-				d |= Direction.Running;
+            if (run)
+                d |= Direction.Running;
 
-			m_From.SetDirection( d );
+            this.m_From.SetDirection(d);
 
-			MoveResult res = Move( d );
+            MoveResult res = this.Move(d);
 
-			if ( res == MoveResult.Blocked )
-			{
-				if ( repathed )
-					return false;
+            if (res == MoveResult.Blocked)
+            {
+                if (repathed)
+                    return false;
 
-				m_Path = null;
-				CheckPath();
+                this.m_Path = null;
+                this.CheckPath();
 
-				if ( !m_Path.Success )
-				{
-					d = m_From.GetDirectionTo( goal );
+                if (!this.m_Path.Success)
+                {
+                    d = this.m_From.GetDirectionTo(goal);
 
-					if ( run )
-						d |= Direction.Running;
+                    if (run)
+                        d |= Direction.Running;
 
-					m_From.SetDirection( d );
-					Move( d );
+                    this.m_From.SetDirection(d);
+                    this.Move(d);
 
-					return Check( m_From.Location, goal, range );
-				}
+                    return this.Check(m_From.Location, goal, range);
+                }
 
-				d = m_From.GetDirectionTo( m_Next );
+                d = this.m_From.GetDirectionTo(this.m_Next);
 
-				if ( run )
-					d |= Direction.Running;
+                if (run)
+                    d |= Direction.Running;
 
-				m_From.SetDirection( d );
+                this.m_From.SetDirection(d);
 
-				res = Move( d );
+                res = this.Move(d);
 
-				if ( res == MoveResult.Blocked )
-					return false;
-			}
+                if (res == MoveResult.Blocked)
+                    return false;
+            }
 
-			if ( m_From.X == m_Next.X && m_From.Y == m_Next.Y )
-			{
-				if ( m_From.Z == m_Next.Z )
-				{
-					++m_Index;
-					Advance( ref m_Next, m_Index );
-				}
-				else
-				{
-					m_Path = null;
-				}
-			}
+            if (this.m_From.X == this.m_Next.X && this.m_From.Y == this.m_Next.Y)
+            {
+                if (this.m_From.Z == this.m_Next.Z)
+                {
+                    ++this.m_Index;
+                    this.Advance(ref m_Next, m_Index);
+                }
+                else
+                {
+                    this.m_Path = null;
+                }
+            }
 
-			return Check( m_From.Location, goal, range );
-		}
-	}
+            return this.Check(m_From.Location, goal, range);
+        }
+    }
 }

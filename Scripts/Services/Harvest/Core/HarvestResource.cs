@@ -2,33 +2,79 @@ using System;
 
 namespace Server.Engines.Harvest
 {
-	public class HarvestResource
-	{
-		private Type[] m_Types;
-		private double m_ReqSkill, m_MinSkill, m_MaxSkill;
-		private object m_SuccessMessage;
+    public class HarvestResource
+    {
+        private Type[] m_Types;
+        private double m_ReqSkill, m_MinSkill, m_MaxSkill;
+        private readonly object m_SuccessMessage;
 
-		public Type[] Types{ get{ return m_Types; } set{ m_Types = value; } }
-		public double ReqSkill{ get{ return m_ReqSkill; } set{ m_ReqSkill = value; } }
-		public double MinSkill{ get{ return m_MinSkill; } set{ m_MinSkill = value; } }
-		public double MaxSkill{ get{ return m_MaxSkill; } set{ m_MaxSkill = value; } }
-		public object SuccessMessage{ get{ return m_SuccessMessage; } }
+        public Type[] Types
+        {
+            get
+            {
+                return this.m_Types;
+            }
+            set
+            {
+                this.m_Types = value;
+            }
+        }
+        public double ReqSkill
+        {
+            get
+            {
+                return this.m_ReqSkill;
+            }
+            set
+            {
+                this.m_ReqSkill = value;
+            }
+        }
+        public double MinSkill
+        {
+            get
+            {
+                return this.m_MinSkill;
+            }
+            set
+            {
+                this.m_MinSkill = value;
+            }
+        }
+        public double MaxSkill
+        {
+            get
+            {
+                return this.m_MaxSkill;
+            }
+            set
+            {
+                this.m_MaxSkill = value;
+            }
+        }
+        public object SuccessMessage
+        {
+            get
+            {
+                return this.m_SuccessMessage;
+            }
+        }
 
-		public void SendSuccessTo( Mobile m )
-		{
-			if ( m_SuccessMessage is int )
-				m.SendLocalizedMessage( (int)m_SuccessMessage );
-			else if ( m_SuccessMessage is string )
-				m.SendMessage( (string)m_SuccessMessage );
-		}
+        public void SendSuccessTo(Mobile m)
+        {
+            if (this.m_SuccessMessage is int)
+                m.SendLocalizedMessage((int)this.m_SuccessMessage);
+            else if (this.m_SuccessMessage is string)
+                m.SendMessage((string)this.m_SuccessMessage);
+        }
 
-		public HarvestResource( double reqSkill, double minSkill, double maxSkill, object message, params Type[] types )
-		{
-			m_ReqSkill = reqSkill;
-			m_MinSkill = minSkill;
-			m_MaxSkill = maxSkill;
-			m_Types = types;
-			m_SuccessMessage = message;
-		}
-	}
+        public HarvestResource(double reqSkill, double minSkill, double maxSkill, object message, params Type[] types)
+        {
+            this.m_ReqSkill = reqSkill;
+            this.m_MinSkill = minSkill;
+            this.m_MaxSkill = maxSkill;
+            this.m_Types = types;
+            this.m_SuccessMessage = message;
+        }
+    }
 }

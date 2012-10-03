@@ -13,18 +13,15 @@ namespace Server.Engines.Reports
     using System;
     using System.Collections;
     
-    
     /// <summary>
     /// Strongly typed collection of Server.Engines.Reports.ReportColumn.
     /// </summary>
     public class ReportColumnCollection : System.Collections.CollectionBase
     {
-        
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public ReportColumnCollection() : 
-                base()
+        public ReportColumnCollection() : base()
         {
         }
         
@@ -43,15 +40,15 @@ namespace Server.Engines.Reports
             }
         }
 
-		public int Add( string width, string align )
-		{
-			return Add( new ReportColumn( width, align ) );
-		}
+        public int Add(string width, string align)
+        {
+            return this.Add(new ReportColumn(width, align));
+        }
 
-		public int Add( string width, string align, string name )
-		{
-			return Add( new ReportColumn( width, align, name ) );
-		}
+        public int Add(string width, string align, string name)
+        {
+            return this.Add(new ReportColumn(width, align, name));
+        }
 
         /// <summary>
         /// Append a Server.Engines.Reports.ReportColumn entry to this collection.
@@ -116,7 +113,6 @@ namespace Server.Engines.Reports
         /// </summary>
         public class ReportColumnCollectionEnumerator : System.Collections.IEnumerator
         {
-            
             /// <summary>
             /// Current index
             /// </summary>
@@ -130,7 +126,7 @@ namespace Server.Engines.Reports
             /// <summary>
             /// Collection to enumerate.
             /// </summary>
-            private ReportColumnCollection _collection;
+            private readonly ReportColumnCollection _collection;
             
             /// <summary>
             /// Default constructor for enumerator.
@@ -138,8 +134,8 @@ namespace Server.Engines.Reports
             /// <param name="collection">Instance of the collection to enumerate.</param>
             internal ReportColumnCollectionEnumerator(ReportColumnCollection collection)
             {
-                _index = -1;
-                _collection = collection;
+                this._index = -1;
+                this._collection = collection;
             }
             
             /// <summary>
@@ -149,14 +145,14 @@ namespace Server.Engines.Reports
             {
                 get
                 {
-                    if (((_index == -1) 
-                                || (_index >= _collection.Count)))
+                    if (((this._index == -1) ||
+                         (this._index >= this._collection.Count)))
                     {
                         throw new System.IndexOutOfRangeException("Enumerator not started.");
                     }
                     else
                     {
-                        return _currentElement;
+                        return this._currentElement;
                     }
                 }
             }
@@ -168,14 +164,14 @@ namespace Server.Engines.Reports
             {
                 get
                 {
-                    if (((_index == -1) 
-                                || (_index >= _collection.Count)))
+                    if (((this._index == -1) ||
+                         (this._index >= this._collection.Count)))
                     {
                         throw new System.IndexOutOfRangeException("Enumerator not started.");
                     }
                     else
                     {
-                        return _currentElement;
+                        return this._currentElement;
                     }
                 }
             }
@@ -185,8 +181,8 @@ namespace Server.Engines.Reports
             /// </summary>
             public void Reset()
             {
-                _index = -1;
-                _currentElement = null;
+                this._index = -1;
+                this._currentElement = null;
             }
             
             /// <summary>
@@ -195,14 +191,14 @@ namespace Server.Engines.Reports
             /// <returns>true, if the enumerator was succesfully advanced to the next queue; false, if the enumerator has reached the end of the enumeration.</returns>
             public bool MoveNext()
             {
-                if ((_index 
-                            < (_collection.Count - 1)))
+                if ((this._index <
+                     (this._collection.Count - 1)))
                 {
-                    _index = (_index + 1);
-                    _currentElement = this._collection[_index];
+                    this._index = (this._index + 1);
+                    this._currentElement = this._collection[this._index];
                     return true;
                 }
-                _index = _collection.Count;
+                this._index = this._collection.Count;
                 return false;
             }
         }

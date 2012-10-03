@@ -1,29 +1,26 @@
 using System;
-using System.Collections;
-using Server.Targeting;
-using Server.Network;
 
 // Ideas
 // When you run on animals the panic
 // When if ( distance < 8 && Utility.RandomDouble() * Math.Sqrt( (8 - distance) / 6 ) >= incoming.Skills[SkillName.AnimalTaming].Value )
 // More your close, the more it can panic
 /*
- * AnimalHunterAI, AnimalHidingAI, AnimalDomesticAI...
- * 
- */ 
+* AnimalHunterAI, AnimalHidingAI, AnimalDomesticAI...
+* 
+*/ 
 
 namespace Server.Mobiles
 {
-	public class AnimalAI : BaseAI
-	{
-		public AnimalAI(BaseCreature m) : base (m)
-		{
-		}
+    public class AnimalAI : BaseAI
+    {
+        public AnimalAI(BaseCreature m) : base(m)
+        {
+        }
 
-		public override bool DoActionWander()
-		{
-			// Old:
-#if false
+        public override bool DoActionWander()
+        {
+            // Old:
+            #if false
 			if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, true, false, true))
 			{
 				m_Mobile.DebugSay( "There is something near, I go away" );
@@ -38,120 +35,117 @@ namespace Server.Mobiles
 			{
 				base.DoActionWander();
 			}
-
 			return true;
-#endif
+            #endif
+            // New, only flee @ 10%
+            double hitPercent = (double)this.m_Mobile.Hits / this.m_Mobile.HitsMax;
 
-			// New, only flee @ 10%
+            if (!this.m_Mobile.Summoned && !this.m_Mobile.Controlled && hitPercent < 0.1 && this.m_Mobile.CanFlee) // Less than 10% health
+            {
+                this.m_Mobile.DebugSay("I am low on health!");
+                this.Action = ActionType.Flee;
+            }
+            else if (this.AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
+            {
+                if (this.m_Mobile.Debug)
+                    this.m_Mobile.DebugSay("I have detected {0}, attacking", this.m_Mobile.FocusMob.Name);
 
-			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+                this.m_Mobile.Combatant = this.m_Mobile.FocusMob;
+                this.Action = ActionType.Combat;
+            }
+            else
+            {
+                base.DoActionWander();
+            }
 
-			if ( !m_Mobile.Summoned && !m_Mobile.Controlled && hitPercent < 0.1 && m_Mobile.CanFlee ) // Less than 10% health
-			{
-				m_Mobile.DebugSay( "I am low on health!" );
-				Action = ActionType.Flee;
-			}
-			else if ( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
-			{
-				if ( m_Mobile.Debug )
-					m_Mobile.DebugSay( "I have detected {0}, attacking", m_Mobile.FocusMob.Name );
+            return true;
+        }
 
-				m_Mobile.Combatant = m_Mobile.FocusMob;
-				Action = ActionType.Combat;
-			}
-			else
-			{
-				base.DoActionWander();
-			}
+        public override bool DoActionCombat()
+        {
+            Mobile combatant = this.m_Mobile.Combatant;
 
-			return true;
-		}
+            if (combatant == null || combatant.Deleted || combatant.Map != this.m_Mobile.Map)
+            {
+                this.m_Mobile.DebugSay("My combatant is gone..");
 
-		public override bool DoActionCombat()
-		{
-			Mobile combatant = m_Mobile.Combatant;
+                this.Action = ActionType.Wander;
 
-			if ( combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map )
-			{
-				m_Mobile.DebugSay( "My combatant is gone.." );
+                return true;
+            }
 
-				Action = ActionType.Wander;
+            if (this.WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
+            {
+                this.m_Mobile.Direction = this.m_Mobile.GetDirectionTo(combatant);
+            }
+            else
+            {
+                if (this.m_Mobile.GetDistanceToSqrt(combatant) > this.m_Mobile.RangePerception + 1)
+                {
+                    if (this.m_Mobile.Debug)
+                        this.m_Mobile.DebugSay("I cannot find {0}", combatant.Name);
 
-				return true;
-			}
+                    this.Action = ActionType.Wander;
 
-			if ( WalkMobileRange( combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight ) )
-			{
-				m_Mobile.Direction = m_Mobile.GetDirectionTo( combatant );
-			}
-			else
-			{
-				if ( m_Mobile.GetDistanceToSqrt( combatant ) > m_Mobile.RangePerception + 1 )
-				{
-					if ( m_Mobile.Debug )
-						m_Mobile.DebugSay( "I cannot find {0}", combatant.Name );
+                    return true;
+                }
+                else
+                {
+                    if (this.m_Mobile.Debug)
+                        this.m_Mobile.DebugSay("I should be closer to {0}", combatant.Name);
+                }
+            }
 
-					Action = ActionType.Wander;
+            if (!this.m_Mobile.Controlled && !this.m_Mobile.Summoned && this.m_Mobile.CanFlee)
+            {
+                double hitPercent = (double)this.m_Mobile.Hits / this.m_Mobile.HitsMax;
 
-					return true;
-				}
-				else
-				{
-					if ( m_Mobile.Debug )
-						m_Mobile.DebugSay( "I should be closer to {0}", combatant.Name );
-				}
-			}
+                if (hitPercent < 0.1)
+                {
+                    this.m_Mobile.DebugSay("I am low on health!");
+                    this.Action = ActionType.Flee;
+                }
+            }
 
-			if ( !m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CanFlee )
-			{
-				double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+            return true;
+        }
 
-				if ( hitPercent < 0.1 )
-				{
-					m_Mobile.DebugSay( "I am low on health!" );
-					Action = ActionType.Flee;
-				}
-			}
+        public override bool DoActionBackoff()
+        {
+            double hitPercent = (double)this.m_Mobile.Hits / this.m_Mobile.HitsMax;
 
-			return true;
-		}
+            if (!this.m_Mobile.Summoned && !this.m_Mobile.Controlled && hitPercent < 0.1 && this.m_Mobile.CanFlee) // Less than 10% health
+            {
+                this.Action = ActionType.Flee;
+            }
+            else
+            {
+                if (this.AcquireFocusMob(m_Mobile.RangePerception * 2, FightMode.Closest, true, false, true))
+                {
+                    if (this.WalkMobileRange(m_Mobile.FocusMob, 1, false, m_Mobile.RangePerception, m_Mobile.RangePerception * 2))
+                    {
+                        this.m_Mobile.DebugSay("Well, here I am safe");
+                        this.Action = ActionType.Wander;
+                    }
+                }
+                else
+                {
+                    this.m_Mobile.DebugSay("I have lost my focus, lets relax");
+                    this.Action = ActionType.Wander;
+                }
+            }
 
-		public override bool DoActionBackoff()
-		{
-			double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+            return true;
+        }
 
-			if ( !m_Mobile.Summoned && !m_Mobile.Controlled && hitPercent < 0.1 && m_Mobile.CanFlee ) // Less than 10% health
-			{
-				Action = ActionType.Flee;
-			}
-			else
-			{
-				if (AcquireFocusMob(m_Mobile.RangePerception * 2, FightMode.Closest, true, false , true))
-				{
-					if ( WalkMobileRange(m_Mobile.FocusMob, 1, false, m_Mobile.RangePerception, m_Mobile.RangePerception * 2) )
-					{
-						m_Mobile.DebugSay( "Well, here I am safe" );
-						Action = ActionType.Wander;
-					}					
-				}
-				else
-				{
-					m_Mobile.DebugSay( "I have lost my focus, lets relax" );
-					Action = ActionType.Wander;
-				}
-			}
+        public override bool DoActionFlee()
+        {
+            this.AcquireFocusMob(m_Mobile.RangePerception * 2, m_Mobile.FightMode, true, false, true);
 
-			return true;
-		}
+            if (this.m_Mobile.FocusMob == null)
+                this.m_Mobile.FocusMob = this.m_Mobile.Combatant;
 
-		public override bool DoActionFlee()
-		{
-			AcquireFocusMob(m_Mobile.RangePerception * 2, m_Mobile.FightMode, true, false, true);
-
-			if ( m_Mobile.FocusMob == null )
-				m_Mobile.FocusMob = m_Mobile.Combatant;
-
-			return base.DoActionFlee();
-		}
-	}
+            return base.DoActionFlee();
+        }
+    }
 }

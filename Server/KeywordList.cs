@@ -1,85 +1,85 @@
 /***************************************************************************
- *                               KeywordList.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: KeywordList.cs 4 2006-06-15 04:28:39Z mark $
- *
- ***************************************************************************/
+*                               KeywordList.cs
+*                            -------------------
+*   begin                : May 1, 2002
+*   copyright            : (C) The RunUO Software Team
+*   email                : info@runuo.com
+*
+*   $Id: KeywordList.cs 4 2006-06-15 04:28:39Z mark $
+*
+***************************************************************************/
 
 /***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+*
+*   This program is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation; either version 2 of the License, or
+*   (at your option) any later version.
+*
+***************************************************************************/
 
 using System;
 
 namespace Server
 {
-	public class KeywordList
-	{
-		private int[] m_Keywords;
-		private int m_Count;
+    public class KeywordList
+    {
+        private int[] m_Keywords;
+        private int m_Count;
 
-		public KeywordList()
-		{
-			m_Keywords = new int[8];
-			m_Count = 0;
-		}
+        public KeywordList()
+        {
+            this.m_Keywords = new int[8];
+            this.m_Count = 0;
+        }
 
-		public int Count
-		{
-			get
-			{
-				return m_Count;
-			}
-		}
+        public int Count
+        {
+            get
+            {
+                return this.m_Count;
+            }
+        }
 
-		public bool Contains( int keyword )
-		{
-			bool contains = false;
+        public bool Contains(int keyword)
+        {
+            bool contains = false;
 
-			for ( int i = 0; !contains && i < m_Count; ++i )
-				contains = ( keyword == m_Keywords[i] );
+            for (int i = 0; !contains && i < this.m_Count; ++i)
+                contains = (keyword == this.m_Keywords[i]);
 
-			return contains;
-		}
+            return contains;
+        }
 
-		public void Add( int keyword )
-		{
-			if ( (m_Count + 1) > m_Keywords.Length )
-			{
-				int[] old = m_Keywords;
-				m_Keywords = new int[old.Length * 2];
+        public void Add(int keyword)
+        {
+            if ((this.m_Count + 1) > this.m_Keywords.Length)
+            {
+                int[] old = this.m_Keywords;
+                this.m_Keywords = new int[old.Length * 2];
 
-				for ( int i = 0; i < old.Length; ++i )
-					m_Keywords[i] = old[i];
-			}
+                for (int i = 0; i < old.Length; ++i)
+                    this.m_Keywords[i] = old[i];
+            }
 
-			m_Keywords[m_Count++] = keyword;
-		}
+            this.m_Keywords[this.m_Count++] = keyword;
+        }
 
-		private static int[] m_EmptyInts = new int[0];
+        private static readonly int[] m_EmptyInts = new int[0];
 
-		public int[] ToArray()
-		{
-			if ( m_Count == 0 )
-				return m_EmptyInts;
+        public int[] ToArray()
+        {
+            if (this.m_Count == 0)
+                return m_EmptyInts;
 
-			int[] keywords = new int[m_Count];
+            int[] keywords = new int[this.m_Count];
 
-			for ( int i = 0; i < m_Count; ++i )
-				keywords[i] = m_Keywords[i];
+            for (int i = 0; i < this.m_Count; ++i)
+                keywords[i] = this.m_Keywords[i];
 
-			m_Count = 0;
+            this.m_Count = 0;
 
-			return keywords;
-		}
-	}
+            return keywords;
+        }
+    }
 }

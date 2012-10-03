@@ -4,15 +4,15 @@ namespace CustomsFramework.GumpPlus
 {
     public class TextEntryPlus : GumpTextEntry
     {
-        private string _Name;
-        private object _Callback;
+        private readonly string _Name;
+        private readonly object _Callback;
         private object _Param;
 
         public string Name
         {
             get
             {
-                return _Name;
+                return this._Name;
             }
         }
 
@@ -20,75 +20,71 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _Param;
+                return this._Param;
             }
             set
             {
-                _Param = value;
+                this._Param = value;
             }
         }
 
-        public TextEntryPlus(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, TextInputResponse callback)
-            : base(x, y, width, height, hue, entryID, initialText)
+        public TextEntryPlus(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, TextInputResponse callback) : base(x, y, width, height, hue, entryID, initialText)
         {
-            _Name = name;
-            _Callback = callback;
-            _Param = null;
+            this._Name = name;
+            this._Callback = callback;
+            this._Param = null;
         }
 
-        public TextEntryPlus(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, TextInputParamResponse callback, object param)
-            : base(x, y, width, height, hue, entryID, initialText)
+        public TextEntryPlus(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, TextInputParamResponse callback, object param) : base(x, y, width, height, hue, entryID, initialText)
         {
-            _Name = name;
-            _Callback = callback;
-            _Param = param;
+            this._Name = name;
+            this._Callback = callback;
+            this._Param = param;
         }
 
         public void Invoke(string input)
         {
-            if (_Callback is TextInputResponse)
-                ((TextInputResponse)_Callback)(input);
-            else if (_Callback is TextInputParamResponse)
-                ((TextInputParamResponse)_Callback)(input, _Param);
+            if (this._Callback is TextInputResponse)
+                ((TextInputResponse)this._Callback)(input);
+            else if (this._Callback is TextInputParamResponse)
+                ((TextInputParamResponse)this._Callback)(input, this._Param);
         }
     }
 
     public class TextEntryLimitedPlus : GumpTextEntryLimited
     {
-        private string _Name;
-        private object _Callback;
-        private object _Param;
+        private readonly string _Name;
+        private readonly object _Callback;
+        private readonly object _Param;
 
         public string Name
         {
             get
             {
-                return _Name;
+                return this._Name;
             }
         }
 
-        public TextEntryLimitedPlus(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, int size, LimitedTextInputResponse callback)
-            : base(x, y, width, height, hue, entryID, initialText, size)
+        public TextEntryLimitedPlus(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, int size, LimitedTextInputResponse callback) : base(x, y, width, height, hue, entryID, initialText, size)
         {
-            _Name = name;
-            _Callback = callback;
-            _Param = null;
+            this._Name = name;
+            this._Callback = callback;
+            this._Param = null;
         }
 
-        public TextEntryLimitedPlus(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, int size, LimitedTextInputParamResponse callback, object param)
-            : base(x, y, width, height, hue, entryID, initialText, size)
+        public TextEntryLimitedPlus(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, int size, LimitedTextInputParamResponse callback, object param) : base(x, y, width, height, hue, entryID, initialText, size)
         {
-            _Name = name;
-            _Callback = callback;
-            _Param = param;
+            this._Name = name;
+            this._Callback = callback;
+            this._Param = param;
         }
 
         public void Invoke(string input)
         {
-            if (_Callback is LimitedTextInputResponse)
-                ((LimitedTextInputResponse)_Callback)(input);
-            else if (_Callback is LimitedTextInputParamResponse)
-                ((LimitedTextInputParamResponse)_Callback)(input, _Param);
+            if (this._Callback is LimitedTextInputResponse)
+                ((LimitedTextInputResponse)this._Callback)(input);
+            else if (this._Callback is LimitedTextInputParamResponse)
+                ((LimitedTextInputParamResponse)this._Callback)(input, this._Param);
         }
     }
 }

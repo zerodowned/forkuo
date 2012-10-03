@@ -12,11 +12,11 @@ namespace Server
         {
             get
             {
-                return _Map;
+                return this._Map;
             }
             set
             {
-                _Map = value;
+                this._Map = value;
             }
         }
 
@@ -25,24 +25,24 @@ namespace Server
         {
             get
             {
-                return _Location;
+                return this._Location;
             }
             set
             {
-                _Location = value;
+                this._Location = value;
             }
         }
 
         public Place()
         {
-            _Map = Map.Internal;
-            _Location = new Point3D(0, 0, 0);
+            this._Map = Map.Internal;
+            this._Location = new Point3D(0, 0, 0);
         }
 
         public Place(Map map, Point3D location)
         {
-            _Map = map;
-            _Location = location;
+            this._Map = map;
+            this._Location = location;
         }
 
         public void Serialize(GenericWriter writer)
@@ -50,13 +50,13 @@ namespace Server
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_Map);
-            writer.Write(_Location);
+            writer.Write(this._Map);
+            writer.Write(this._Location);
         }
 
         public Place(GenericReader reader)
         {
-            Deserialize(reader);
+            this.Deserialize(reader);
         }
 
         private void Deserialize(GenericReader reader)
@@ -67,8 +67,8 @@ namespace Server
             {
                 case 0:
                     {
-                        _Map = reader.ReadMap();
-                        _Location = reader.ReadPoint3D();
+                        this._Map = reader.ReadMap();
+                        this._Location = reader.ReadPoint3D();
                         break;
                     }
             }

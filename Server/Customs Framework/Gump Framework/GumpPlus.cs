@@ -21,7 +21,6 @@ namespace CustomsFramework.GumpPlus
     public abstract partial class GumpPlus : Gump
     {
         #region Variables
-
         private bool _Compiled = false;
 
         private Mobile _User;
@@ -36,7 +35,7 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _Compiled;
+                return this._Compiled;
             }
         }
 
@@ -44,11 +43,11 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _User;
+                return this._User;
             }
             set
             {
-                _User = value;
+                this._User = value;
             }
         }
 
@@ -56,11 +55,11 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _EnableMacroProtection;
+                return this._EnableMacroProtection;
             }
             set
             {
-                _EnableMacroProtection = value;
+                this._EnableMacroProtection = value;
             }
         }
 
@@ -68,11 +67,11 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _BlockSpeech;
+                return this._BlockSpeech;
             }
             set
             {
-                _BlockSpeech = value;
+                this._BlockSpeech = value;
             }
         }
 
@@ -80,7 +79,7 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _IsOpen;
+                return this._IsOpen;
             }
         }
 
@@ -88,7 +87,7 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _Entries;
+                return this._Entries;
             }
         }
         #endregion
@@ -99,18 +98,18 @@ namespace CustomsFramework.GumpPlus
 
         protected int NewButtonID()
         {
-            int id = _NewButtonID;
+            int id = this._NewButtonID;
 
-            if (!_UsedButtonIDs.Contains(id))
+            if (!this._UsedButtonIDs.Contains(id))
             {
-                _UsedButtonIDs.Add(id);
-                _NewButtonID++;
+                this._UsedButtonIDs.Add(id);
+                this._NewButtonID++;
                 return id;
             }
             else
             {
-                _NewButtonID++;
-                return NewButtonID();
+                this._NewButtonID++;
+                return this.NewButtonID();
             }
         }
 
@@ -118,13 +117,13 @@ namespace CustomsFramework.GumpPlus
         {
             int id = Utility.RandomMinMax(1, 65535);
 
-            if (!_UsedButtonIDs.Contains(id))
+            if (!this._UsedButtonIDs.Contains(id))
             {
-                _UsedButtonIDs.Add(id);
+                this._UsedButtonIDs.Add(id);
                 return id;
             }
             else
-                return RandomButtonID();
+                return this.RandomButtonID();
         }
 
         // Text Entries
@@ -133,18 +132,18 @@ namespace CustomsFramework.GumpPlus
 
         protected int NewTextEntryID()
         {
-            int id = _NewTextEntryID;
+            int id = this._NewTextEntryID;
 
-            if (!_UsedTextEntryIDs.Contains(id))
+            if (!this._UsedTextEntryIDs.Contains(id))
             {
-                _UsedTextEntryIDs.Add(id);
-                _NewTextEntryID++;
+                this._UsedTextEntryIDs.Add(id);
+                this._NewTextEntryID++;
                 return id;
             }
             else
             {
-                _NewTextEntryID++;
-                return NewTextEntryID();
+                this._NewTextEntryID++;
+                return this.NewTextEntryID();
             }
         }
 
@@ -152,13 +151,13 @@ namespace CustomsFramework.GumpPlus
         {
             int id = Utility.RandomMinMax(1, 65535);
 
-            if (!_UsedTextEntryIDs.Contains(id))
+            if (!this._UsedTextEntryIDs.Contains(id))
             {
-                _UsedTextEntryIDs.Add(id);
+                this._UsedTextEntryIDs.Add(id);
                 return id;
             }
             else
-                return RandomTextEntryID();
+                return this.RandomTextEntryID();
         }
 
         // Switch Entries
@@ -167,18 +166,18 @@ namespace CustomsFramework.GumpPlus
 
         protected int NewSwitchID()
         {
-            int id = _NewSwitchID;
+            int id = this._NewSwitchID;
 
-            if (!_UsedSwitchIDs.Contains(id))
+            if (!this._UsedSwitchIDs.Contains(id))
             {
-                _UsedSwitchIDs.Add(id);
-                _NewSwitchID++;
+                this._UsedSwitchIDs.Add(id);
+                this._NewSwitchID++;
                 return id;
             }
             else
             {
-                _NewSwitchID++;
-                return NewSwitchID();
+                this._NewSwitchID++;
+                return this.NewSwitchID();
             }
         }
 
@@ -186,13 +185,13 @@ namespace CustomsFramework.GumpPlus
         {
             int id = Utility.RandomMinMax(1, 65535);
 
-            if (!_UsedSwitchIDs.Contains(id))
+            if (!this._UsedSwitchIDs.Contains(id))
             {
-                _UsedSwitchIDs.Add(id);
+                this._UsedSwitchIDs.Add(id);
                 return id;
             }
             else
-                return RandomTextEntryID();
+                return this.RandomTextEntryID();
         }
 
         // Radio Entries
@@ -201,18 +200,18 @@ namespace CustomsFramework.GumpPlus
 
         protected int NewRadioID()
         {
-            int id = _NewRadioID;
+            int id = this._NewRadioID;
 
-            if (!_UsedRadioIDs.Contains(id))
+            if (!this._UsedRadioIDs.Contains(id))
             {
-                _UsedRadioIDs.Add(id);
-                _NewRadioID++;
+                this._UsedRadioIDs.Add(id);
+                this._NewRadioID++;
                 return id;
             }
             else
             {
-                _NewRadioID++;
-                return NewSwitchID();
+                this._NewRadioID++;
+                return this.NewSwitchID();
             }
         }
 
@@ -220,66 +219,67 @@ namespace CustomsFramework.GumpPlus
         {
             int id = Utility.RandomMinMax(1, 65535);
 
-            if (!_UsedRadioIDs.Contains(id))
+            if (!this._UsedRadioIDs.Contains(id))
             {
-                _UsedRadioIDs.Add(id);
+                this._UsedRadioIDs.Add(id);
                 return id;
             }
             else
-                return RandomRadioID();
+                return this.RandomRadioID();
         }
+
         #endregion
         #region Constructors
-        public GumpPlus(int x, int y)
-            : base(x, y)
+        public GumpPlus(int x, int y) : base(x, y)
         {
-            _UsedButtonIDs = new List<int>();
-            _UsedTextEntryIDs = new List<int>();
-            _UsedSwitchIDs = new List<int>();
-            _UsedRadioIDs = new List<int>();
+            this._UsedButtonIDs = new List<int>();
+            this._UsedTextEntryIDs = new List<int>();
+            this._UsedSwitchIDs = new List<int>();
+            this._UsedRadioIDs = new List<int>();
 
-            _Entries = new List<GumpEntry>();
+            this._Entries = new List<GumpEntry>();
         }
-        public GumpPlus(Mobile from, int x, int y)
-            : this(x, y)
+
+        public GumpPlus(Mobile from, int x, int y) : this(x, y)
         {
-            _User = from;
+            this._User = from;
         }
+
         #endregion
 
         public virtual GumpPlus Refresh()
         {
-            return Refresh(true);
+            return this.Refresh(true);
         }
 
         public virtual GumpPlus Refresh(bool openIfClosed)
         {
-            return Refresh(openIfClosed, false);
+            return this.Refresh(openIfClosed, false);
         }
 
         public virtual GumpPlus Refresh(bool openIfClosed, bool recompile)
         {
             GumpPlus gump = this;
-            Type type = GetType();
+            Type type = this.GetType();
 
             try
             {
-                if (!_IsOpen && openIfClosed)
+                if (!this._IsOpen && openIfClosed)
                 {
                     if (recompile)
-                        return Send();
+                        return this.Send();
 
-                    _IsOpen = _User.SendGump(this, false);
+                    this._IsOpen = this._User.SendGump(this, false);
                     return this;
                 }
 
-                if (_IsOpen)
-                    _User.CloseGump(type);
+                if (this._IsOpen)
+                    this._User.CloseGump(type);
 
                 if (recompile)
-                    return Send();
+                    return this.Send();
 
-                _IsOpen = _User.SendGump(this, false);
+                this._IsOpen = this._User.SendGump(this, false);
             }
             catch (Exception error)
             {
@@ -295,16 +295,16 @@ namespace CustomsFramework.GumpPlus
         {
             try
             {
-                Entries.Clear();
-                Compile();
+                this.Entries.Clear();
+                this.Compile();
 
-                _Compiled = true;
-                _User.CloseGump(GetType());
-                _IsOpen = _User.SendGump(this, false);
+                this._Compiled = true;
+                this._User.CloseGump(this.GetType());
+                this._IsOpen = this._User.SendGump(this, false);
             }
             catch (Exception error)
             {
-                Console.WriteLine("GumpPlus '{0}' could not be sent.", GetType().FullName);
+                Console.WriteLine("GumpPlus '{0}' could not be sent.", this.GetType().FullName);
                 Console.WriteLine("Message: {0}", error.Message);
                 Console.WriteLine("Stack Trace: {0}", error.StackTrace);
             }
@@ -314,29 +314,29 @@ namespace CustomsFramework.GumpPlus
 
         public virtual GumpPlus Close()
         {
-            return Close(false);
+            return this.Close(false);
         }
 
         public virtual GumpPlus Close(bool all)
         {
-            if (_IsOpen)
-                _User.CloseGump(GetType());
+            if (this._IsOpen)
+                this._User.CloseGump(this.GetType());
 
-            if (_Parent != null)
+            if (this._Parent != null)
             {
                 if (all)
                 {
-                    if (_Parent is GumpPlus)
-                        ((GumpPlus)_Parent).Close(all);
+                    if (this._Parent is GumpPlus)
+                        ((GumpPlus)this._Parent).Close(all);
                     else
-                        _User.CloseGump(_Parent.GetType());
+                        this._User.CloseGump(this._Parent.GetType());
                 }
                 else
                 {
-                    if (_Parent is GumpPlus)
-                        ((GumpPlus)_Parent).Refresh();
+                    if (this._Parent is GumpPlus)
+                        ((GumpPlus)this._Parent).Refresh();
                     else
-                        _User.SendGump(_Parent);
+                        this._User.SendGump(this._Parent);
                 }
             }
 
@@ -345,8 +345,9 @@ namespace CustomsFramework.GumpPlus
 
         protected virtual void OnSpeech(SpeechEventArgs e)
         {
-            e.Blocked = (_IsOpen && _BlockSpeech);
+            e.Blocked = (this._IsOpen && this._BlockSpeech);
         }
+
         #region Linked Gumps
         private Gump _Parent;
         private List<GumpPlus> _Children = new List<GumpPlus>();
@@ -355,20 +356,20 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _Parent;
+                return this._Parent;
             }
             set
             {
-                if (_Parent == value)
+                if (this._Parent == value)
                     return;
 
-                if (_Parent != null && _Parent is GumpPlus)
-                    ((GumpPlus)_Parent).RemoveChild(this);
+                if (this._Parent != null && this._Parent is GumpPlus)
+                    ((GumpPlus)this._Parent).RemoveChild(this);
 
-                _Parent = value;
+                this._Parent = value;
 
-                if (_Parent != null && _Parent is GumpPlus)
-                    ((GumpPlus)_Parent).AddChild(this);
+                if (this._Parent != null && this._Parent is GumpPlus)
+                    ((GumpPlus)this._Parent).AddChild(this);
             }
         }
 
@@ -376,11 +377,11 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _Children;
+                return this._Children;
             }
             set
             {
-                _Children = value;
+                this._Children = value;
             }
         }
 
@@ -389,12 +390,12 @@ namespace CustomsFramework.GumpPlus
             if (child == null)
                 return false;
 
-            if (!_Children.Contains(child))
+            if (!this._Children.Contains(child))
             {
                 if (child.Parent != this)
                     child.Parent = this;
 
-                _Children.Add(child);
+                this._Children.Add(child);
                 return true;
             }
             else
@@ -406,10 +407,10 @@ namespace CustomsFramework.GumpPlus
             if (child == null)
                 return false;
 
-            if (_Children.Contains(child))
+            if (this._Children.Contains(child))
             {
                 child.Parent = null;
-                _Children.Remove(child);
+                this._Children.Remove(child);
                 return true;
             }
             else
@@ -418,20 +419,20 @@ namespace CustomsFramework.GumpPlus
 
         public virtual bool HasChild(GumpPlus child)
         {
-            return HasChild(child, false);
+            return this.HasChild(child, false);
         }
 
         public virtual bool HasChild(GumpPlus child, bool distantRelative)
         {
-            if (_Parent == null || child == null)
+            if (this._Parent == null || child == null)
                 return false;
 
-            if (_Children.Contains(child))
+            if (this._Children.Contains(child))
                 return true;
 
             if (distantRelative)
             {
-                foreach (GumpPlus grandChild in _Children)
+                foreach (GumpPlus grandChild in this._Children)
                 {
                     if (grandChild.HasChild(child, distantRelative))
                         return true;
@@ -443,25 +444,26 @@ namespace CustomsFramework.GumpPlus
 
         public virtual bool IsChildOf(GumpPlus parent)
         {
-            return IsChildOf(parent, false);
+            return this.IsChildOf(parent, false);
         }
 
         public virtual bool IsChildOf(GumpPlus parent, bool distantRelative)
         {
-            if (_Parent == null || parent == null)
+            if (this._Parent == null || parent == null)
                 return false;
 
-            if (_Parent == parent)
+            if (this._Parent == parent)
                 return true;
 
             if (distantRelative)
             {
-                if (_Parent is GumpPlus)
-                    return ((GumpPlus)_Parent).IsChildOf(parent, distantRelative);
+                if (this._Parent is GumpPlus)
+                    return ((GumpPlus)this._Parent).IsChildOf(parent, distantRelative);
             }
 
             return false;
         }
+
         #endregion
         #region Buttons
         private ButtonResponse _DefaultButtonHandler = delegate() { };
@@ -470,59 +472,60 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _DefaultButtonHandler;
+                return this._DefaultButtonHandler;
             }
             set
             {
-                _DefaultButtonHandler = value;
+                this._DefaultButtonHandler = value;
             }
         }
 
         new public void AddButton(int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type, int param)
         {
-            Add(new ButtonPlus(x, y, normalID, pressedID, buttonID, String.Format("Button:{0}", buttonID), DefaultButtonHandler));
+            this.Add(new ButtonPlus(x, y, normalID, pressedID, buttonID, String.Format("Button:{0}", buttonID), DefaultButtonHandler));
         }
 
         public void AddButton(int x, int y, int normalID, int pressedID, string name, ButtonResponse callback)
         {
-            Add(new ButtonPlus(x, y, normalID, pressedID, (_EnableMacroProtection ? RandomButtonID() : NewButtonID()), name, callback));
+            this.Add(new ButtonPlus(x, y, normalID, pressedID, (_EnableMacroProtection ? this.RandomButtonID() : this.NewButtonID()), name, callback));
         }
 
         public void AddButton(int x, int y, int normalID, int pressedID, string name, ButtonParamResponse callback, object param)
         {
-            Add(new ButtonPlus(x, y, normalID, pressedID, (_EnableMacroProtection ? RandomButtonID() : NewButtonID()), name, callback, param));
+            this.Add(new ButtonPlus(x, y, normalID, pressedID, (_EnableMacroProtection ? this.RandomButtonID() : this.NewButtonID()), name, callback, param));
         }
 
         // Overrides
         public void AddButton(int x, int y, int normalID, int pressedID, ButtonResponse callback)
         {
-            AddButton(x, y, normalID, pressedID, "", callback);
+            this.AddButton(x, y, normalID, pressedID, "", callback);
         }
 
         public void AddButton(int x, int y, int normalID, int pressedID, ButtonParamResponse callback, object param)
         {
-            AddButton(x, y, normalID, pressedID, "", callback, param);
+            this.AddButton(x, y, normalID, pressedID, "", callback, param);
         }
 
         public void AddButton(int x, int y, int buttonID, string name, ButtonResponse callback)
         {
-            AddButton(x, y, buttonID, buttonID, name, callback);
+            this.AddButton(x, y, buttonID, buttonID, name, callback);
         }
 
         public void AddButton(int x, int y, int buttonID, string name, ButtonParamResponse callback, object param)
         {
-            AddButton(x, y, buttonID, buttonID, name, callback, param);
+            this.AddButton(x, y, buttonID, buttonID, name, callback, param);
         }
 
         public void AddButton(int x, int y, int buttonID, ButtonResponse callback)
         {
-            AddButton(x, y, buttonID, buttonID, "", callback);
+            this.AddButton(x, y, buttonID, buttonID, "", callback);
         }
 
         public void AddButton(int x, int y, int buttonID, ButtonParamResponse callback, object param)
         {
-            AddButton(x, y, buttonID, buttonID, "", callback, param);
+            this.AddButton(x, y, buttonID, buttonID, "", callback, param);
         }
+
         #endregion
         #region Text Entries
         private TextInputResponse _DefaultTextInputResponse = delegate(string text) { };
@@ -531,59 +534,60 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _DefaultTextInputResponse;
+                return this._DefaultTextInputResponse;
             }
             set
             {
-                _DefaultTextInputResponse = value;
+                this._DefaultTextInputResponse = value;
             }
         }
 
         new public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText)
         {
-            Add(new TextEntryPlus(x, y, width, height, hue, String.Format("TextEntry:{0}", entryID), entryID, initialText, DefaultTextInputResponse));
+            this.Add(new TextEntryPlus(x, y, width, height, hue, String.Format("TextEntry:{0}", entryID), entryID, initialText, DefaultTextInputResponse));
         }
 
         public void AddTextEntry(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, TextInputResponse callback)
         {
-            Add(new TextEntryPlus(x, y, width, height, hue, name, entryID, initialText, callback));
+            this.Add(new TextEntryPlus(x, y, width, height, hue, name, entryID, initialText, callback));
         }
 
         public void AddTextEntry(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, TextInputParamResponse callback, object param)
         {
-            Add(new TextEntryPlus(x, y, width, height, hue, name, entryID, initialText, callback, param));
+            this.Add(new TextEntryPlus(x, y, width, height, hue, name, entryID, initialText, callback, param));
         }
 
         // Overrides
         public void AddTextEntry(int x, int y, int width, int height, int hue, string name, string initialText, TextInputResponse callback)
         {
-            AddTextEntry(x, y, width, height, hue, name, (_EnableMacroProtection ? NewTextEntryID() : RandomTextEntryID()), initialText, callback);
+            this.AddTextEntry(x, y, width, height, hue, name, (_EnableMacroProtection ? this.NewTextEntryID() : this.RandomTextEntryID()), initialText, callback);
         }
 
         public void AddTextEntry(int x, int y, int width, int height, int hue, string name, string initialText, TextInputParamResponse callback, object param)
         {
-            AddTextEntry(x, y, width, height, hue, name, (_EnableMacroProtection ? NewTextEntryID() : RandomTextEntryID()), initialText, callback, param);
+            this.AddTextEntry(x, y, width, height, hue, name, (_EnableMacroProtection ? this.NewTextEntryID() : this.RandomTextEntryID()), initialText, callback, param);
         }
 
         public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, TextInputResponse callback)
         {
-            AddTextEntry(x, y, width, height, hue, String.Format("TextEntry:{0}", entryID), initialText, callback);
+            this.AddTextEntry(x, y, width, height, hue, String.Format("TextEntry:{0}", entryID), initialText, callback);
         }
 
         public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, TextInputParamResponse callback, object param)
         {
-            AddTextEntry(x, y, width, height, hue, String.Format("TextEntry:{0}", entryID), initialText, callback, param);
+            this.AddTextEntry(x, y, width, height, hue, String.Format("TextEntry:{0}", entryID), initialText, callback, param);
         }
 
         public void AddTextEntry(int x, int y, int width, int height, int hue, string initialText, TextInputResponse callback)
         {
-            AddTextEntry(x, y, width, height, hue, (_EnableMacroProtection ? NewTextEntryID() : RandomTextEntryID()), initialText, callback);
+            this.AddTextEntry(x, y, width, height, hue, (_EnableMacroProtection ? this.NewTextEntryID() : this.RandomTextEntryID()), initialText, callback);
         }
 
         public void AddTextEntry(int x, int y, int width, int height, int hue, string initialText, TextInputParamResponse callback, object param)
         {
-            AddTextEntry(x, y, width, height, hue, (_EnableMacroProtection ? NewTextEntryID() : RandomTextEntryID()), initialText, callback, param);
+            this.AddTextEntry(x, y, width, height, hue, (_EnableMacroProtection ? this.NewTextEntryID() : this.RandomTextEntryID()), initialText, callback, param);
         }
+
         #endregion
         #region Limited Text Entries
         private LimitedTextInputResponse _DefaultLimitedTextInputResponse = delegate(string text) { };
@@ -592,59 +596,60 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _DefaultLimitedTextInputResponse;
+                return this._DefaultLimitedTextInputResponse;
             }
             set
             {
-                _DefaultLimitedTextInputResponse = value;
+                this._DefaultLimitedTextInputResponse = value;
             }
         }
 
         new public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, int size)
         {
-            Add(new TextEntryLimitedPlus(x, y, width, height, hue, String.Format("LimitedTextEntry:{0}", entryID), entryID, initialText, size, DefaultLimitedTextInputResponse));
+            this.Add(new TextEntryLimitedPlus(x, y, width, height, hue, String.Format("LimitedTextEntry:{0}", entryID), entryID, initialText, size, DefaultLimitedTextInputResponse));
         }
 
         public void AddLimitedTextEntry(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, int size, LimitedTextInputResponse callback)
         {
-            Add(new TextEntryLimitedPlus(x, y, width, height, hue, name, entryID, initialText, size, callback));
+            this.Add(new TextEntryLimitedPlus(x, y, width, height, hue, name, entryID, initialText, size, callback));
         }
 
         public void AddLimitedTextEntry(int x, int y, int width, int height, int hue, string name, int entryID, string initialText, int size, LimitedTextInputParamResponse callback, object param)
         {
-            Add(new TextEntryLimitedPlus(x, y, width, height, hue, name, entryID, initialText, size, callback, param));
+            this.Add(new TextEntryLimitedPlus(x, y, width, height, hue, name, entryID, initialText, size, callback, param));
         }
 
         // Overrides
         public void AddLimitedTextEntry(int x, int y, int width, int height, int hue, string name, string initialText, int size, LimitedTextInputResponse callback)
         {
-            AddLimitedTextEntry(x, y, width, height, hue, name, (_EnableMacroProtection ? NewTextEntryID() : RandomTextEntryID()), initialText, size, callback);
+            this.AddLimitedTextEntry(x, y, width, height, hue, name, (_EnableMacroProtection ? this.NewTextEntryID() : this.RandomTextEntryID()), initialText, size, callback);
         }
 
         public void AddLimitedTextEntry(int x, int y, int width, int height, int hue, string name, string intialText, int size, LimitedTextInputParamResponse callback, object param)
         {
-            AddLimitedTextEntry(x, y, width, height, hue, name, (_EnableMacroProtection ? NewTextEntryID() : RandomTextEntryID()), intialText, size, callback, param);
+            this.AddLimitedTextEntry(x, y, width, height, hue, name, (_EnableMacroProtection ? this.NewTextEntryID() : this.RandomTextEntryID()), intialText, size, callback, param);
         }
 
         public void AddLimitedTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, int size, LimitedTextInputResponse callback)
         {
-            AddLimitedTextEntry(x, y, width, height, hue, String.Format("LimitedTextEntry:{0}", entryID), entryID, initialText, size, callback);
+            this.AddLimitedTextEntry(x, y, width, height, hue, String.Format("LimitedTextEntry:{0}", entryID), entryID, initialText, size, callback);
         }
 
         public void AddLimitedTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, int size, LimitedTextInputParamResponse callback, object param)
         {
-            AddLimitedTextEntry(x, y, width, height, hue, String.Format("LimitedTextEntry:{0}", entryID), entryID, initialText, size, callback, param);
+            this.AddLimitedTextEntry(x, y, width, height, hue, String.Format("LimitedTextEntry:{0}", entryID), entryID, initialText, size, callback, param);
         }
 
         public void AddLimitedTextEntry(int x, int y, int width, int height, int hue, string initialText, int size, LimitedTextInputResponse callback)
         {
-            AddLimitedTextEntry(x, y, width, height, hue, (_EnableMacroProtection ? NewTextEntryID() : RandomTextEntryID()), initialText, size, callback);
+            this.AddLimitedTextEntry(x, y, width, height, hue, (_EnableMacroProtection ? this.NewTextEntryID() : this.RandomTextEntryID()), initialText, size, callback);
         }
 
         public void AddLimitedTextEntry(int x, int y, int width, int height, int hue, string initialText, int size, LimitedTextInputParamResponse callback, object param)
         {
-            AddLimitedTextEntry(x, y, width, height, hue, (_EnableMacroProtection ? NewTextEntryID() : RandomTextEntryID()), initialText, size, callback, param);
+            this.AddLimitedTextEntry(x, y, width, height, hue, (_EnableMacroProtection ? this.NewTextEntryID() : this.RandomTextEntryID()), initialText, size, callback, param);
         }
+
         #endregion
         #region Check Entries
         private CheckResponse _DefaultCheckResponse = delegate(bool switched) { };
@@ -653,69 +658,70 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _DefaultCheckResponse;
+                return this._DefaultCheckResponse;
             }
             set
             {
-                _DefaultCheckResponse = value;
+                this._DefaultCheckResponse = value;
             }
         }
 
         new public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
         {
-            Add(new CheckPlus(x, y, inactiveID, activeID, initialState, switchID, String.Format("Check:{0}", switchID), 0, DefaultCheckResponse));
+            this.Add(new CheckPlus(x, y, inactiveID, activeID, initialState, switchID, String.Format("Check:{0}", switchID), 0, DefaultCheckResponse));
         }
 
         public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, int switchID, string name, int group, CheckResponse callback)
         {
-            Add(new CheckPlus(x, y, inactiveID, activeID, initialState, switchID, name, group, callback));
+            this.Add(new CheckPlus(x, y, inactiveID, activeID, initialState, switchID, name, group, callback));
         }
 
         public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, int switchID, string name, int group, CheckParamResponse callback, object param)
         {
-            Add(new CheckPlus(x, y, inactiveID, activeID, initialState, switchID, name, group, callback, param));
+            this.Add(new CheckPlus(x, y, inactiveID, activeID, initialState, switchID, name, group, callback, param));
         }
 
         // Overrides
         public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, string name, int group, CheckResponse callback)
         {
-            AddCheck(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? NewSwitchID() : RandomSwitchID()), name, group, callback);
+            this.AddCheck(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? this.NewSwitchID() : this.RandomSwitchID()), name, group, callback);
         }
 
         public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, string name, int group, CheckParamResponse callback, object param)
         {
-            AddCheck(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? NewSwitchID() : RandomSwitchID()), name, group, callback, param);
+            this.AddCheck(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? this.NewSwitchID() : this.RandomSwitchID()), name, group, callback, param);
         }
 
         public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, int switchID, int group, CheckResponse callback)
         {
-            AddCheck(x, y, inactiveID, activeID, initialState, switchID, String.Format("Check:{0}", switchID), group, callback);
+            this.AddCheck(x, y, inactiveID, activeID, initialState, switchID, String.Format("Check:{0}", switchID), group, callback);
         }
 
         public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, int switchID, int group, CheckParamResponse callback, object param)
         {
-            AddCheck(x, y, inactiveID, activeID, initialState, switchID, String.Format("Check:{0}", switchID), group, callback, param);
+            this.AddCheck(x, y, inactiveID, activeID, initialState, switchID, String.Format("Check:{0}", switchID), group, callback, param);
         }
 
         public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, int group, CheckResponse callback)
         {
-            AddCheck(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? NewSwitchID() : RandomSwitchID()), group, callback);
+            this.AddCheck(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? this.NewSwitchID() : this.RandomSwitchID()), group, callback);
         }
 
         public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, int group, CheckParamResponse callback, object param)
         {
-            AddCheck(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? NewSwitchID() : RandomSwitchID()), group, callback, param);
+            this.AddCheck(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? this.NewSwitchID() : this.RandomSwitchID()), group, callback, param);
         }
 
         public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, CheckResponse callback)
         {
-            AddCheck(x, y, inactiveID, activeID, initialState, 0, callback);
+            this.AddCheck(x, y, inactiveID, activeID, initialState, 0, callback);
         }
 
         public void AddCheck(int x, int y, int inactiveID, int activeID, bool initialState, CheckParamResponse callback, object param)
         {
-            AddCheck(x, y, inactiveID, activeID, initialState, 0, callback, param);
+            this.AddCheck(x, y, inactiveID, activeID, initialState, 0, callback, param);
         }
+
         #endregion
         #region Radio Entries
         private RadioResponse _DefaultRadioResponse = delegate(bool switched) { };
@@ -724,79 +730,80 @@ namespace CustomsFramework.GumpPlus
         {
             get
             {
-                return _DefaultRadioResponse;
+                return this._DefaultRadioResponse;
             }
             set
             {
-                _DefaultRadioResponse = value;
+                this._DefaultRadioResponse = value;
             }
         }
 
         new public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
         {
-            Add(new RadioPlus(x, y, inactiveID, activeID, initialState, switchID, 0, String.Format("Radio:{0}", switchID), DefaultRadioResponse));
+            this.Add(new RadioPlus(x, y, inactiveID, activeID, initialState, switchID, 0, String.Format("Radio:{0}", switchID), DefaultRadioResponse));
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, int switchID, int group, string name, RadioResponse callback)
         {
-            Add(new RadioPlus(x, y, inactiveID, activeID, initialState, switchID, group, name, callback));
+            this.Add(new RadioPlus(x, y, inactiveID, activeID, initialState, switchID, group, name, callback));
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, int switchID, int group, string name, RadioParamResponse callback, object param)
         {
-            Add(new RadioPlus(x, y, inactiveID, activeID, initialState, switchID, group, name, callback, param));
+            this.Add(new RadioPlus(x, y, inactiveID, activeID, initialState, switchID, group, name, callback, param));
         }
 
         // Overrides
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, int switchID, int group, RadioResponse callback)
         {
-            AddRadio(x, y, inactiveID, activeID, initialState, switchID, group, String.Format("Radio:{0}", switchID), callback);
+            this.AddRadio(x, y, inactiveID, activeID, initialState, switchID, group, String.Format("Radio:{0}", switchID), callback);
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, int switchID, int group, RadioParamResponse callback, object param)
         {
-            AddRadio(x, y, inactiveID, activeID, initialState, switchID, group, String.Format("Radio:{0}", switchID), callback, param);
+            this.AddRadio(x, y, inactiveID, activeID, initialState, switchID, group, String.Format("Radio:{0}", switchID), callback, param);
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, int switchID, string name, RadioResponse callback)
         {
-            AddRadio(x, y, inactiveID, activeID, initialState, switchID, 0, name, callback);
+            this.AddRadio(x, y, inactiveID, activeID, initialState, switchID, 0, name, callback);
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, int switchID, string name, RadioParamResponse callback, object param)
         {
-            AddRadio(x, y, inactiveID, activeID, initialState, switchID, 0, name, callback, param);
+            this.AddRadio(x, y, inactiveID, activeID, initialState, switchID, 0, name, callback, param);
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, string name, int group, RadioResponse callback)
         {
-            AddRadio(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? NewRadioID() : RandomRadioID()), group, name, callback);
+            this.AddRadio(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? this.NewRadioID() : this.RandomRadioID()), group, name, callback);
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, string name, int group, RadioParamResponse callback, object param)
         {
-            AddRadio(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? NewRadioID() : RandomRadioID()), group, name, callback, param);
+            this.AddRadio(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? this.NewRadioID() : this.RandomRadioID()), group, name, callback, param);
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, int group, RadioResponse callback)
         {
-            AddRadio(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? NewRadioID() : RandomRadioID()), group, callback);
+            this.AddRadio(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? this.NewRadioID() : this.RandomRadioID()), group, callback);
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, int group, RadioParamResponse callback, object param)
         {
-            AddRadio(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? NewRadioID() : RandomRadioID()), group, callback, param);
+            this.AddRadio(x, y, inactiveID, activeID, initialState, (_EnableMacroProtection ? this.NewRadioID() : this.RandomRadioID()), group, callback, param);
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, RadioResponse callback)
         {
-            AddRadio(x, y, inactiveID, activeID, initialState, 0, callback);
+            this.AddRadio(x, y, inactiveID, activeID, initialState, 0, callback);
         }
 
         public void AddRadio(int x, int y, int inactiveID, int activeID, bool initialState, RadioParamResponse callback, object param)
         {
-            AddRadio(x, y, inactiveID, activeID, initialState, 0, callback, param);
+            this.AddRadio(x, y, inactiveID, activeID, initialState, 0, callback, param);
         }
+
         #endregion
 
         new public void Add(GumpEntry entry)
@@ -805,36 +812,36 @@ namespace CustomsFramework.GumpPlus
             {
                 entry.Parent = this;
             }
-            else if (!_Entries.Contains(entry))
+            else if (!this._Entries.Contains(entry))
             {
-                _Entries.Add(entry);
+                this._Entries.Add(entry);
             }
         }
 
         new public void Remove(GumpEntry entry)
         {
-            _Entries.Remove(entry);
+            this._Entries.Remove(entry);
             entry.Parent = null;
         }
 
         new public void SendTo(NetState state)
         {
-            if (User == null)
-                User = state.Mobile;
+            if (this.User == null)
+                this.User = state.Mobile;
 
             state.AddGump((Gump)this);
-            state.Send(Compile(state));
+            state.Send(this.Compile(state));
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
-            foreach (CheckPlus entry in GetEntries<CheckPlus>())
+            foreach (CheckPlus entry in this.GetEntries<CheckPlus>())
                 entry.Invoke(info.IsSwitched(entry.SwitchID));
 
-            foreach (RadioPlus entry in GetEntries<RadioPlus>())
+            foreach (RadioPlus entry in this.GetEntries<RadioPlus>())
                 entry.Invoke(info.IsSwitched(entry.SwitchID));
 
-            foreach (TextEntryPlus entry in GetEntries<TextEntryPlus>())
+            foreach (TextEntryPlus entry in this.GetEntries<TextEntryPlus>())
             {
                 TextRelay relay = info.GetTextEntry(entry.EntryID);
 
@@ -844,7 +851,7 @@ namespace CustomsFramework.GumpPlus
                     entry.Invoke(String.Empty);
             }
 
-            foreach (TextEntryLimitedPlus entry in GetEntries<TextEntryLimitedPlus>())
+            foreach (TextEntryLimitedPlus entry in this.GetEntries<TextEntryLimitedPlus>())
             {
                 TextRelay relay = info.GetTextEntry(entry.EntryID);
 
@@ -857,10 +864,10 @@ namespace CustomsFramework.GumpPlus
             int buttonID = info.ButtonID;
 
             if (buttonID == 0)
-                Close();
+                this.Close();
             else
             {
-                foreach (ButtonPlus entry in GetEntries<ButtonPlus>())
+                foreach (ButtonPlus entry in this.GetEntries<ButtonPlus>())
                 {
                     if (entry.ButtonID == buttonID)
                         entry.Invoke();
@@ -872,18 +879,20 @@ namespace CustomsFramework.GumpPlus
 
         public override void OnServerClose(NetState owner)
         {
-            _IsOpen = false;
+            this._IsOpen = false;
             base.OnServerClose(owner);
         }
 
         public virtual T[] GetEntries<T>() where T : GumpEntry
         {
-            List<T> entries = new List<T>(Entries.Count);
+            List<T> entries = new List<T>(this.Entries.Count);
 
-            foreach (GumpEntry entry in Entries)
+            foreach (GumpEntry entry in this.Entries)
             {
                 if (entry is T)
-                { entries.Add((T)entry); }
+                {
+                    entries.Add((T)entry);
+                }
             }
 
             return entries.ToArray();
@@ -899,7 +908,7 @@ namespace CustomsFramework.GumpPlus
 
         public override int GetHashCode()
         {
-            return Serial;
+            return this.Serial;
         }
     }
 }

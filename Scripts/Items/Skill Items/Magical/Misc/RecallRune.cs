@@ -1,321 +1,325 @@
 using System;
-using Server.Network;
-using Server.Prompts;
 using Server.Multis;
+using Server.Prompts;
 using Server.Regions;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1f14, 0x1f15, 0x1f16, 0x1f17 )]
-	public class RecallRune : Item
-	{
-		private string m_Description;
-		private bool m_Marked;
-		private Point3D m_Target;
-		private Map m_TargetMap;
-		private BaseHouse m_House;
+    [FlipableAttribute(0x1f14, 0x1f15, 0x1f16, 0x1f17)]
+    public class RecallRune : Item
+    {
+        private string m_Description;
+        private bool m_Marked;
+        private Point3D m_Target;
+        private Map m_TargetMap;
+        private BaseHouse m_House;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			if ( m_House != null && !m_House.Deleted )
-			{
-				writer.Write( (int) 1 ); // version
+            if (this.m_House != null && !this.m_House.Deleted)
+            {
+                writer.Write((int)1); // version
 
-				writer.Write( (Item) m_House );
-			}
-			else
-			{
-				writer.Write( (int) 0 ); // version
-			}
+                writer.Write((Item)this.m_House);
+            }
+            else
+            {
+                writer.Write((int)0); // version
+            }
 
-			writer.Write( (string) m_Description );
-			writer.Write( (bool) m_Marked );
-			writer.Write( (Point3D) m_Target );
-			writer.Write( (Map) m_TargetMap );
-		}
+            writer.Write((string)this.m_Description);
+            writer.Write((bool)this.m_Marked);
+            writer.Write((Point3D)this.m_Target);
+            writer.Write((Map)this.m_TargetMap);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+            int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 1:
-				{
-					m_House = reader.ReadItem() as BaseHouse;
-					goto case 0;
-				}
-				case 0:
-				{
-					m_Description = reader.ReadString();
-					m_Marked = reader.ReadBool();
-					m_Target = reader.ReadPoint3D();
-					m_TargetMap = reader.ReadMap();
+            switch ( version )
+            {
+                case 1:
+                    {
+                        this.m_House = reader.ReadItem() as BaseHouse;
+                        goto case 0;
+                    }
+                case 0:
+                    {
+                        this.m_Description = reader.ReadString();
+                        this.m_Marked = reader.ReadBool();
+                        this.m_Target = reader.ReadPoint3D();
+                        this.m_TargetMap = reader.ReadMap();
 
-					CalculateHue();
+                        this.CalculateHue();
 
-					break;
-				}
-			}
-		}
+                        break;
+                    }
+            }
+        }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public BaseHouse House
-		{
-			get
-			{
-				if ( m_House != null && m_House.Deleted )
-					House = null;
+        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+        public BaseHouse House
+        {
+            get
+            {
+                if (this.m_House != null && this.m_House.Deleted)
+                    this.House = null;
 
-				return m_House;
-			}
-			set{ m_House = value; CalculateHue(); InvalidateProperties(); }
-		}
+                return this.m_House;
+            }
+            set
+            {
+                this.m_House = value;
+                this.CalculateHue();
+                this.InvalidateProperties();
+            }
+        }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public string Description
-		{
-			get
-			{
-				return m_Description;
-			}
-			set
-			{
-				m_Description = value;
-				InvalidateProperties();
-			}
-		}
+        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+        public string Description
+        {
+            get
+            {
+                return this.m_Description;
+            }
+            set
+            {
+                this.m_Description = value;
+                this.InvalidateProperties();
+            }
+        }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public bool Marked
-		{
-			get
-			{
-				return m_Marked;
-			}
-			set
-			{
-				if ( m_Marked != value )
-				{
-					m_Marked = value;
-					CalculateHue();
-					InvalidateProperties();
-				}
-			}
-		}
+        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+        public bool Marked
+        {
+            get
+            {
+                return this.m_Marked;
+            }
+            set
+            {
+                if (this.m_Marked != value)
+                {
+                    this.m_Marked = value;
+                    this.CalculateHue();
+                    this.InvalidateProperties();
+                }
+            }
+        }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public Point3D Target
-		{
-			get
-			{
-				return m_Target;
-			}
-			set
-			{
-				m_Target = value;
-			}
-		}
+        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+        public Point3D Target
+        {
+            get
+            {
+                return this.m_Target;
+            }
+            set
+            {
+                this.m_Target = value;
+            }
+        }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public Map TargetMap
-		{
-			get
-			{
-				return m_TargetMap;
-			}
-			set
-			{
-				if ( m_TargetMap != value )
-				{
-					m_TargetMap = value;
-					CalculateHue();
-					InvalidateProperties();
-				}
-			}
-		}
+        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+        public Map TargetMap
+        {
+            get
+            {
+                return this.m_TargetMap;
+            }
+            set
+            {
+                if (this.m_TargetMap != value)
+                {
+                    this.m_TargetMap = value;
+                    this.CalculateHue();
+                    this.InvalidateProperties();
+                }
+            }
+        }
 
-		private void CalculateHue()
-		{
-			if ( !m_Marked )
-				Hue = 0;
-			else if ( m_TargetMap == Map.Trammel )
-				Hue = (House != null ? 0x47F : 50);
-			else if ( m_TargetMap == Map.Felucca )
-				Hue = (House != null ? 0x66D : 0);
-			else if ( m_TargetMap == Map.Ilshenar )
-				Hue = (House != null ? 0x55F : 1102);
-			else if ( m_TargetMap == Map.Malas )
-				Hue = (House != null ? 0x55F : 1102);
-			else if ( m_TargetMap == Map.Tokuno )
-				Hue = (House != null ? 0x47F : 1154);
-		}
+        private void CalculateHue()
+        {
+            if (!this.m_Marked)
+                this.Hue = 0;
+            else if (this.m_TargetMap == Map.Trammel)
+                this.Hue = (this.House != null ? 0x47F : 50);
+            else if (this.m_TargetMap == Map.Felucca)
+                this.Hue = (this.House != null ? 0x66D : 0);
+            else if (this.m_TargetMap == Map.Ilshenar)
+                this.Hue = (this.House != null ? 0x55F : 1102);
+            else if (this.m_TargetMap == Map.Malas)
+                this.Hue = (this.House != null ? 0x55F : 1102);
+            else if (this.m_TargetMap == Map.Tokuno)
+                this.Hue = (this.House != null ? 0x47F : 1154);
+        }
 
-		public void Mark( Mobile m )
-		{
-			m_Marked = true;
+        public void Mark(Mobile m)
+        {
+            this.m_Marked = true;
 
-			bool setDesc = false;
-			if ( Core.AOS )
-			{
-				m_House = BaseHouse.FindHouseAt( m );
+            bool setDesc = false;
+            if (Core.AOS)
+            {
+                this.m_House = BaseHouse.FindHouseAt(m);
 
-				if ( m_House == null )
-				{
-					m_Target = m.Location;
-					m_TargetMap = m.Map;
-				}
-				else
-				{
-					HouseSign sign = m_House.Sign;
+                if (this.m_House == null)
+                {
+                    this.m_Target = m.Location;
+                    this.m_TargetMap = m.Map;
+                }
+                else
+                {
+                    HouseSign sign = this.m_House.Sign;
 
-					if ( sign != null )
-						m_Description = sign.Name;
-					else
-						m_Description = null;
+                    if (sign != null)
+                        this.m_Description = sign.Name;
+                    else
+                        this.m_Description = null;
 
-					if ( m_Description == null || (m_Description = m_Description.Trim()).Length == 0 )
-						m_Description = "an unnamed house";
+                    if (this.m_Description == null || (this.m_Description = this.m_Description.Trim()).Length == 0)
+                        this.m_Description = "an unnamed house";
 
-					setDesc = true;
+                    setDesc = true;
 
-					int x = m_House.BanLocation.X;
-					int y = m_House.BanLocation.Y + 2;
-					int z = m_House.BanLocation.Z;
+                    int x = this.m_House.BanLocation.X;
+                    int y = this.m_House.BanLocation.Y + 2;
+                    int z = this.m_House.BanLocation.Z;
 
-					Map map = m_House.Map;
+                    Map map = this.m_House.Map;
 
-					if ( map != null && !map.CanFit( x, y, z, 16, false, false ) )
-						z = map.GetAverageZ( x, y );
+                    if (map != null && !map.CanFit(x, y, z, 16, false, false))
+                        z = map.GetAverageZ(x, y);
 
-					m_Target = new Point3D( x, y, z );
-					m_TargetMap = map;
-				}
-			}
-			else
-			{
-				m_House = null;
-				m_Target = m.Location;
-				m_TargetMap = m.Map;
-			}
+                    this.m_Target = new Point3D(x, y, z);
+                    this.m_TargetMap = map;
+                }
+            }
+            else
+            {
+                this.m_House = null;
+                this.m_Target = m.Location;
+                this.m_TargetMap = m.Map;
+            }
 
-			if( !setDesc )
-				m_Description = BaseRegion.GetRuneNameFor( Region.Find( m_Target, m_TargetMap ) );
+            if (!setDesc)
+                this.m_Description = BaseRegion.GetRuneNameFor(Region.Find(this.m_Target, this.m_TargetMap));
 
-			CalculateHue();
-			InvalidateProperties();
-		}
+            this.CalculateHue();
+            this.InvalidateProperties();
+        }
 
-		private const string RuneFormat = "a recall rune for {0}";
+        private const string RuneFormat = "a recall rune for {0}";
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+        public override void GetProperties(ObjectPropertyList list)
+        {
+            base.GetProperties(list);
 
-			if ( m_Marked )
-			{
-				string desc;
+            if (this.m_Marked)
+            {
+                string desc;
 
-				if ( (desc = m_Description) == null || (desc = desc.Trim()).Length == 0 )
-					desc = "an unknown location";
+                if ((desc = this.m_Description) == null || (desc = desc.Trim()).Length == 0)
+                    desc = "an unknown location";
 
-				if ( m_TargetMap == Map.Tokuno )
-					list.Add( (House != null ? 1063260 : 1063259), RuneFormat, desc ); // ~1_val~ (Tokuno Islands)[(House)]
-				else if ( m_TargetMap == Map.Malas )
-					list.Add( (House != null ? 1062454 : 1060804), RuneFormat, desc ); // ~1_val~ (Malas)[(House)]
-				else if ( m_TargetMap == Map.Felucca )
-					list.Add( (House != null ? 1062452 : 1060805), RuneFormat, desc ); // ~1_val~ (Felucca)[(House)]
-				else if ( m_TargetMap == Map.Trammel )
-					list.Add( (House != null ? 1062453 : 1060806), RuneFormat, desc ); // ~1_val~ (Trammel)[(House)]
-				else
-					list.Add( (House != null ? "{0} ({1})(House)" : "{0} ({1})"), String.Format( RuneFormat, desc ), m_TargetMap );
-			}
-		}
+                if (this.m_TargetMap == Map.Tokuno)
+                    list.Add((this.House != null ? 1063260 : 1063259), RuneFormat, desc); // ~1_val~ (Tokuno Islands)[(House)]
+                else if (this.m_TargetMap == Map.Malas)
+                    list.Add((this.House != null ? 1062454 : 1060804), RuneFormat, desc); // ~1_val~ (Malas)[(House)]
+                else if (this.m_TargetMap == Map.Felucca)
+                    list.Add((this.House != null ? 1062452 : 1060805), RuneFormat, desc); // ~1_val~ (Felucca)[(House)]
+                else if (this.m_TargetMap == Map.Trammel)
+                    list.Add((this.House != null ? 1062453 : 1060806), RuneFormat, desc); // ~1_val~ (Trammel)[(House)]
+                else
+                    list.Add((this.House != null ? "{0} ({1})(House)" : "{0} ({1})"), String.Format(RuneFormat, desc), this.m_TargetMap);
+            }
+        }
 
-		public override void OnSingleClick( Mobile from )
-		{
-			if ( m_Marked )
-			{
-				string desc;
+        public override void OnSingleClick(Mobile from)
+        {
+            if (this.m_Marked)
+            {
+                string desc;
 
-				if ( (desc = m_Description) == null || (desc = desc.Trim()).Length == 0 )
-					desc = "an unknown location";
+                if ((desc = this.m_Description) == null || (desc = desc.Trim()).Length == 0)
+                    desc = "an unknown location";
 
-				if ( m_TargetMap == Map.Tokuno )
-					LabelTo( from, (House != null ? 1063260 : 1063259), String.Format( RuneFormat, desc ) ); // ~1_val~ (Tokuno Islands)[(House)]
-				else if ( m_TargetMap == Map.Malas )
-					LabelTo( from, (House != null ? 1062454 : 1060804), String.Format( RuneFormat, desc ) ); // ~1_val~ (Malas)[(House)]
-				else if ( m_TargetMap == Map.Felucca )
-					LabelTo( from, (House != null ? 1062452 : 1060805), String.Format( RuneFormat, desc ) ); // ~1_val~ (Felucca)[(House)]
-				else if ( m_TargetMap == Map.Trammel )
-					LabelTo( from, (House != null ? 1062453 : 1060806), String.Format( RuneFormat, desc ) ); // ~1_val~ (Trammel)[(House)]
-				else
-					LabelTo( from, (House != null ? "{0} ({1})(House)" : "{0} ({1})"), String.Format( RuneFormat, desc ), m_TargetMap );
-			}
-			else
-			{
-				LabelTo( from, "an unmarked recall rune" );
-			}
-		}
+                if (this.m_TargetMap == Map.Tokuno)
+                    this.LabelTo(from, (House != null ? 1063260 : 1063259), String.Format(RuneFormat, desc)); // ~1_val~ (Tokuno Islands)[(House)]
+                else if (this.m_TargetMap == Map.Malas)
+                    this.LabelTo(from, (House != null ? 1062454 : 1060804), String.Format(RuneFormat, desc)); // ~1_val~ (Malas)[(House)]
+                else if (this.m_TargetMap == Map.Felucca)
+                    this.LabelTo(from, (House != null ? 1062452 : 1060805), String.Format(RuneFormat, desc)); // ~1_val~ (Felucca)[(House)]
+                else if (this.m_TargetMap == Map.Trammel)
+                    this.LabelTo(from, (House != null ? 1062453 : 1060806), String.Format(RuneFormat, desc)); // ~1_val~ (Trammel)[(House)]
+                else
+                    this.LabelTo(from, (House != null ? "{0} ({1})(House)" : "{0} ({1})"), String.Format(RuneFormat, desc), m_TargetMap);
+            }
+            else
+            {
+                this.LabelTo(from, "an unmarked recall rune");
+            }
+        }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			int number;
+        public override void OnDoubleClick(Mobile from)
+        {
+            int number;
 
-			if ( !IsChildOf( from.Backpack ) )
-			{
-				number = 1042001; // That must be in your pack for you to use it.
-			}
-			else if ( House != null )
-			{
-				number = 1062399; // You cannot edit the description for this rune.
-			}
-			else if ( m_Marked )
-			{
-				number = 501804; // Please enter a description for this marked object.
+            if (!this.IsChildOf(from.Backpack))
+            {
+                number = 1042001; // That must be in your pack for you to use it.
+            }
+            else if (this.House != null)
+            {
+                number = 1062399; // You cannot edit the description for this rune.
+            }
+            else if (this.m_Marked)
+            {
+                number = 501804; // Please enter a description for this marked object.
 
-				from.Prompt = new RenamePrompt( this );
-			}
-			else
-			{
-				number = 501805; // That rune is not yet marked.
-			}
+                from.Prompt = new RenamePrompt(this);
+            }
+            else
+            {
+                number = 501805; // That rune is not yet marked.
+            }
 
-			from.SendLocalizedMessage( number );
-		}
+            from.SendLocalizedMessage(number);
+        }
 
-		private class RenamePrompt : Prompt
-		{
-			private RecallRune m_Rune;
+        private class RenamePrompt : Prompt
+        {
+            private readonly RecallRune m_Rune;
 
-			public RenamePrompt( RecallRune rune )
-			{
-				m_Rune = rune;
-			}
+            public RenamePrompt(RecallRune rune)
+            {
+                this.m_Rune = rune;
+            }
 
-			public override void OnResponse( Mobile from, string text )
-			{
-				if ( m_Rune.House == null && m_Rune.Marked )
-				{
-					m_Rune.Description = text;
-					from.SendLocalizedMessage( 1010474 ); // The etching on the rune has been changed.
-				}
-			}
-		}
+            public override void OnResponse(Mobile from, string text)
+            {
+                if (this.m_Rune.House == null && this.m_Rune.Marked)
+                {
+                    this.m_Rune.Description = text;
+                    from.SendLocalizedMessage(1010474); // The etching on the rune has been changed.
+                }
+            }
+        }
 
-		[Constructable]
-		public RecallRune() : base( 0x1F14 )
-		{
-			Weight = 1.0;
-			CalculateHue();
-		}
+        [Constructable]
+        public RecallRune() : base(0x1F14)
+        {
+            this.Weight = 1.0;
+            this.CalculateHue();
+        }
 
-		public RecallRune( Serial serial ) : base( serial )
-		{
-		}
-	}
+        public RecallRune(Serial serial) : base(serial)
+        {
+        }
+    }
 }

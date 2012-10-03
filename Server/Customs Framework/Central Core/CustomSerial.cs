@@ -3,17 +3,35 @@ using Server;
 
 namespace CustomsFramework
 {
-	public struct CustomSerial : IComparable, IComparable<CustomSerial>
-	{
-        private int _Serial;
+    public struct CustomSerial : IComparable, IComparable<CustomSerial>
+    {
+        private readonly int _Serial;
 
         private static CustomSerial _LastCore = Zero;
         private static CustomSerial _LastModule = (int.MaxValue / 4);
         private static CustomSerial _LastService = (int)(int.MaxValue * 0.75);
 
-        public static CustomSerial LastCore { get { return _LastCore; } }
-        public static CustomSerial LastModule { get { return _LastModule; } }
-        public static CustomSerial LastService { get { return _LastService; } }
+        public static CustomSerial LastCore
+        {
+            get
+            {
+                return _LastCore;
+            }
+        }
+        public static CustomSerial LastModule
+        {
+            get
+            {
+                return _LastModule;
+            }
+        }
+        public static CustomSerial LastService
+        {
+            get
+            {
+                return _LastService;
+            }
+        }
 
         public static readonly CustomSerial MinusOne = new CustomSerial(-1);
         public static readonly CustomSerial Zero = new CustomSerial(0);
@@ -56,14 +74,14 @@ namespace CustomsFramework
 
         private CustomSerial(int serial)
         {
-            _Serial = serial;
+            this._Serial = serial;
         }
 
         public int Value
         {
             get
             {
-                return _Serial;
+                return this._Serial;
             }
         }
 
@@ -71,7 +89,7 @@ namespace CustomsFramework
         {
             get
             {
-                return (IsValid && _Serial < (int.MaxValue / 4));
+                return (this.IsValid && this._Serial < (int.MaxValue / 4));
             }
         }
 
@@ -79,7 +97,7 @@ namespace CustomsFramework
         {
             get
             {
-                return (_Serial >= (int.MaxValue / 4) && _Serial < (int.MaxValue & 0.75));
+                return (this._Serial >= (int.MaxValue / 4) && this._Serial < (int.MaxValue & 0.75));
             }
         }
 
@@ -87,7 +105,7 @@ namespace CustomsFramework
         {
             get
             {
-                return (_Serial >= (int.MaxValue * 0.75) && _Serial <= int.MaxValue);
+                return (this._Serial >= (int.MaxValue * 0.75) && this._Serial <= int.MaxValue);
             }
         }
 
@@ -95,18 +113,18 @@ namespace CustomsFramework
         {
             get
             {
-                return (_Serial > 0);
+                return (this._Serial > 0);
             }
         }
 
         public override int GetHashCode()
         {
-            return _Serial;
+            return this._Serial;
         }
 
         public int CompareTo(CustomSerial other)
         {
-            return _Serial.CompareTo(other._Serial);
+            return this._Serial.CompareTo(other._Serial);
         }
 
         public int CompareTo(object other)
@@ -124,7 +142,7 @@ namespace CustomsFramework
             if (obj == null || !(obj is CustomSerial))
                 return false;
 
-            return ((CustomSerial)obj)._Serial == _Serial;
+            return ((CustomSerial)obj)._Serial == this._Serial;
         }
 
         public static bool operator ==(CustomSerial first, CustomSerial second)
@@ -159,7 +177,7 @@ namespace CustomsFramework
 
         public override string ToString()
         {
-            return String.Format("0x{0:X8}", _Serial);
+            return String.Format("0x{0:X8}", this._Serial);
         }
 
         public static implicit operator int(CustomSerial serial)
@@ -171,5 +189,5 @@ namespace CustomsFramework
         {
             return new CustomSerial(serial);
         }
-	}
+    }
 }

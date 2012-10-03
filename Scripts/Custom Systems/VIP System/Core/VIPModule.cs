@@ -12,14 +12,14 @@ namespace CustomsFramework.Systems.VIPSystem
         Gold
     }
 
-	public class VIPModule : BaseModule
-	{
+    public class VIPModule : BaseModule
+    {
         public override string Name
         {
             get
             {
-                if (LinkedMobile != null)
-                    return String.Format(@"VIP Module - {0}", LinkedMobile.Name);
+                if (this.LinkedMobile != null)
+                    return String.Format(@"VIP Module - {0}", this.LinkedMobile.Name);
                 else
                     return @"Unlinked VIP Module";
             }
@@ -29,8 +29,8 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                if (LinkedMobile != null)
-                    return String.Format(@"VIP Module that is linked to {0}, was linked on {1}, and expires on {2}", LinkedMobile.Name, 0, 0);
+                if (this.LinkedMobile != null)
+                    return String.Format(@"VIP Module that is linked to {0}, was linked on {1}, and expires on {2}", this.LinkedMobile.Name, 0, 0);
                 else
                     return @"Unlinked VIP Module";
             }
@@ -72,11 +72,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _Canceled;
+                return this._Canceled;
             }
             set
             {
-                _Canceled = value;
+                this._Canceled = value;
             }
         }
 
@@ -85,11 +85,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _TimeStarted;
+                return this._TimeStarted;
             }
             set
             {
-                _TimeStarted = value;
+                this._TimeStarted = value;
             }
         }
 
@@ -98,11 +98,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _ServicePeriod;
+                return this._ServicePeriod;
             }
             set
             {
-                _ServicePeriod = value;
+                this._ServicePeriod = value;
             }
         }
 
@@ -111,12 +111,12 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _Tier;
+                return this._Tier;
             }
             set
             {
-                _Tier = value;
-                SetTier(value);
+                this._Tier = value;
+                this.SetTier(value);
             }
         }
 
@@ -125,31 +125,30 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _Bonuses;
+                return this._Bonuses;
             }
             set
             {
-                _Bonuses = value;
+                this._Bonuses = value;
             }
         }
 
         public VIPModule(Mobile from, BaseVIPDeed deed) : base()
         {
-            _Canceled = false;
-            _TimeStarted = DateTime.MinValue;
-            _ServicePeriod = TimeSpan.Zero;
+            this._Canceled = false;
+            this._TimeStarted = DateTime.MinValue;
+            this._ServicePeriod = TimeSpan.Zero;
 
             if (deed != null)
             {
-                _Tier = deed.Tier;
-                _Bonuses = deed.Bonuses;
+                this._Tier = deed.Tier;
+                this._Bonuses = deed.Bonuses;
             }
 
-            LinkMobile(from);
+            this.LinkMobile(from);
         }
 
-        public VIPModule(CustomSerial serial)
-            : base(serial)
+        public VIPModule(CustomSerial serial) : base(serial)
         {
         }
 
@@ -157,34 +156,34 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             if (tier == VIPTier.None)
             {
-                foreach (Bonus bonus in _Bonuses)
+                foreach (Bonus bonus in this._Bonuses)
                 {
                     bonus.Enabled = false;
                 }
             }
             else if (tier == VIPTier.Bronze)
             {
-                _Bonuses[0].Enabled = true;
-                _Bonuses[1].Enabled = true;
-                _Bonuses[2].Enabled = true;
-                _Bonuses[3].Enabled = true;
-                _Bonuses[4].Enabled = true;
+                this._Bonuses[0].Enabled = true;
+                this._Bonuses[1].Enabled = true;
+                this._Bonuses[2].Enabled = true;
+                this._Bonuses[3].Enabled = true;
+                this._Bonuses[4].Enabled = true;
             }
             else if (tier == VIPTier.Silver)
             {
-                _Bonuses[5].Enabled = true;
-                _Bonuses[6].Enabled = true;
-                _Bonuses[7].Enabled = true;
-                _Bonuses[8].Enabled = true;
-                _Bonuses[9].Enabled = true;
+                this._Bonuses[5].Enabled = true;
+                this._Bonuses[6].Enabled = true;
+                this._Bonuses[7].Enabled = true;
+                this._Bonuses[8].Enabled = true;
+                this._Bonuses[9].Enabled = true;
             }
             else if (tier == VIPTier.Gold)
             {
-                _Bonuses[10].Enabled = true;
-                _Bonuses[11].Enabled = true;
-                _Bonuses[12].Enabled = true;
-                _Bonuses[13].Enabled = true;
-                _Bonuses[14].Enabled = true;
+                this._Bonuses[10].Enabled = true;
+                this._Bonuses[11].Enabled = true;
+                this._Bonuses[12].Enabled = true;
+                this._Bonuses[13].Enabled = true;
+                this._Bonuses[14].Enabled = true;
             }
         }
 
@@ -192,18 +191,18 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             base.Prep();
 
-            Check();
+            this.Check();
         }
 
         public void Check()
         {
-            if (!LinkedMobile.Deleted || LinkedMobile != null)
+            if (!this.LinkedMobile.Deleted || this.LinkedMobile != null)
             {
-                switch (_Tier)
+                switch (this._Tier)
                 {
                     case VIPTier.None:
                         {
-                            foreach (Bonus bonus in _Bonuses)
+                            foreach (Bonus bonus in this._Bonuses)
                             {
                                 if (bonus.TimeStarted + bonus.ServicePeriod >= DateTime.Now)
                                 {
@@ -216,14 +215,14 @@ namespace CustomsFramework.Systems.VIPSystem
                         }
                     case VIPTier.Bronze:
                         {
-                            if (_TimeStarted + _ServicePeriod >= DateTime.Now)
+                            if (this._TimeStarted + this._ServicePeriod >= DateTime.Now)
                             {
-                                _TimeStarted = DateTime.MinValue;
-                                _ServicePeriod = TimeSpan.Zero;
+                                this._TimeStarted = DateTime.MinValue;
+                                this._ServicePeriod = TimeSpan.Zero;
                             }
 
-                            _Canceled = true;
-                            LinkedMobile.AccessLevel = AccessLevel.Player;
+                            this._Canceled = true;
+                            this.LinkedMobile.AccessLevel = AccessLevel.Player;
 
                             goto case VIPTier.None;
                         }
@@ -239,7 +238,7 @@ namespace CustomsFramework.Systems.VIPSystem
             }
             else
             {
-                _Canceled = true;
+                this._Canceled = true;
             }
         }
 
@@ -254,10 +253,10 @@ namespace CustomsFramework.Systems.VIPSystem
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_Canceled);
-            writer.Write(_TimeStarted);
-            writer.Write(_ServicePeriod);
-            _Bonuses.Serialize(writer);
+            writer.Write(this._Canceled);
+            writer.Write(this._TimeStarted);
+            writer.Write(this._ServicePeriod);
+            this._Bonuses.Serialize(writer);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -270,13 +269,13 @@ namespace CustomsFramework.Systems.VIPSystem
             {
                 case 0:
                     {
-                        _Canceled = reader.ReadBool();
-                        _TimeStarted = reader.ReadDateTime();
-                        _ServicePeriod = reader.ReadTimeSpan();
-                        _Bonuses = new Bonuses(reader);
+                        this._Canceled = reader.ReadBool();
+                        this._TimeStarted = reader.ReadDateTime();
+                        this._ServicePeriod = reader.ReadTimeSpan();
+                        this._Bonuses = new Bonuses(reader);
                         break;
                     }
             }
         }
-	}
+    }
 }

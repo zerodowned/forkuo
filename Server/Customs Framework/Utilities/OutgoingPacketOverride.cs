@@ -36,7 +36,7 @@ namespace CustomsFramework
         {
             _Handlers = new OutgoingPacketOverrideHandler[0x100];
             _ExtendedHandlersLow = new OutgoingPacketOverrideHandler[0x100];
-            _ExtendedHandlersHigh = new Dictionary<int,OutgoingPacketOverrideHandler>();
+            _ExtendedHandlersHigh = new Dictionary<int, OutgoingPacketOverrideHandler>();
         }
 
         public static void Register(int packetID, bool compressed, OutgoingPacketOverrideHandler handler)
@@ -71,12 +71,12 @@ namespace CustomsFramework
 
         private class PacketOverrideRegistryEncoder : IPacketEncoder
         {
-            private static byte[] _UnpackBuffer = new byte[65535];
-            private IPacketEncoder _Successor;
+            private static readonly byte[] _UnpackBuffer = new byte[65535];
+            private readonly IPacketEncoder _Successor;
 
             public PacketOverrideRegistryEncoder(IPacketEncoder successor)
             {
-                _Successor = successor;
+                this._Successor = successor;
             }
 
             public void EncodeOutgoingPacket(NetState to, ref byte[] packetBuffer, ref int packetLength)
@@ -129,14 +129,14 @@ namespace CustomsFramework
                     handler(to, new PacketReader(buffer, packetLength, true), ref packetBuffer, ref packetLength);
                 }
 
-                if (_Successor != null)
-                    _Successor.EncodeOutgoingPacket(to, ref packetBuffer, ref packetLength);
+                if (this._Successor != null)
+                    this._Successor.EncodeOutgoingPacket(to, ref packetBuffer, ref packetLength);
             }
 
             public void DecodeIncomingPacket(NetState from, ref byte[] buffer, ref int length)
             {
-                if (_Successor != null)
-                    _Successor.DecodeIncomingPacket(from, ref buffer, ref length);
+                if (this._Successor != null)
+                    this._Successor.DecodeIncomingPacket(from, ref buffer, ref length);
             }
         }
     }
