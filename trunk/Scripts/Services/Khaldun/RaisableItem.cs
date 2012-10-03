@@ -1,177 +1,212 @@
 using System;
-using Server;
 
 namespace Server.Items
 {
-	public class RaisableItem : Item
-	{
-		private int m_MaxElevation;
-		private int m_MoveSound;
-		private int m_StopSound;
-		private TimeSpan m_CloseDelay;
+    public class RaisableItem : Item
+    {
+        private int m_MaxElevation;
+        private int m_MoveSound;
+        private int m_StopSound;
+        private TimeSpan m_CloseDelay;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int MaxElevation
-		{
-			get{ return m_MaxElevation; }
-			set
-			{
-				if ( value <= 0 )
-					m_MaxElevation = 0;
-				else if ( value >= 60 )
-					m_MaxElevation = 60;
-				else
-					m_MaxElevation = value;
-			}
-		}
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int MaxElevation
+        {
+            get
+            {
+                return this.m_MaxElevation;
+            }
+            set
+            {
+                if (value <= 0)
+                    this.m_MaxElevation = 0;
+                else if (value >= 60)
+                    this.m_MaxElevation = 60;
+                else
+                    this.m_MaxElevation = value;
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int MoveSound{ get{ return m_MoveSound; } set{ m_MoveSound = value; } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int MoveSound
+        {
+            get
+            {
+                return this.m_MoveSound;
+            }
+            set
+            {
+                this.m_MoveSound = value;
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int StopSound{ get{ return m_StopSound; } set{ m_StopSound = value; } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int StopSound
+        {
+            get
+            {
+                return this.m_StopSound;
+            }
+            set
+            {
+                this.m_StopSound = value;
+            }
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan CloseDelay{ get{ return m_CloseDelay; } set{ m_CloseDelay = value; } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public TimeSpan CloseDelay
+        {
+            get
+            {
+                return this.m_CloseDelay;
+            }
+            set
+            {
+                this.m_CloseDelay = value;
+            }
+        }
 
-		[Constructable]
-		public RaisableItem( int itemID ) : this( itemID, 20, -1, -1, TimeSpan.FromMinutes( 1.0 ) )
-		{
-		}
+        [Constructable]
+        public RaisableItem(int itemID) : this(itemID, 20, -1, -1, TimeSpan.FromMinutes(1.0))
+        {
+        }
 
-		[Constructable]
-		public RaisableItem( int itemID, int maxElevation, TimeSpan closeDelay ) : this( itemID, maxElevation, -1, -1, closeDelay )
-		{
-		}
+        [Constructable]
+        public RaisableItem(int itemID, int maxElevation, TimeSpan closeDelay) : this(itemID, maxElevation, -1, -1, closeDelay)
+        {
+        }
 
-		[Constructable]
-		public RaisableItem( int itemID, int maxElevation, int moveSound, int stopSound, TimeSpan closeDelay ) : base( itemID )
-		{
-			Movable = false;
+        [Constructable]
+        public RaisableItem(int itemID, int maxElevation, int moveSound, int stopSound, TimeSpan closeDelay) : base(itemID)
+        {
+            this.Movable = false;
 
-			m_MaxElevation = maxElevation;
-			m_MoveSound = moveSound;
-			m_StopSound = stopSound;
-			m_CloseDelay = closeDelay;
-		}
+            this.m_MaxElevation = maxElevation;
+            this.m_MoveSound = moveSound;
+            this.m_StopSound = stopSound;
+            this.m_CloseDelay = closeDelay;
+        }
 
-		private int m_Elevation;
-		private RaiseTimer m_RaiseTimer;
+        private int m_Elevation;
+        private RaiseTimer m_RaiseTimer;
 
-		public bool IsRaisable
-		{
-			get{ return m_RaiseTimer == null; }
-		}
+        public bool IsRaisable
+        {
+            get
+            {
+                return this.m_RaiseTimer == null;
+            }
+        }
 
-		public void Raise()
-		{
-			if ( !IsRaisable )
-				return;
+        public void Raise()
+        {
+            if (!this.IsRaisable)
+                return;
 
-			m_RaiseTimer = new RaiseTimer( this );
-			m_RaiseTimer.Start();
-		}
+            this.m_RaiseTimer = new RaiseTimer(this);
+            this.m_RaiseTimer.Start();
+        }
 
-		private class RaiseTimer : Timer
-		{
-			private RaisableItem m_Item;
-			private DateTime m_CloseTime;
-			private bool m_Up;
-			private int m_Step;
+        private class RaiseTimer : Timer
+        {
+            private readonly RaisableItem m_Item;
+            private readonly DateTime m_CloseTime;
+            private bool m_Up;
+            private int m_Step;
 
-			public RaiseTimer( RaisableItem item ) : base( TimeSpan.Zero, TimeSpan.FromSeconds( 0.5 ) )
-			{
-				m_Item = item;
-				m_CloseTime = DateTime.Now + item.CloseDelay;
-				m_Up = true;
+            public RaiseTimer(RaisableItem item) : base(TimeSpan.Zero, TimeSpan.FromSeconds(0.5))
+            {
+                this.m_Item = item;
+                this.m_CloseTime = DateTime.Now + item.CloseDelay;
+                this.m_Up = true;
 
-				Priority = TimerPriority.TenMS;
-			}
+                this.Priority = TimerPriority.TenMS;
+            }
 
-			protected override void OnTick()
-			{
-				if ( m_Item.Deleted )
-				{
-					Stop();
-					return;
-				}
+            protected override void OnTick()
+            {
+                if (this.m_Item.Deleted)
+                {
+                    this.Stop();
+                    return;
+                }
 
-				if ( m_Step++ % 3 == 0 )
-				{
-					if ( m_Up )
-					{
-						m_Item.Z++;
+                if (this.m_Step++ % 3 == 0)
+                {
+                    if (this.m_Up)
+                    {
+                        this.m_Item.Z++;
 
-						if ( ++m_Item.m_Elevation >= m_Item.MaxElevation )
-						{
-							Stop();
+                        if (++this.m_Item.m_Elevation >= this.m_Item.MaxElevation)
+                        {
+                            this.Stop();
 
-							if ( m_Item.StopSound >= 0 )
-								Effects.PlaySound( m_Item.Location, m_Item.Map, m_Item.StopSound );
+                            if (this.m_Item.StopSound >= 0)
+                                Effects.PlaySound(this.m_Item.Location, this.m_Item.Map, this.m_Item.StopSound);
 
-							m_Up = false;
-							m_Step = 0;
+                            this.m_Up = false;
+                            this.m_Step = 0;
 
-							TimeSpan delay = m_CloseTime - DateTime.Now;
-							Timer.DelayCall( delay > TimeSpan.Zero ? delay : TimeSpan.Zero, new TimerCallback( Start ) );
+                            TimeSpan delay = this.m_CloseTime - DateTime.Now;
+                            Timer.DelayCall(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, new TimerCallback(Start));
 
-							return;
-						}
-					}
-					else
-					{
-						m_Item.Z--;
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        this.m_Item.Z--;
 
-						if ( --m_Item.m_Elevation <= 0 )
-						{
-							Stop();
+                        if (--this.m_Item.m_Elevation <= 0)
+                        {
+                            this.Stop();
 
-							if ( m_Item.StopSound >= 0 )
-								Effects.PlaySound( m_Item.Location, m_Item.Map, m_Item.StopSound );
+                            if (this.m_Item.StopSound >= 0)
+                                Effects.PlaySound(this.m_Item.Location, this.m_Item.Map, this.m_Item.StopSound);
 
-							m_Item.m_RaiseTimer = null;
+                            this.m_Item.m_RaiseTimer = null;
 
-							return;
-						}
-					}
-				}
+                            return;
+                        }
+                    }
+                }
 
-				if ( m_Item.MoveSound >= 0 )
-					Effects.PlaySound( m_Item.Location, m_Item.Map, m_Item.MoveSound );
-			}
-		}
+                if (this.m_Item.MoveSound >= 0)
+                    Effects.PlaySound(this.m_Item.Location, this.m_Item.Map, this.m_Item.MoveSound);
+            }
+        }
 
-		public RaisableItem( Serial serial ) : base( serial )
-		{
-		}
+        public RaisableItem(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.WriteEncodedInt( (int) 0 ); // version
+            writer.WriteEncodedInt((int)0); // version
 
-			writer.WriteEncodedInt( (int) m_MaxElevation );
-			writer.WriteEncodedInt( (int) m_MoveSound );
-			writer.WriteEncodedInt( (int) m_StopSound );
-			writer.Write( (TimeSpan) m_CloseDelay );
+            writer.WriteEncodedInt((int)this.m_MaxElevation);
+            writer.WriteEncodedInt((int)this.m_MoveSound);
+            writer.WriteEncodedInt((int)this.m_StopSound);
+            writer.Write((TimeSpan)this.m_CloseDelay);
 
-			writer.WriteEncodedInt( (int) m_Elevation );
-		}
+            writer.WriteEncodedInt((int)this.m_Elevation);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
+            int version = reader.ReadEncodedInt();
 
-			m_MaxElevation = reader.ReadEncodedInt();
-			m_MoveSound = reader.ReadEncodedInt();
-			m_StopSound = reader.ReadEncodedInt();
-			m_CloseDelay = reader.ReadTimeSpan();
+            this.m_MaxElevation = reader.ReadEncodedInt();
+            this.m_MoveSound = reader.ReadEncodedInt();
+            this.m_StopSound = reader.ReadEncodedInt();
+            this.m_CloseDelay = reader.ReadTimeSpan();
 
-			int elevation = reader.ReadEncodedInt();
-			this.Z -= elevation;
-		}
-	}
+            int elevation = reader.ReadEncodedInt();
+            this.Z -= elevation;
+        }
+    }
 }

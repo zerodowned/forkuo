@@ -1,153 +1,169 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server;
-using Server.Items;
 using Server.ContextMenus;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public abstract class BaseFamiliar : BaseCreature
-	{
-		public BaseFamiliar() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-		}
+    public abstract class BaseFamiliar : BaseCreature
+    {
+        public BaseFamiliar() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+        }
 
-		public override bool BardImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override bool Commandable{ get{ return false; } }
+        public override bool BardImmune
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override Poison PoisonImmune
+        {
+            get
+            {
+                return Poison.Lethal;
+            }
+        }
+        public override bool Commandable
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		private bool m_LastHidden;
+        private bool m_LastHidden;
 
-		public override void OnThink()
-		{
-			base.OnThink();
+        public override void OnThink()
+        {
+            base.OnThink();
 
-			Mobile master = ControlMaster;
+            Mobile master = this.ControlMaster;
 
-			if ( master == null )
-				return;
+            if (master == null)
+                return;
 
-			if ( master.Deleted )
-			{
-				DropPackContents();
-				EndRelease( null );
-				return;
-			}
+            if (master.Deleted)
+            {
+                this.DropPackContents();
+                this.EndRelease(null);
+                return;
+            }
 
-			if ( m_LastHidden != master.Hidden )
-				Hidden = m_LastHidden = master.Hidden;
+            if (this.m_LastHidden != master.Hidden)
+                this.Hidden = this.m_LastHidden = master.Hidden;
 
-			Mobile toAttack = null;
+            Mobile toAttack = null;
 
-			if ( !Hidden )
-			{
-				toAttack = master.Combatant;
+            if (!this.Hidden)
+            {
+                toAttack = master.Combatant;
 
-				if ( toAttack == this )
-					toAttack = master;
-				else if ( toAttack == null )
-					toAttack = this.Combatant;
-			}
+                if (toAttack == this)
+                    toAttack = master;
+                else if (toAttack == null)
+                    toAttack = this.Combatant;
+            }
 
-			if ( Combatant != toAttack )
-				Combatant = null;
+            if (this.Combatant != toAttack)
+                this.Combatant = null;
 
-			if ( toAttack == null )
-			{
-				if ( ControlTarget != master || ControlOrder != OrderType.Follow )
-				{
-					ControlTarget = master;
-					ControlOrder = OrderType.Follow;
-				}
-			}
-			else if ( ControlTarget != toAttack || ControlOrder != OrderType.Attack )
-			{
-				ControlTarget = toAttack;
-				ControlOrder = OrderType.Attack;
-			}
-		}
+            if (toAttack == null)
+            {
+                if (this.ControlTarget != master || this.ControlOrder != OrderType.Follow)
+                {
+                    this.ControlTarget = master;
+                    this.ControlOrder = OrderType.Follow;
+                }
+            }
+            else if (this.ControlTarget != toAttack || this.ControlOrder != OrderType.Attack)
+            {
+                this.ControlTarget = toAttack;
+                this.ControlOrder = OrderType.Attack;
+            }
+        }
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        {
+            base.GetContextMenuEntries(from, list);
 
-			if ( from.Alive && Controlled && from == ControlMaster && from.InRange( this, 14 ) )
-				list.Add( new ReleaseEntry( from, this ) );
-		}
+            if (from.Alive && this.Controlled && from == this.ControlMaster && from.InRange(this, 14))
+                list.Add(new ReleaseEntry(from, this));
+        }
 
-		public virtual void BeginRelease( Mobile from )
-		{
-			if ( !Deleted && Controlled && from == ControlMaster && from.CheckAlive() )
-				EndRelease( from );
-		}
+        public virtual void BeginRelease(Mobile from)
+        {
+            if (!this.Deleted && this.Controlled && from == this.ControlMaster && from.CheckAlive())
+                this.EndRelease(from);
+        }
 
-		public virtual void EndRelease( Mobile from )
-		{
-			if ( from == null || (!Deleted && Controlled && from == ControlMaster && from.CheckAlive()) )
-			{
-				Effects.SendLocationParticles( EffectItem.Create( Location, Map, EffectItem.DefaultDuration ), 0x3728, 1, 13, 2100, 3, 5042, 0 );
-				PlaySound( 0x201 );
-				Delete();
-			}
-		}
+        public virtual void EndRelease(Mobile from)
+        {
+            if (from == null || (!this.Deleted && this.Controlled && from == this.ControlMaster && from.CheckAlive()))
+            {
+                Effects.SendLocationParticles(EffectItem.Create(this.Location, this.Map, EffectItem.DefaultDuration), 0x3728, 1, 13, 2100, 3, 5042, 0);
+                this.PlaySound(0x201);
+                this.Delete();
+            }
+        }
 
-		public virtual void DropPackContents()
-		{
-			Map map = this.Map;
-			Container pack = this.Backpack;
+        public virtual void DropPackContents()
+        {
+            Map map = this.Map;
+            Container pack = this.Backpack;
 
-			if ( map != null && map != Map.Internal && pack != null )
-			{
-				List<Item> list = new List<Item>( pack.Items );
+            if (map != null && map != Map.Internal && pack != null)
+            {
+                List<Item> list = new List<Item>(pack.Items);
 
-				for ( int i = 0; i < list.Count; ++i )
-					list[i].MoveToWorld( Location, map );
-			}
-		}
+                for (int i = 0; i < list.Count; ++i)
+                    list[i].MoveToWorld(this.Location, map);
+            }
+        }
 
-		public BaseFamiliar( Serial serial ) : base( serial )
-		{
-		}
+        public BaseFamiliar(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+            writer.Write((int)0);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+            int version = reader.ReadInt();
 
-			ValidationQueue<BaseFamiliar>.Add( this );
-		}
+            ValidationQueue<BaseFamiliar>.Add(this);
+        }
 
-		public void Validate()
-		{
-			DropPackContents();
-			Delete();
-		}
+        public void Validate()
+        {
+            this.DropPackContents();
+            this.Delete();
+        }
 
-		private class ReleaseEntry : ContextMenuEntry
-		{
-			private Mobile m_From;
-			private BaseFamiliar m_Familiar;
+        private class ReleaseEntry : ContextMenuEntry
+        {
+            private readonly Mobile m_From;
+            private readonly BaseFamiliar m_Familiar;
 
-			public ReleaseEntry( Mobile from, BaseFamiliar familiar ) : base( 6118, 14 )
-			{
-				m_From = from;
-				m_Familiar = familiar;
-			}
+            public ReleaseEntry(Mobile from, BaseFamiliar familiar) : base(6118, 14)
+            {
+                this.m_From = from;
+                this.m_Familiar = familiar;
+            }
 
-			public override void OnClick()
-			{
-				if ( !m_Familiar.Deleted && m_Familiar.Controlled && m_From == m_Familiar.ControlMaster && m_From.CheckAlive() )
-					m_Familiar.BeginRelease( m_From );
-			}
-		}
-	}
+            public override void OnClick()
+            {
+                if (!this.m_Familiar.Deleted && this.m_Familiar.Controlled && this.m_From == this.m_Familiar.ControlMaster && this.m_From.CheckAlive())
+                    this.m_Familiar.BeginRelease(this.m_From);
+            }
+        }
+    }
 }

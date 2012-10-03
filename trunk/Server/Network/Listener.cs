@@ -5,128 +5,147 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
-using Server;
 
 namespace Server.Network
 {
-	public class Listener : IDisposable
-	{
-		private Socket m_Listener;
+    public class Listener : IDisposable
+    {
+        private Socket m_Listener;
 
-		private Queue<Socket> m_Accepted;
-		private object m_AcceptedSyncRoot;
+        private readonly Queue<Socket> m_Accepted;
+        private readonly object m_AcceptedSyncRoot;
 
-#if NewAsyncSockets
+        #if NewAsyncSockets
 		private SocketAsyncEventArgs m_EventArgs;
-#else
-		private AsyncCallback m_OnAccept;
-#endif
+        #else
+        private readonly AsyncCallback m_OnAccept;
+        #endif
 
-		private static Socket[] m_EmptySockets = new Socket[0];
+        private static readonly Socket[] m_EmptySockets = new Socket[0];
 
-		private static IPEndPoint[] m_EndPoints;
+        private static IPEndPoint[] m_EndPoints;
 
-		public static IPEndPoint[] EndPoints {
-			get { return m_EndPoints; }
-			set { m_EndPoints = value; }
-		}
+        public static IPEndPoint[] EndPoints
+        {
+            get
+            {
+                return m_EndPoints;
+            }
+            set
+            {
+                m_EndPoints = value;
+            }
+        }
 
-		public Listener( IPEndPoint ipep )
-		{
-			m_Accepted = new Queue<Socket>();
-			m_AcceptedSyncRoot = ((ICollection)m_Accepted).SyncRoot;
+        public Listener(IPEndPoint ipep)
+        {
+            this.m_Accepted = new Queue<Socket>();
+            this.m_AcceptedSyncRoot = ((ICollection)this.m_Accepted).SyncRoot;
 
-			m_Listener = Bind( ipep );
+            this.m_Listener = this.Bind(ipep);
 
-			if ( m_Listener == null )
-				return;
+            if (this.m_Listener == null)
+                return;
 
-			DisplayListener();
+            this.DisplayListener();
 
-#if NewAsyncSockets
+            #if NewAsyncSockets
 			m_EventArgs = new SocketAsyncEventArgs();
 			m_EventArgs.Completed += new EventHandler<SocketAsyncEventArgs>( Accept_Completion );
 			Accept_Start();
-#else
-			m_OnAccept = new AsyncCallback( OnAccept );
-			try {
-				IAsyncResult res = m_Listener.BeginAccept( m_OnAccept, m_Listener );
-			} catch ( SocketException ex ) {
-				NetState.TraceException( ex );
-			} catch ( ObjectDisposedException ) {
-			}
-#endif
-		}
+            #else
+            this.m_OnAccept = new AsyncCallback(OnAccept);
+            try
+            {
+                IAsyncResult res = this.m_Listener.BeginAccept(this.m_OnAccept, this.m_Listener);
+            }
+            catch (SocketException ex)
+            {
+                NetState.TraceException(ex);
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+            #endif
+        }
 
-		private Socket Bind( IPEndPoint ipep )
-		{
-			Socket s = new Socket( ipep.AddressFamily, SocketType.Stream, ProtocolType.Tcp );
+        private Socket Bind(IPEndPoint ipep)
+        {
+            Socket s = new Socket(ipep.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-			try
-			{
-				s.LingerState.Enabled = false;
-#if !MONO
-				s.ExclusiveAddressUse = false;
-#endif
-				s.Bind( ipep );
-				s.Listen( 8 );
+            try
+            {
+                s.LingerState.Enabled = false;
+                #if !MONO
+                s.ExclusiveAddressUse = false;
+                #endif
+                s.Bind(ipep);
+                s.Listen(8);
 
-				return s;
-			}
-			catch ( Exception e )
-			{
-				if ( e is SocketException ) {
-					SocketException se = (SocketException)e;
+                return s;
+            }
+            catch (Exception e)
+            {
+                if (e is SocketException)
+                {
+                    SocketException se = (SocketException)e;
 
-					if ( se.ErrorCode == 10048 ) { // WSAEADDRINUSE
-						Console.WriteLine( "Listener Failed: {0}:{1} (In Use)", ipep.Address, ipep.Port ); 
-					}
-					else if ( se.ErrorCode == 10049 ) { // WSAEADDRNOTAVAIL
-						Console.WriteLine( "Listener Failed: {0}:{1} (Unavailable)", ipep.Address, ipep.Port );
-					}
-					else {
-						Console.WriteLine( "Listener Exception:" );
-						Console.WriteLine( e );
-					}
-				}
+                    if (se.ErrorCode == 10048)
+                    { // WSAEADDRINUSE
+                        Console.WriteLine("Listener Failed: {0}:{1} (In Use)", ipep.Address, ipep.Port); 
+                    }
+                    else if (se.ErrorCode == 10049)
+                    { // WSAEADDRNOTAVAIL
+                        Console.WriteLine("Listener Failed: {0}:{1} (Unavailable)", ipep.Address, ipep.Port);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Listener Exception:");
+                        Console.WriteLine(e);
+                    }
+                }
 
-				return null;
-			}
-		}
+                return null;
+            }
+        }
 
-		private void DisplayListener()
-		{
-			IPEndPoint ipep = m_Listener.LocalEndPoint as IPEndPoint;
+        private void DisplayListener()
+        {
+            IPEndPoint ipep = this.m_Listener.LocalEndPoint as IPEndPoint;
 
-			if ( ipep == null )
-				return;
+            if (ipep == null)
+                return;
 
-			if ( ipep.Address.Equals( IPAddress.Any ) || ipep.Address.Equals( IPAddress.IPv6Any ) ) {
-				NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
-				foreach ( NetworkInterface adapter in adapters ) {
-					IPInterfaceProperties properties = adapter.GetIPProperties();
-					foreach ( IPAddressInformation unicast in properties.UnicastAddresses ) {
-						if ( ipep.AddressFamily == unicast.Address.AddressFamily )
-							Console.WriteLine( "Listening: {0}:{1}", unicast.Address, ipep.Port );
-					}
-				}
-				/*
-				try {
-					Console.WriteLine( "Listening: {0}:{1}", IPAddress.Loopback, ipep.Port );
-					IPHostEntry iphe = Dns.GetHostEntry( Dns.GetHostName() );
-					IPAddress[] ip = iphe.AddressList;
-					for ( int i = 0; i < ip.Length; ++i )
-						Console.WriteLine( "Listening: {0}:{1}", ip[i], ipep.Port );
-				}
-				catch { }
-				*/
-			}
-			else {
-				Console.WriteLine( "Listening: {0}:{1}", ipep.Address, ipep.Port );
-			}
-		}
+            if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
+            {
+                NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
+                foreach (NetworkInterface adapter in adapters)
+                {
+                    IPInterfaceProperties properties = adapter.GetIPProperties();
+                    foreach (IPAddressInformation unicast in properties.UnicastAddresses)
+                    {
+                        if (ipep.AddressFamily == unicast.Address.AddressFamily)
+                            Console.WriteLine("Listening: {0}:{1}", unicast.Address, ipep.Port);
+                    }
+                }
+                /*
+                try {
+                Console.WriteLine( "Listening: {0}:{1}", IPAddress.Loopback, ipep.Port );
+                IPHostEntry iphe = Dns.GetHostEntry( Dns.GetHostName() );
+                IPAddress[] ip = iphe.AddressList;
+                for ( int i = 0; i < ip.Length; ++i )
+                Console.WriteLine( "Listening: {0}:{1}", ip[i], ipep.Port );
+                }
+                catch { }
+                */
+            }
+            else
+            {
+                Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
+            }
+        }
 
-#if NewAsyncSockets
+        #if NewAsyncSockets
 		private void Accept_Start()
 		{
 			bool result = false;
@@ -164,96 +183,127 @@ namespace Server.Network
 			e.AcceptSocket = null;
 		}
 
-#else
+        #else
 
-		private void OnAccept( IAsyncResult asyncResult ) {
-			Socket listener = (Socket) asyncResult.AsyncState;
+        private void OnAccept(IAsyncResult asyncResult)
+        {
+            Socket listener = (Socket)asyncResult.AsyncState;
 
-			Socket accepted = null;
+            Socket accepted = null;
 
-			try {
-				accepted = listener.EndAccept( asyncResult );
-			} catch ( SocketException ex ) {
-				NetState.TraceException( ex );
-			} catch ( ObjectDisposedException ) {
-				return;
-			}
+            try
+            {
+                accepted = listener.EndAccept(asyncResult);
+            }
+            catch (SocketException ex)
+            {
+                NetState.TraceException(ex);
+            }
+            catch (ObjectDisposedException)
+            {
+                return;
+            }
 
-			if ( accepted != null ) {
-				if ( VerifySocket( accepted ) ) {
-					Enqueue( accepted );
-				} else {
-					Release( accepted );
-				}
-			}
+            if (accepted != null)
+            {
+                if (this.VerifySocket(accepted))
+                {
+                    this.Enqueue(accepted);
+                }
+                else
+                {
+                    this.Release(accepted);
+                }
+            }
 
-			try {
-				listener.BeginAccept( m_OnAccept, listener );
-			} catch ( SocketException ex ) {
-				NetState.TraceException( ex );
-			} catch ( ObjectDisposedException ) {
-			}
-		}
-#endif
+            try
+            {
+                listener.BeginAccept(this.m_OnAccept, listener);
+            }
+            catch (SocketException ex)
+            {
+                NetState.TraceException(ex);
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+        }
 
-		private bool VerifySocket( Socket socket ) {
-			try {
-				SocketConnectEventArgs args = new SocketConnectEventArgs( socket );
+        #endif
 
-				EventSink.InvokeSocketConnect( args );
+        private bool VerifySocket(Socket socket)
+        {
+            try
+            {
+                SocketConnectEventArgs args = new SocketConnectEventArgs(socket);
 
-				return args.AllowConnection;
-			} catch ( Exception ex ) {
-				NetState.TraceException( ex );
+                EventSink.InvokeSocketConnect(args);
 
-				return false;
-			}
-		}
+                return args.AllowConnection;
+            }
+            catch (Exception ex)
+            {
+                NetState.TraceException(ex);
 
-		private void Enqueue( Socket socket ) {
-			lock ( m_AcceptedSyncRoot ) {
-				m_Accepted.Enqueue( socket );
-			}
+                return false;
+            }
+        }
 
-			Core.Set();
-		}
+        private void Enqueue(Socket socket)
+        {
+            lock (this.m_AcceptedSyncRoot)
+            {
+                this.m_Accepted.Enqueue(socket);
+            }
 
-		private void Release( Socket socket ) {
-			try {
-				socket.Shutdown( SocketShutdown.Both );
-			} catch ( SocketException ex ) {
-				NetState.TraceException( ex );
-			}
+            Core.Set();
+        }
 
-			try {
-				socket.Close();
-			} catch ( SocketException ex ) {
-				NetState.TraceException( ex );
-			}
-		}
+        private void Release(Socket socket)
+        {
+            try
+            {
+                socket.Shutdown(SocketShutdown.Both);
+            }
+            catch (SocketException ex)
+            {
+                NetState.TraceException(ex);
+            }
 
-		public Socket[] Slice()
-		{
-			Socket[] array;
+            try
+            {
+                socket.Close();
+            }
+            catch (SocketException ex)
+            {
+                NetState.TraceException(ex);
+            }
+        }
 
-			lock ( m_AcceptedSyncRoot )
-			{
-				if ( m_Accepted.Count == 0 )
-					return m_EmptySockets;
+        public Socket[] Slice()
+        {
+            Socket[] array;
 
-				array = m_Accepted.ToArray();
-				m_Accepted.Clear();
-			}
+            lock (this.m_AcceptedSyncRoot)
+            {
+                if (this.m_Accepted.Count == 0)
+                    return m_EmptySockets;
 
-			return array;
-		}
+                array = this.m_Accepted.ToArray();
+                this.m_Accepted.Clear();
+            }
 
-		public void Dispose() {
-			Socket socket = Interlocked.Exchange<Socket>( ref m_Listener, null );
+            return array;
+        }
 
-			if ( socket != null ) {
-				socket.Close();
-			}
-		}
-	}
+        public void Dispose()
+        {
+            Socket socket = Interlocked.Exchange<Socket>(ref this.m_Listener, null);
+
+            if (socket != null)
+            {
+                socket.Close();
+            }
+        }
+    }
 }

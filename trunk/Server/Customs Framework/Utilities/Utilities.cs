@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using System.IO;
 using Server;
 using Server.Items;
@@ -120,12 +120,12 @@ namespace CustomsFramework
 
         public void Compress7z(string copyPath, string outPath)
         {
-            Compress7z(copyPath, outPath, CompressionLevel.Normal);
+            this.Compress7z(copyPath, outPath, CompressionLevel.Normal);
         }
 
         public void Compress7z(string copyPath, Stream outStream)
         {
-            Compress7z(copyPath, outStream, CompressionLevel.Normal);
+            this.Compress7z(copyPath, outStream, CompressionLevel.Normal);
         }
 
         public static SaveStrategy GetSaveStrategy(SaveStrategyTypes saveStrategyTypes)

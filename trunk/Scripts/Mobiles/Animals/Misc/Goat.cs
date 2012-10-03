@@ -1,65 +1,82 @@
 using System;
-using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a goat corpse" )]
-	public class Goat : BaseCreature
-	{
-		[Constructable]
-		public Goat() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			Name = "a goat";
-			Body = 0xD1;
-			BaseSoundID = 0x99;
+    [CorpseName("a goat corpse")]
+    public class Goat : BaseCreature
+    {
+        [Constructable]
+        public Goat() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        {
+            this.Name = "a goat";
+            this.Body = 0xD1;
+            this.BaseSoundID = 0x99;
 
-			SetStr( 19 );
-			SetDex( 15 );
-			SetInt( 5 );
+            this.SetStr(19);
+            this.SetDex(15);
+            this.SetInt(5);
 
-			SetHits( 12 );
-			SetMana( 0 );
+            this.SetHits(12);
+            this.SetMana(0);
 
-			SetDamage( 3, 4 );
+            this.SetDamage(3, 4);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+            this.SetDamageType(ResistanceType.Physical, 100);
 
-			SetResistance( ResistanceType.Physical, 5, 15 );
+            this.SetResistance(ResistanceType.Physical, 5, 15);
 
-			SetSkill( SkillName.MagicResist, 5.0 );
-			SetSkill( SkillName.Tactics, 5.0 );
-			SetSkill( SkillName.Wrestling, 5.0 );
+            this.SetSkill(SkillName.MagicResist, 5.0);
+            this.SetSkill(SkillName.Tactics, 5.0);
+            this.SetSkill(SkillName.Wrestling, 5.0);
 
-			Fame = 150;
-			Karma = 0;
+            this.Fame = 150;
+            this.Karma = 0;
 
-			VirtualArmor = 10;
+            this.VirtualArmor = 10;
 
-			Tamable = true;
-			ControlSlots = 1;
-			MinTameSkill = 11.1;
-		}
+            this.Tamable = true;
+            this.ControlSlots = 1;
+            this.MinTameSkill = 11.1;
+        }
 
-		public override int Meat{ get{ return 2; } }
-		public override int Hides{ get{ return 8; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.GrainsAndHay | FoodType.FruitsAndVegies; } }
+        public override int Meat
+        {
+            get
+            {
+                return 2;
+            }
+        }
+        public override int Hides
+        {
+            get
+            {
+                return 8;
+            }
+        }
+        public override FoodType FavoriteFood
+        {
+            get
+            {
+                return FoodType.GrainsAndHay | FoodType.FruitsAndVegies;
+            }
+        }
 
-		public Goat(Serial serial) : base(serial)
-		{
-		}
+        public Goat(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.Write((int) 0);
-		}
+            writer.Write((int)0);
+        }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+            int version = reader.ReadInt();
+        }
+    }
 }

@@ -4,31 +4,43 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class SBMonk : SBInfo
-	{
-		private List<GenericBuyInfo> m_BuyInfo = new InternalBuyInfo();
-		private IShopSellInfo m_SellInfo = new InternalSellInfo();
+    public class SBMonk : SBInfo
+    {
+        private readonly List<GenericBuyInfo> m_BuyInfo = new InternalBuyInfo();
+        private readonly IShopSellInfo m_SellInfo = new InternalSellInfo();
 
-		public SBMonk()
-		{
-		}
+        public SBMonk()
+        {
+        }
 
-		public override IShopSellInfo SellInfo { get { return m_SellInfo; } }
-		public override List<GenericBuyInfo> BuyInfo { get { return m_BuyInfo; } }
+        public override IShopSellInfo SellInfo
+        {
+            get
+            {
+                return this.m_SellInfo;
+            }
+        }
+        public override List<GenericBuyInfo> BuyInfo
+        {
+            get
+            {
+                return this.m_BuyInfo;
+            }
+        }
 
-		public class InternalBuyInfo : List<GenericBuyInfo>
-		{
-			public InternalBuyInfo()
-			{
-				Add( new GenericBuyInfo( typeof( MonkRobe ), 136, 20, 0x2687, 0x21E ) );
-			}
-		}
+        public class InternalBuyInfo : List<GenericBuyInfo>
+        {
+            public InternalBuyInfo()
+            {
+                this.Add(new GenericBuyInfo(typeof(MonkRobe), 136, 20, 0x2687, 0x21E));
+            }
+        }
 
-		public class InternalSellInfo : GenericSellInfo
-		{
-			public InternalSellInfo()
-			{
-			}
-		}
-	}
+        public class InternalSellInfo : GenericSellInfo
+        {
+            public InternalSellInfo()
+            {
+            }
+        }
+    }
 }

@@ -1,307 +1,342 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Server;
-using Server.Misc;
-using Server.Spells;
-using Server.Spells.Third;
-using Server.Spells.Sixth;
 using Server.Items;
-using Server.Targeting;
+using Server.Spells;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a changeling corpse" )]
-	public class Changeling : BaseCreature
-	{
-		public virtual string DefaultName{ get{ return "a changeling"; } }
-		public virtual int DefaultHue{ get{ return 0; } }
+    [CorpseName("a changeling corpse")]
+    public class Changeling : BaseCreature
+    {
+        public virtual string DefaultName
+        {
+            get
+            {
+                return "a changeling";
+            }
+        }
+        public virtual int DefaultHue
+        {
+            get
+            {
+                return 0;
+            }
+        }
 
-		[Constructable]
-		public Changeling()
-			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Name = DefaultName;
-			Body = 264;
-			Hue = DefaultHue;
+        [Constructable]
+        public Changeling() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            this.Name = this.DefaultName;
+            this.Body = 264;
+            this.Hue = this.DefaultHue;
 
-			SetStr( 36, 105 );
-			SetDex( 212, 262 );
-			SetInt( 317, 399 );
+            this.SetStr(36, 105);
+            this.SetDex(212, 262);
+            this.SetInt(317, 399);
 
-			SetHits( 201, 211 );
-			SetStam( 212, 262 );
-			SetMana( 317, 399 );
+            this.SetHits(201, 211);
+            this.SetStam(212, 262);
+            this.SetMana(317, 399);
 
-			SetDamage( 9, 15 );
+            this.SetDamage(9, 15);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+            this.SetDamageType(ResistanceType.Physical, 100);
 
-			SetResistance( ResistanceType.Physical, 81, 90 );
-			SetResistance( ResistanceType.Fire, 40, 50 );
-			SetResistance( ResistanceType.Cold, 40, 49 );
-			SetResistance( ResistanceType.Poison, 40, 50 );
-			SetResistance( ResistanceType.Energy, 43, 50 );
+            this.SetResistance(ResistanceType.Physical, 81, 90);
+            this.SetResistance(ResistanceType.Fire, 40, 50);
+            this.SetResistance(ResistanceType.Cold, 40, 49);
+            this.SetResistance(ResistanceType.Poison, 40, 50);
+            this.SetResistance(ResistanceType.Energy, 43, 50);
 
-			SetSkill( SkillName.Wrestling, 10.4, 12.5 );
-			SetSkill( SkillName.Tactics, 101.1, 108.3 );
-			SetSkill( SkillName.MagicResist, 121.6, 132.2 );
-			SetSkill( SkillName.Magery, 91.6, 99.5 );
-			SetSkill( SkillName.EvalInt, 91.5, 98.8 );
-			SetSkill( SkillName.Meditation, 91.7, 98.5 );
+            this.SetSkill(SkillName.Wrestling, 10.4, 12.5);
+            this.SetSkill(SkillName.Tactics, 101.1, 108.3);
+            this.SetSkill(SkillName.MagicResist, 121.6, 132.2);
+            this.SetSkill(SkillName.Magery, 91.6, 99.5);
+            this.SetSkill(SkillName.EvalInt, 91.5, 98.8);
+            this.SetSkill(SkillName.Meditation, 91.7, 98.5);
 
-			Fame = 15000;
-			Karma = -15000;
+            this.Fame = 15000;
+            this.Karma = -15000;
 
-			PackScroll( 1, 7 );
-			PackItem( new Arrow( 35 ) );
-			PackItem( new Bolt( 25 ) );
-			PackGem( 2 );
+            this.PackScroll(1, 7);
+            this.PackItem(new Arrow(35));
+            this.PackItem(new Bolt(25));
+            this.PackGem(2);
 
-			PackArcaneScroll( 0, 1 );
-		}
+            this.PackArcaneScroll(0, 1);
+        }
 
-		public override bool ShowFameTitle{ get{ return false; } }
-		public override bool InitialInnocent{ get{ return ( m_MorphedInto != null ); } }
+        public override bool ShowFameTitle
+        {
+            get
+            {
+                return false;
+            }
+        }
+        public override bool InitialInnocent
+        {
+            get
+            {
+                return (this.m_MorphedInto != null);
+            }
+        }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.AosRich, 3 );
-		}
+        public override void GenerateLoot()
+        {
+            this.AddLoot(LootPack.AosRich, 3);
+        }
 
-		public override int GetAngerSound() { return 0x46E; }
-		public override int GetIdleSound() { return 0x470; }
-		public override int GetAttackSound() { return 0x46D; }
-		public override int GetHurtSound() { return 0x471; }
-		public override int GetDeathSound() { return 0x46F; }
+        public override int GetAngerSound()
+        {
+            return 0x46E;
+        }
 
-		private Mobile m_MorphedInto;
-		private DateTime m_LastMorph;
-		private DateTime m_NextFireRing;
+        public override int GetIdleSound()
+        {
+            return 0x470;
+        }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile MorphedInto
-		{
-			get { return m_MorphedInto; }
-			set
-			{
-				if ( value == this )
-					value = null;
+        public override int GetAttackSound()
+        {
+            return 0x46D;
+        }
 
-				if ( m_MorphedInto != value )
-				{
-					Revert();
+        public override int GetHurtSound()
+        {
+            return 0x471;
+        }
 
-					if ( value != null )
-					{
-						Morph( value );
-						m_LastMorph = DateTime.Now;
-					}
+        public override int GetDeathSound()
+        {
+            return 0x46F;
+        }
 
-					m_MorphedInto = value;
-					Delta( MobileDelta.Noto );
-				}
-			}
-		}
+        private Mobile m_MorphedInto;
+        private DateTime m_LastMorph;
+        private DateTime m_NextFireRing;
 
-		public override void OnThink()
-		{
-			base.OnThink();
+        [CommandProperty(AccessLevel.GameMaster)]
+        public Mobile MorphedInto
+        {
+            get
+            {
+                return this.m_MorphedInto;
+            }
+            set
+            {
+                if (value == this)
+                    value = null;
 
-			if ( Combatant != null )
-			{
-				if ( m_NextFireRing <= DateTime.Now && Utility.RandomDouble() < 0.02 )
-				{
-					FireRing();
-					m_NextFireRing = DateTime.Now + TimeSpan.FromMinutes( 2 );
-				}
+                if (this.m_MorphedInto != value)
+                {
+                    this.Revert();
 
-				if ( Combatant.Player && m_MorphedInto != Combatant && Utility.RandomDouble() < 0.05 )
-					MorphedInto = Combatant;
-			}
-		}
+                    if (value != null)
+                    {
+                        this.Morph(value);
+                        this.m_LastMorph = DateTime.Now;
+                    }
 
-		public override bool CheckIdle()
-		{
-			bool idle = base.CheckIdle();
+                    this.m_MorphedInto = value;
+                    this.Delta(MobileDelta.Noto);
+                }
+            }
+        }
 
-			if ( idle && m_MorphedInto != null && DateTime.Now - m_LastMorph > TimeSpan.FromSeconds( 30 ) )
-				MorphedInto = null;
+        public override void OnThink()
+        {
+            base.OnThink();
 
-			return idle;
-		}
+            if (this.Combatant != null)
+            {
+                if (this.m_NextFireRing <= DateTime.Now && Utility.RandomDouble() < 0.02)
+                {
+                    this.FireRing();
+                    this.m_NextFireRing = DateTime.Now + TimeSpan.FromMinutes(2);
+                }
 
-		private void FireEffects( int itemID, int[] offsets )
-		{
-			for ( int i = 0; i < offsets.Length; i += 2 )
-			{
-				Point3D p = Location;
+                if (this.Combatant.Player && this.m_MorphedInto != this.Combatant && Utility.RandomDouble() < 0.05)
+                    this.MorphedInto = this.Combatant;
+            }
+        }
 
-				p.X += offsets[i];
-				p.Y += offsets[i + 1];
+        public override bool CheckIdle()
+        {
+            bool idle = base.CheckIdle();
 
-				if ( SpellHelper.AdjustField( ref p, Map, 12, false ) )
-					Effects.SendLocationEffect( p, Map, itemID, 50 );
-			}
-		}
+            if (idle && this.m_MorphedInto != null && DateTime.Now - this.m_LastMorph > TimeSpan.FromSeconds(30))
+                this.MorphedInto = null;
 
-		private static readonly int[] m_FireNorth = new int[]
-		{
-			-1, -1,
-			1, -1,
-			-1, 2,
-			1, 2
-		};
+            return idle;
+        }
 
-		private static readonly int[] m_FireEast = new int[]
-		{
-			-1, 0,
-			2, 0
-		};
+        private void FireEffects(int itemID, int[] offsets)
+        {
+            for (int i = 0; i < offsets.Length; i += 2)
+            {
+                Point3D p = this.Location;
 
-		protected virtual void FireRing()
-		{
-			FireEffects( 0x3E27, m_FireNorth );
-			FireEffects( 0x3E31, m_FireEast );
-		}
+                p.X += offsets[i];
+                p.Y += offsets[i + 1];
 
-		protected virtual void Morph( Mobile m )
-		{
-			Body = m.Body;
-			Hue = m.Hue;
-			Female = m.Female;
-			Name = m.Name;
-			NameHue = m.NameHue;
-			Title = m.Title;
-			Kills = m.Kills;
-			HairItemID = m.HairItemID;
-			HairHue = m.HairHue;
-			FacialHairItemID = m.FacialHairItemID;
-			FacialHairHue = m.FacialHairHue;
+                if (SpellHelper.AdjustField(ref p, this.Map, 12, false))
+                    Effects.SendLocationEffect(p, this.Map, itemID, 50);
+            }
+        }
 
-			// TODO: Skills?
+        private static readonly int[] m_FireNorth = new int[]
+        {
+            -1, -1,
+            1, -1,
+            -1, 2,
+            1, 2
+        };
 
-			foreach ( Item item in m.Items )
-			{
-				if ( item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank )
-					AddItem( new ClonedItem( item ) ); // TODO: Clone weapon/armor attributes
-			}
+        private static readonly int[] m_FireEast = new int[]
+        {
+            -1, 0,
+            2, 0
+        };
 
-			PlaySound( 0x511 );
-			FixedParticles( 0x376A, 1, 14, 5045, EffectLayer.Waist );
-		}
+        protected virtual void FireRing()
+        {
+            this.FireEffects(0x3E27, m_FireNorth);
+            this.FireEffects(0x3E31, m_FireEast);
+        }
 
-		protected virtual void Revert()
-		{
-			Body = 264;
-			Hue = ( IsParagon && DefaultHue == 0 ) ? Paragon.Hue : DefaultHue;
-			Female = false;
-			Name = DefaultName;
-			NameHue = -1;
-			Title = null;
-			Kills = 0;
-			HairItemID = 0;
-			HairHue = 0;
-			FacialHairItemID = 0;
-			FacialHairHue = 0;
+        protected virtual void Morph(Mobile m)
+        {
+            this.Body = m.Body;
+            this.Hue = m.Hue;
+            this.Female = m.Female;
+            this.Name = m.Name;
+            this.NameHue = m.NameHue;
+            this.Title = m.Title;
+            this.Kills = m.Kills;
+            this.HairItemID = m.HairItemID;
+            this.HairHue = m.HairHue;
+            this.FacialHairItemID = m.FacialHairItemID;
+            this.FacialHairHue = m.FacialHairHue;
 
-			DeleteClonedItems();
+            // TODO: Skills?
 
-			PlaySound( 0x511 );
-			FixedParticles( 0x376A, 1, 14, 5045, EffectLayer.Waist );
-		}
+            foreach (Item item in m.Items)
+            {
+                if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
+                    this.AddItem(new ClonedItem(item)); // TODO: Clone weapon/armor attributes
+            }
 
-		public void DeleteClonedItems()
-		{
-			for ( int i = Items.Count - 1; i >= 0; --i )
-			{
-				Item item = Items[i];
+            this.PlaySound(0x511);
+            this.FixedParticles(0x376A, 1, 14, 5045, EffectLayer.Waist);
+        }
 
-				if ( item is ClonedItem )
-					item.Delete();
-			}
+        protected virtual void Revert()
+        {
+            this.Body = 264;
+            this.Hue = (this.IsParagon && this.DefaultHue == 0) ? Paragon.Hue : this.DefaultHue;
+            this.Female = false;
+            this.Name = this.DefaultName;
+            this.NameHue = -1;
+            this.Title = null;
+            this.Kills = 0;
+            this.HairItemID = 0;
+            this.HairHue = 0;
+            this.FacialHairItemID = 0;
+            this.FacialHairHue = 0;
 
-			if ( Backpack != null )
-			{
-				for ( int i = Backpack.Items.Count - 1; i >= 0; --i )
-				{
-					Item item = Backpack.Items[i];
+            this.DeleteClonedItems();
 
-					if ( item is ClonedItem )
-						item.Delete();
-				}
-			}
-		}
+            this.PlaySound(0x511);
+            this.FixedParticles(0x376A, 1, 14, 5045, EffectLayer.Waist);
+        }
 
-		public override void OnAfterDelete()
-		{
-			DeleteClonedItems();
+        public void DeleteClonedItems()
+        {
+            for (int i = this.Items.Count - 1; i >= 0; --i)
+            {
+                Item item = this.Items[i];
 
-			base.OnAfterDelete();
-		}
+                if (item is ClonedItem)
+                    item.Delete();
+            }
 
-		public override void ClearHands()
-		{
-		}
+            if (this.Backpack != null)
+            {
+                for (int i = this.Backpack.Items.Count - 1; i >= 0; --i)
+                {
+                    Item item = this.Backpack.Items[i];
 
-		public Changeling( Serial serial )
-			: base( serial )
-		{
-		}
+                    if (item is ClonedItem)
+                        item.Delete();
+                }
+            }
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void OnAfterDelete()
+        {
+            this.DeleteClonedItems();
 
-			writer.Write( (int) 0 ); // version
-			writer.Write( ( m_MorphedInto != null ) );
-		}
+            base.OnAfterDelete();
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void ClearHands()
+        {
+        }
 
-			int version = reader.ReadInt();
+        public Changeling(Serial serial) : base(serial)
+        {
+        }
 
-			if ( reader.ReadBool() )
-				ValidationQueue<Changeling>.Add( this );
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-		public void Validate()
-		{
-			Revert();
-		}
+            writer.Write((int)0); // version
+            writer.Write((this.m_MorphedInto != null));
+        }
 
-		private class ClonedItem : Item
-		{
-			public ClonedItem( Item item )
-				: base( item.ItemID )
-			{
-				Name = item.Name;
-				Weight = item.Weight;
-				Hue = item.Hue;
-				Layer = item.Layer;
-				Movable = false;
-			}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			public ClonedItem( Serial serial )
-				: base( serial )
-			{
-			}
+            int version = reader.ReadInt();
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+            if (reader.ReadBool())
+                ValidationQueue<Changeling>.Add(this);
+        }
 
-				writer.Write( (int) 0 ); // version
-			}
+        public void Validate()
+        {
+            this.Revert();
+        }
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+        private class ClonedItem : Item
+        {
+            public ClonedItem(Item item) : base(item.ItemID)
+            {
+                this.Name = item.Name;
+                this.Weight = item.Weight;
+                this.Hue = item.Hue;
+                this.Layer = item.Layer;
+                this.Movable = false;
+            }
 
-				int version = reader.ReadInt();
-			}
-		}
-	}
+            public ClonedItem(Serial serial) : base(serial)
+            {
+            }
+
+            public override void Serialize(GenericWriter writer)
+            {
+                base.Serialize(writer);
+
+                writer.Write((int)0); // version
+            }
+
+            public override void Deserialize(GenericReader reader)
+            {
+                base.Deserialize(reader);
+
+                int version = reader.ReadInt();
+            }
+        }
+    }
 }

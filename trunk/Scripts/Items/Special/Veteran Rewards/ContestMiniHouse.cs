@@ -1,132 +1,145 @@
 using System;
-using Server;
 using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-	public class ContestMiniHouse : MiniHouseAddon
-	{				
-		public override BaseAddonDeed Deed
-		{ 
-			get
-			{ 
-				ContestMiniHouseDeed deed = new ContestMiniHouseDeed( Type );
-				deed.IsRewardItem = m_IsRewardItem;
+    public class ContestMiniHouse : MiniHouseAddon
+    { 
+        public override BaseAddonDeed Deed
+        { 
+            get
+            { 
+                ContestMiniHouseDeed deed = new ContestMiniHouseDeed(this.Type);
+                deed.IsRewardItem = this.m_IsRewardItem;
 
-				return deed; 
-			} 
-		}
+                return deed; 
+            }
+        }
 
-		private bool m_IsRewardItem;
+        private bool m_IsRewardItem;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsRewardItem
-		{
-			get{ return m_IsRewardItem; }
-			set{ m_IsRewardItem = value; InvalidateProperties(); }
-		}
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool IsRewardItem
+        {
+            get
+            {
+                return this.m_IsRewardItem;
+            }
+            set
+            {
+                this.m_IsRewardItem = value;
+                this.InvalidateProperties();
+            }
+        }
 
-		[Constructable]
-		public ContestMiniHouse() : base( MiniHouseType.MalasMountainPass )
-		{
-		}
+        [Constructable]
+        public ContestMiniHouse() : base(MiniHouseType.MalasMountainPass)
+        {
+        }
 
-		[Constructable]
-		public ContestMiniHouse( MiniHouseType type ) : base( type )
-		{
-		}
+        [Constructable]
+        public ContestMiniHouse(MiniHouseType type) : base(type)
+        {
+        }
 
-		public ContestMiniHouse( Serial serial ) : base( serial )
-		{
-		}
+        public ContestMiniHouse(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
+            writer.WriteEncodedInt(0); // version
 
-			writer.Write( (bool) m_IsRewardItem );
-		}
+            writer.Write((bool)this.m_IsRewardItem);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
+            int version = reader.ReadEncodedInt();
 			
-			m_IsRewardItem = reader.ReadBool();
-		}
-	}
+            this.m_IsRewardItem = reader.ReadBool();
+        }
+    }
 
-	public class ContestMiniHouseDeed : MiniHouseDeed, IRewardItem
-	{
-		public override BaseAddon Addon
-		{ 
-			get
-			{ 
-				ContestMiniHouse addon = new ContestMiniHouse( Type );
-				addon.IsRewardItem = m_IsRewardItem;
+    public class ContestMiniHouseDeed : MiniHouseDeed, IRewardItem
+    {
+        public override BaseAddon Addon
+        { 
+            get
+            { 
+                ContestMiniHouse addon = new ContestMiniHouse(this.Type);
+                addon.IsRewardItem = this.m_IsRewardItem;
 
-				return addon; 
-			} 
-		}
+                return addon; 
+            }
+        }
 		
-		private bool m_IsRewardItem;
+        private bool m_IsRewardItem;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsRewardItem
-		{
-			get{ return m_IsRewardItem; }
-			set{ m_IsRewardItem = value; InvalidateProperties(); }
-		}	
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool IsRewardItem
+        {
+            get
+            {
+                return this.m_IsRewardItem;
+            }
+            set
+            {
+                this.m_IsRewardItem = value;
+                this.InvalidateProperties();
+            }
+        }
 		
-		[Constructable]
-		public ContestMiniHouseDeed() : base( MiniHouseType.MalasMountainPass )
-		{
-		}
+        [Constructable]
+        public ContestMiniHouseDeed() : base(MiniHouseType.MalasMountainPass)
+        {
+        }
 
-		[Constructable]
-		public ContestMiniHouseDeed( MiniHouseType type ) : base( type )
-		{
-		}
+        [Constructable]
+        public ContestMiniHouseDeed(MiniHouseType type) : base(type)
+        {
+        }
 
-		public ContestMiniHouseDeed( Serial serial ) : base( serial )
-		{
-		}
+        public ContestMiniHouseDeed(Serial serial) : base(serial)
+        {
+        }
 		
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, new object[] { Type } ) )
-				return;
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (this.m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, new object[] { this.Type }))
+                return;
 
-			base.OnDoubleClick( from );
-		}
+            base.OnDoubleClick(from);
+        }
 		
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+        public override void GetProperties(ObjectPropertyList list)
+        {
+            base.GetProperties(list);
 			
-			if ( Core.ML && m_IsRewardItem )
-				list.Add( 1076217 ); // 1st Year Veteran Reward
-		}
+            if (Core.ML && this.m_IsRewardItem)
+                list.Add(1076217); // 1st Year Veteran Reward
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
+            writer.WriteEncodedInt(0); // version
 
-			writer.Write( (bool) m_IsRewardItem );
-		}
+            writer.Write((bool)this.m_IsRewardItem);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
+            int version = reader.ReadEncodedInt();
 			
-			m_IsRewardItem = reader.ReadBool();
-		}
-	}
+            this.m_IsRewardItem = reader.ReadBool();
+        }
+    }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Server;
-using Server.Gumps;
 using Server.Commands;
+using Server.Gumps;
 using Server.Items;
 
 namespace CustomsFramework.Systems.VIPSystem
@@ -22,11 +22,41 @@ namespace CustomsFramework.Systems.VIPSystem
 
         public const string SystemVersion = @"1.0";
 
-        public override string Name { get { return @"VIP Core"; } }
-        public override string Description { get { return @"Core that contains everything for the VIP system."; } }
-        public override string Version { get { return SystemVersion; } }
-        public override AccessLevel EditLevel { get { return AccessLevel.Developer; } }
-        public override Gump SettingsGump { get { return null; } }
+        public override string Name
+        {
+            get
+            {
+                return @"VIP Core";
+            }
+        }
+        public override string Description
+        {
+            get
+            {
+                return @"Core that contains everything for the VIP system.";
+            }
+        }
+        public override string Version
+        {
+            get
+            {
+                return SystemVersion;
+            }
+        }
+        public override AccessLevel EditLevel
+        {
+            get
+            {
+                return AccessLevel.Developer;
+            }
+        }
+        public override Gump SettingsGump
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         public List<VIPModule> _VIPModules;
 
@@ -44,11 +74,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _ServiceTimespan;
+                return this._ServiceTimespan;
             }
             set
             {
-                _ServiceTimespan = value;
+                this._ServiceTimespan = value;
             }
         }
 
@@ -56,11 +86,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _ExchangeRate;
+                return this._ExchangeRate;
             }
             set
             {
-                _ExchangeRate = value;
+                this._ExchangeRate = value;
             }
         }
 
@@ -68,11 +98,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _GoldFee;
+                return this._GoldFee;
             }
             set
             {
-                _GoldFee = value;
+                this._GoldFee = value;
             }
         }
 
@@ -80,11 +110,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _SilverFee;
+                return this._SilverFee;
             }
             set
             {
-                _SilverFee = value;
+                this._SilverFee = value;
             }
         }
 
@@ -92,11 +122,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _BronzeFee;
+                return this._BronzeFee;
             }
             set
             {
-                _BronzeFee = value;
+                this._BronzeFee = value;
             }
         }
 
@@ -104,11 +134,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _GoldBonusFee;
+                return this._GoldBonusFee;
             }
             set
             {
-                _GoldBonusFee = value;
+                this._GoldBonusFee = value;
             }
         }
 
@@ -116,11 +146,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _SilverBonusFee;
+                return this._SilverBonusFee;
             }
             set
             {
-                _SilverBonusFee = value;
+                this._SilverBonusFee = value;
             }
         }
 
@@ -128,32 +158,31 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _BronzeBonusFee;
+                return this._BronzeBonusFee;
             }
             set
             {
-                _BronzeBonusFee = value;
+                this._BronzeBonusFee = value;
             }
         }
 
         public VIPCore() : base()
         {
-            Enabled = true;
+            this.Enabled = true;
 
-            _ServiceTimespan = TimeSpan.FromDays(30.0);
-            _ExchangeRate = 0.1;
+            this._ServiceTimespan = TimeSpan.FromDays(30.0);
+            this._ExchangeRate = 0.1;
 
-            _GoldFee = 500;
-            _SilverFee = 250;
-            _BronzeFee = 100;
+            this._GoldFee = 500;
+            this._SilverFee = 250;
+            this._BronzeFee = 100;
 
-            _GoldBonusFee = 250;
-            _SilverBonusFee = 125;
-            _BronzeBonusFee = 50;
+            this._GoldBonusFee = 250;
+            this._SilverBonusFee = 125;
+            this._BronzeBonusFee = 50;
         }
 
-        public VIPCore(CustomSerial serial)
-            : base(serial)
+        public VIPCore(CustomSerial serial) : base(serial)
         {
         }
 
@@ -222,8 +251,8 @@ namespace CustomsFramework.Systems.VIPSystem
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_ServiceTimespan);
-            writer.Write(_ExchangeRate);
+            writer.Write(this._ServiceTimespan);
+            writer.Write(this._ExchangeRate);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -236,8 +265,8 @@ namespace CustomsFramework.Systems.VIPSystem
             {
                 case 0:
                     {
-                        _ServiceTimespan = reader.ReadTimeSpan();
-                        _ExchangeRate = reader.ReadDouble();
+                        this._ServiceTimespan = reader.ReadTimeSpan();
+                        this._ExchangeRate = reader.ReadDouble();
                         break;
                     }
             }

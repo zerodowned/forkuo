@@ -1,187 +1,198 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Targeting;
 
 namespace Server.Spells.Spellweaving
 {
-	public class GiftOfRenewalSpell : ArcanistSpell
-	{
-		private static SpellInfo m_Info = new SpellInfo(
-				"Gift of Renewal", "Olorisstra",
-				-1
-			);
+    public class GiftOfRenewalSpell : ArcanistSpell
+    {
+        private static readonly SpellInfo m_Info = new SpellInfo(
+            "Gift of Renewal", "Olorisstra",
+            -1);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 3.0 ); } }
+        public override TimeSpan CastDelayBase
+        {
+            get
+            {
+                return TimeSpan.FromSeconds(3.0);
+            }
+        }
 
-		public override double RequiredSkill { get { return 0.0; } }
-		public override int RequiredMana { get { return 24; } }
+        public override double RequiredSkill
+        {
+            get
+            {
+                return 0.0;
+            }
+        }
+        public override int RequiredMana
+        {
+            get
+            {
+                return 24;
+            }
+        }
 
-		public GiftOfRenewalSpell( Mobile caster, Item scroll )
-			: base( caster, scroll, m_Info )
-		{
-		}
+        public GiftOfRenewalSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+        {
+        }
 
-		public override void OnCast()
-		{
-			Caster.Target = new InternalTarget( this );
-		}
+        public override void OnCast()
+        {
+            this.Caster.Target = new InternalTarget(this);
+        }
 
-		public void Target( Mobile m )
-		{
-			if( !Caster.CanSee( m ) )
-			{
-				Caster.SendLocalizedMessage( 500237 ); // Target can not be seen.
-			}
-			if( m_Table.ContainsKey( m ) )
-			{
-				Caster.SendLocalizedMessage( 501775 ); // This spell is already in effect.
-			}
-			else if( !Caster.CanBeginAction( typeof( GiftOfRenewalSpell ) ) )
-			{
-				Caster.SendLocalizedMessage( 501789 ); // You must wait before trying again.
-			}
-			else if( CheckBSequence( m ) )
-			{
-				SpellHelper.Turn( Caster, m );
+        public void Target(Mobile m)
+        {
+            if (!this.Caster.CanSee(m))
+            {
+                this.Caster.SendLocalizedMessage(500237); // Target can not be seen.
+            }
+            if (m_Table.ContainsKey(m))
+            {
+                this.Caster.SendLocalizedMessage(501775); // This spell is already in effect.
+            }
+            else if (!this.Caster.CanBeginAction(typeof(GiftOfRenewalSpell)))
+            {
+                this.Caster.SendLocalizedMessage(501789); // You must wait before trying again.
+            }
+            else if (this.CheckBSequence(m))
+            {
+                SpellHelper.Turn(this.Caster, m);
 
-				Caster.FixedEffect( 0x374A, 10, 20 );
-				Caster.PlaySound( 0x5C9 );
+                this.Caster.FixedEffect(0x374A, 10, 20);
+                this.Caster.PlaySound(0x5C9);
 
-				if( m.Poisoned )
-				{
-					m.CurePoison( m );
-				}
-				else
-				{
-					double skill = Caster.Skills[SkillName.Spellweaving].Value;
+                if (m.Poisoned)
+                {
+                    m.CurePoison(m);
+                }
+                else
+                {
+                    double skill = this.Caster.Skills[SkillName.Spellweaving].Value;
 
-					int hitsPerRound = 5 + (int)(skill / 24) + FocusLevel;
-					TimeSpan duration = TimeSpan.FromSeconds( 30 + (FocusLevel * 10) );
+                    int hitsPerRound = 5 + (int)(skill / 24) + this.FocusLevel;
+                    TimeSpan duration = TimeSpan.FromSeconds(30 + (this.FocusLevel * 10));
 
-					GiftOfRenewalInfo info = new GiftOfRenewalInfo( Caster, m, hitsPerRound );
+                    GiftOfRenewalInfo info = new GiftOfRenewalInfo(this.Caster, m, hitsPerRound);
 
-					Timer.DelayCall( duration,
-						delegate
-						{
-							if( StopEffect( m ) )
-							{
-								m.PlaySound( 0x455 );
-								m.SendLocalizedMessage( 1075071 ); // The Gift of Renewal has faded.
-							}
-						} );
+                    Timer.DelayCall(duration,
+                        delegate
+                        {
+                            if (StopEffect(m))
+                            {
+                                m.PlaySound(0x455);
+                                m.SendLocalizedMessage(1075071); // The Gift of Renewal has faded.
+                            }
+                        });
 
+                    m_Table[m] = info;
 
+                    this.Caster.BeginAction(typeof(GiftOfRenewalSpell));
 
-					m_Table[m] = info;
+                    BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.GiftOfRenewal, 1031602, 1075797, duration, m, hitsPerRound.ToString()));
+                }
+            }
 
-					Caster.BeginAction( typeof( GiftOfRenewalSpell ) );
+            this.FinishSequence();
+        }
 
-					BuffInfo.AddBuff( m, new BuffInfo( BuffIcon.GiftOfRenewal, 1031602, 1075797, duration, m, hitsPerRound.ToString() ) );
-				}
-			}
+        private static readonly Dictionary<Mobile, GiftOfRenewalInfo> m_Table = new Dictionary<Mobile, GiftOfRenewalInfo>();
 
-			FinishSequence();
-		}
+        private class GiftOfRenewalInfo
+        {
+            public readonly Mobile m_Caster;
+            public readonly Mobile m_Mobile;
+            public readonly int m_HitsPerRound;
+            public readonly InternalTimer m_Timer;
 
-		private static Dictionary<Mobile, GiftOfRenewalInfo> m_Table = new Dictionary<Mobile, GiftOfRenewalInfo>();
+            public GiftOfRenewalInfo(Mobile caster, Mobile mobile, int hitsPerRound)
+            {
+                this.m_Caster = caster;
+                this.m_Mobile = mobile;
+                this.m_HitsPerRound = hitsPerRound;
 
-		private class GiftOfRenewalInfo
-		{
-			public Mobile m_Caster;
-			public Mobile m_Mobile;
-			public int m_HitsPerRound;
-			public InternalTimer m_Timer;
+                this.m_Timer = new InternalTimer(this);
+                this.m_Timer.Start();
+            }
+        }
 
-			public GiftOfRenewalInfo( Mobile caster, Mobile mobile, int hitsPerRound )
-			{
-				m_Caster = caster;
-				m_Mobile = mobile;
-				m_HitsPerRound = hitsPerRound;
+        private class InternalTimer : Timer
+        {
+            public readonly GiftOfRenewalInfo m_Info;
 
-				m_Timer = new InternalTimer( this );
-				m_Timer.Start();
-			}
-		}
+            public InternalTimer(GiftOfRenewalInfo info) : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0))
+            {
+                this.m_Info = info;
+            }
 
-		private class InternalTimer : Timer
-		{
-			public GiftOfRenewalInfo m_Info;
+            protected override void OnTick()
+            {
+                Mobile m = this.m_Info.m_Mobile;
 
-			public InternalTimer( GiftOfRenewalInfo info )
-				: base( TimeSpan.FromSeconds( 2.0 ), TimeSpan.FromSeconds( 2.0 ) )
-			{
-				m_Info = info;
-			}
+                if (!m_Table.ContainsKey(m))
+                {
+                    this.Stop();
+                    return;
+                }
 
-			protected override void OnTick()
-			{
-				Mobile m = m_Info.m_Mobile;
+                if (!m.Alive)
+                {
+                    this.Stop();
+                    StopEffect(m);
+                    return;
+                }
 
-				if( !m_Table.ContainsKey( m ) )
-				{
-					Stop();
-					return;
-				}
+                if (m.Hits >= m.HitsMax)
+                    return;
 
-				if( !m.Alive )
-				{
-					Stop();
-					StopEffect( m );
-					return;
-				}
+                int toHeal = this.m_Info.m_HitsPerRound;
 
-				if( m.Hits >= m.HitsMax )
-					return;
+                SpellHelper.Heal(toHeal, m, this.m_Info.m_Caster);
+                m.FixedParticles(0x376A, 9, 32, 5005, EffectLayer.Waist);
+            }
+        }
 
-				int toHeal = m_Info.m_HitsPerRound;
+        public static bool StopEffect(Mobile m)
+        {
+            GiftOfRenewalInfo info;
 
-				SpellHelper.Heal( toHeal, m, m_Info.m_Caster );
-				m.FixedParticles( 0x376A, 9, 32, 5005, EffectLayer.Waist );
-			}
-		}
+            if (m_Table.TryGetValue(m, out info))
+            {
+                m_Table.Remove(m);
 
-		public static bool StopEffect( Mobile m )
-		{
-			GiftOfRenewalInfo info;
+                info.m_Timer.Stop();
+                BuffInfo.RemoveBuff(m, BuffIcon.GiftOfRenewal);
 
-			if( m_Table.TryGetValue( m, out info ) )
-			{
-				m_Table.Remove( m );
+                Timer.DelayCall(TimeSpan.FromSeconds(60), delegate { info.m_Caster.EndAction(typeof(GiftOfRenewalSpell)); });
 
-				info.m_Timer.Stop();
-				BuffInfo.RemoveBuff( m, BuffIcon.GiftOfRenewal );
+                return true;
+            }
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 60 ), delegate { info.m_Caster.EndAction( typeof( GiftOfRenewalSpell ) ); } );
+            return false;
+        }
 
-				return true;
-			}
+        public class InternalTarget : Target
+        {
+            private readonly GiftOfRenewalSpell m_Owner;
 
-			return false;
-		}
+            public InternalTarget(GiftOfRenewalSpell owner) : base(10, false, TargetFlags.Beneficial)
+            {
+                this.m_Owner = owner;
+            }
 
-		public class InternalTarget : Target
-		{
-			private GiftOfRenewalSpell m_Owner;
+            protected override void OnTarget(Mobile m, object o)
+            {
+                if (o is Mobile)
+                {
+                    this.m_Owner.Target((Mobile)o);
+                }
+            }
 
-			public InternalTarget( GiftOfRenewalSpell owner )
-				: base( 10, false, TargetFlags.Beneficial )
-			{
-				m_Owner = owner;
-			}
-
-			protected override void OnTarget( Mobile m, object o )
-			{
-				if( o is Mobile )
-				{
-					m_Owner.Target( (Mobile)o );
-				}
-			}
-
-			protected override void OnTargetFinish( Mobile m )
-			{
-				m_Owner.FinishSequence();
-			}
-		}
-	}
+            protected override void OnTargetFinish(Mobile m)
+            {
+                this.m_Owner.FinishSequence();
+            }
+        }
+    }
 }

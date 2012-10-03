@@ -1,73 +1,99 @@
 using System;
-using Server;
 using Server.Engines.CannedEvil;
 
 namespace Server.Items
 {
-	public class ChampionSkull : Item
-	{
-		private ChampionSkullType m_Type;
+    public class ChampionSkull : Item
+    {
+        private ChampionSkullType m_Type;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public ChampionSkullType Type{ get{ return m_Type; } set{ m_Type = value; InvalidateProperties(); } }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public ChampionSkullType Type
+        {
+            get
+            {
+                return this.m_Type;
+            }
+            set
+            {
+                this.m_Type = value;
+                this.InvalidateProperties();
+            }
+        }
 
-		public override int LabelNumber{ get{ return 1049479 + (int)m_Type; } }
+        public override int LabelNumber
+        {
+            get
+            {
+                return 1049479 + (int)this.m_Type;
+            }
+        }
 
-		[Constructable]
-		public ChampionSkull( ChampionSkullType type ) : base( 0x1AE1 )
-		{
-			m_Type = type;
-			LootType = LootType.Cursed;
+        [Constructable]
+        public ChampionSkull(ChampionSkullType type) : base(0x1AE1)
+        {
+            this.m_Type = type;
+            this.LootType = LootType.Cursed;
 
-			// TODO: All hue values
-			switch ( type )
-			{
-				case ChampionSkullType.Power: Hue = 0x159; break;
-				case ChampionSkullType.Venom: Hue = 0x172; break;
-				case ChampionSkullType.Greed: Hue = 0x1EE; break;
-				case ChampionSkullType.Death: Hue = 0x025; break;
-				case ChampionSkullType.Pain:  Hue = 0x035; break;
-			}
-		}
+            // TODO: All hue values
+            switch ( type )
+            {
+                case ChampionSkullType.Power:
+                    this.Hue = 0x159;
+                    break;
+                case ChampionSkullType.Venom:
+                    this.Hue = 0x172;
+                    break;
+                case ChampionSkullType.Greed:
+                    this.Hue = 0x1EE;
+                    break;
+                case ChampionSkullType.Death:
+                    this.Hue = 0x025;
+                    break;
+                case ChampionSkullType.Pain:
+                    this.Hue = 0x035;
+                    break;
+            }
+        }
 
-		public ChampionSkull( Serial serial ) : base( serial )
-		{
-		}
+        public ChampionSkull(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.Write( (int) 1 ); // version
+            writer.Write((int)1); // version
 
-			writer.Write( (int) m_Type );
-		}
+            writer.Write((int)this.m_Type);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+            int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 1:
-				case 0:
-				{
-					m_Type = (ChampionSkullType)reader.ReadInt();
+            switch ( version )
+            {
+                case 1:
+                case 0:
+                    {
+                        this.m_Type = (ChampionSkullType)reader.ReadInt();
 
-					break;
-				}
-			}
+                        break;
+                    }
+            }
 			
-			if( version == 0 )
-			{
-				if ( LootType != LootType.Cursed )
-					LootType = LootType.Cursed;
+            if (version == 0)
+            {
+                if (this.LootType != LootType.Cursed)
+                    this.LootType = LootType.Cursed;
 	
-				if ( Insured )
-					Insured = false;
-			}
-		}
-	}
+                if (this.Insured)
+                    this.Insured = false;
+            }
+        }
+    }
 }

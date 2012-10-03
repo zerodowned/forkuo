@@ -3,8 +3,8 @@ using Server;
 
 namespace CustomsFramework.Systems.VIPSystem
 {
-	public class BaseVIPDeed : Item
-	{
+    public class BaseVIPDeed : Item
+    {
         public override string DefaultName
         {
             get
@@ -21,11 +21,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _Bonuses;
+                return this._Bonuses;
             }
             set
             {
-                _Bonuses = value;
+                this._Bonuses = value;
             }
         }
 
@@ -34,36 +34,34 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _Tier;
+                return this._Tier;
             }
             set
             {
-                _Tier = value;
+                this._Tier = value;
             }
         }
 
-        public BaseVIPDeed()
-            : base(0x14F0)
+        public BaseVIPDeed() : base(0x14F0)
         {
-            Weight = 1.0;
-            LootType = LootType.Blessed;
-            _Tier = VIPTier.None;
-            _Bonuses = new Bonuses();
+            this.Weight = 1.0;
+            this.LootType = LootType.Blessed;
+            this._Tier = VIPTier.None;
+            this._Bonuses = new Bonuses();
 
-            for (int i = 0; i < _Bonuses.Length; i++)
+            for (int i = 0; i < this._Bonuses.Length; i++)
             {
-                _Bonuses[i].Enabled = false;
+                this._Bonuses[i].Enabled = false;
             }
         }
 
-        public BaseVIPDeed(Serial serial)
-            : base(serial)
+        public BaseVIPDeed(Serial serial) : base(serial)
         {
         }
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (!IsChildOf(from.Backpack))
+            if (!this.IsChildOf(from.Backpack))
             {
                 from.SendLocalizedMessage(1042001);
                 return;
@@ -73,43 +71,43 @@ namespace CustomsFramework.Systems.VIPSystem
 
             if (module == null || module.Canceled)
             {
-                if (Tier == VIPTier.None)
+                if (this.Tier == VIPTier.None)
                 {
-                    if (Bonuses != null)
+                    if (this.Bonuses != null)
                     {
                         module = new VIPModule(from, this);
-                        DonatorMessage(from);
+                        this.DonatorMessage(from);
                     }
                     else
                     {
                         from.SendMessage("There is something wrong with your deed, please report to a staff member.");
-                        Name = "Error Deed";
+                        this.Name = "Error Deed";
                     }
                 }
                 else
                 {
-                    if (Tier == VIPTier.Gold)
+                    if (this.Tier == VIPTier.Gold)
                     {
                         module = new VIPModule(from, this);
                         from.AccessLevel = AccessLevel.VIP;
                         from.SendMessage("Thanks for donating to become a Gold VIP player!");
                         module.Bonuses.StartBonuses();
                     }
-                    else if (Tier == VIPTier.Silver)
+                    else if (this.Tier == VIPTier.Silver)
                     {
                         module = new VIPModule(from, this);
                         from.AccessLevel = AccessLevel.VIP;
                         from.SendMessage("Thanks for donating to become a Silver VIP player!");
                         module.Bonuses.StartBonuses();
                     }
-                    else if (Tier == VIPTier.Bronze)
+                    else if (this.Tier == VIPTier.Bronze)
                     {
                         module = new VIPModule(from, this);
                         from.AccessLevel = AccessLevel.VIP;
                         from.SendMessage("Thanks for donating to become a Bronze VIP player!");
                         module.Bonuses.StartBonuses();
                     }
-                    Delete();
+                    this.Delete();
                 }
             }
         }
@@ -129,8 +127,8 @@ namespace CustomsFramework.Systems.VIPSystem
 
             Utilities.WriteVersion(writer, 0);
 
-            writer.Write((byte)_Tier);
-            _Bonuses.Serialize(writer);
+            writer.Write((byte)this._Tier);
+            this._Bonuses.Serialize(writer);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -143,11 +141,11 @@ namespace CustomsFramework.Systems.VIPSystem
             {
                 case 0:
                     {
-                        _Tier = (VIPTier)reader.ReadByte();
-                        _Bonuses = new Bonuses(reader);
+                        this._Tier = (VIPTier)reader.ReadByte();
+                        this._Bonuses = new Bonuses(reader);
                         break;
                     }
             }
         }
-	}
+    }
 }

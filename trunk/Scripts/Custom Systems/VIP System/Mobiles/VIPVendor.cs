@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using Server;
-using Server.Mobiles;
 using Server.ContextMenus;
+using Server.Mobiles;
 
 namespace CustomsFramework.Systems.VIPSystem
 {
     [CorpseName("VIP Dealer's Corpse")]
-	public class VIPVendor : Mobile
-	{
+    public class VIPVendor : Mobile
+    {
         [Constructable]
         public VIPVendor()
         {
-            Name = "VIP Dealer";
-            Direction = Direction.East;
-            Blessed = true;
+            this.Name = "VIP Dealer";
+            this.Direction = Direction.East;
+            this.Blessed = true;
         }
 
-        public VIPVendor(Serial serial)
-            : base(serial)
+        public VIPVendor(Serial serial) : base(serial)
         {
         }
 
@@ -34,7 +33,6 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             if (!e.Handled && e.Mobile.InRange(this.Location, 12))
             {
-                
             }
             base.OnSpeech(e);
         }
@@ -63,18 +61,17 @@ namespace CustomsFramework.Systems.VIPSystem
 
         public class ViewShopEntry : ContextMenuEntry
         {
-            private Mobile _Player;
+            private readonly Mobile _Player;
 
-            public ViewShopEntry(Mobile from)
-                : base(1062219)
+            public ViewShopEntry(Mobile from) : base(1062219)
             {
-                _Player = from;
+                this._Player = from;
             }
 
             public override void OnClick()
             {
-                SendGump(_Player);
+                SendGump(this._Player);
             }
         }
-	}
+    }
 }

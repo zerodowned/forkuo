@@ -4,126 +4,133 @@ using System.Xml;
 
 namespace Server.Engines.Reports
 {
-	public abstract class PersistanceWriter
-	{
-		public abstract void SetInt32( string key, int value );
-		public abstract void SetBoolean( string key, bool value );
-		public abstract void SetString( string key, string value );
-		public abstract void SetDateTime( string key, DateTime value );
+    public abstract class PersistanceWriter
+    {
+        public abstract void SetInt32(string key, int value);
 
-		public abstract void BeginObject( PersistableType typeID );
-		public abstract void BeginChildren();
-		public abstract void FinishChildren();
-		public abstract void FinishObject();
+        public abstract void SetBoolean(string key, bool value);
 
-		public abstract void WriteDocument( PersistableObject root );
-		public abstract void Close();
+        public abstract void SetString(string key, string value);
 
-		public PersistanceWriter()
-		{
-		}
-	}
+        public abstract void SetDateTime(string key, DateTime value);
 
-	public sealed class XmlPersistanceWriter : PersistanceWriter
-	{
-		private string m_RealFilePath;
-		private string m_TempFilePath;
+        public abstract void BeginObject(PersistableType typeID);
 
-		private StreamWriter m_Writer;
-		private XmlTextWriter m_Xml;
-		private string m_Title;
+        public abstract void BeginChildren();
 
-		public XmlPersistanceWriter( string filePath, string title )
-		{
-			m_RealFilePath = filePath;
-			m_TempFilePath = Path.ChangeExtension( filePath, ".tmp" );
+        public abstract void FinishChildren();
 
-			m_Writer = new StreamWriter( m_TempFilePath );
-			m_Xml = new XmlTextWriter( m_Writer );
+        public abstract void FinishObject();
 
-			m_Title = title;
-		}
+        public abstract void WriteDocument(PersistableObject root);
 
-		public override void SetInt32( string key, int value )
-		{
-			m_Xml.WriteAttributeString( key, XmlConvert.ToString( value ) );
-		}
+        public abstract void Close();
 
-		public override void SetBoolean( string key, bool value )
-		{
-			m_Xml.WriteAttributeString( key, XmlConvert.ToString( value ) );
-		}
+        public PersistanceWriter()
+        {
+        }
+    }
 
-		public override void SetString( string key, string value )
-		{
-			if ( value != null )
-				m_Xml.WriteAttributeString( key, value );
-		}
+    public sealed class XmlPersistanceWriter : PersistanceWriter
+    {
+        private readonly string m_RealFilePath;
+        private readonly string m_TempFilePath;
 
-		public override void SetDateTime( string key, DateTime value )
-		{
-			if ( value != DateTime.MinValue )
-				m_Xml.WriteAttributeString( key, XmlConvert.ToString( value, XmlDateTimeSerializationMode.Local ) );
-		}
+        private readonly StreamWriter m_Writer;
+        private readonly XmlTextWriter m_Xml;
+        private readonly string m_Title;
 
-		public override void BeginObject( PersistableType typeID )
-		{
-			m_Xml.WriteStartElement( typeID.Name );
-		}
+        public XmlPersistanceWriter(string filePath, string title)
+        {
+            this.m_RealFilePath = filePath;
+            this.m_TempFilePath = Path.ChangeExtension(filePath, ".tmp");
 
-		public override void BeginChildren()
-		{
-		}
+            this.m_Writer = new StreamWriter(this.m_TempFilePath);
+            this.m_Xml = new XmlTextWriter(this.m_Writer);
 
-		public override void FinishChildren()
-		{
-		}
+            this.m_Title = title;
+        }
 
-		public override void FinishObject()
-		{
-			m_Xml.WriteEndElement();
-		}
+        public override void SetInt32(string key, int value)
+        {
+            this.m_Xml.WriteAttributeString(key, XmlConvert.ToString(value));
+        }
 
-		public override void WriteDocument( PersistableObject root )
-		{
-			Console.WriteLine( "Reports: {0}: Save started", m_Title );
+        public override void SetBoolean(string key, bool value)
+        {
+            this.m_Xml.WriteAttributeString(key, XmlConvert.ToString(value));
+        }
 
-			m_Xml.Formatting = Formatting.Indented;
-			m_Xml.IndentChar = '\t';
-			m_Xml.Indentation = 1;
+        public override void SetString(string key, string value)
+        {
+            if (value != null)
+                this.m_Xml.WriteAttributeString(key, value);
+        }
 
-			m_Xml.WriteStartDocument( true );
+        public override void SetDateTime(string key, DateTime value)
+        {
+            if (value != DateTime.MinValue)
+                this.m_Xml.WriteAttributeString(key, XmlConvert.ToString(value, XmlDateTimeSerializationMode.Local));
+        }
 
-			root.Serialize( this );
+        public override void BeginObject(PersistableType typeID)
+        {
+            this.m_Xml.WriteStartElement(typeID.Name);
+        }
 
-			Console.WriteLine( "Reports: {0}: Save complete", m_Title );
-		}
+        public override void BeginChildren()
+        {
+        }
 
-		public override void Close()
-		{
-			m_Xml.Close();
-			m_Writer.Close();
+        public override void FinishChildren()
+        {
+        }
 
-			try
-			{
-				string renamed = null;
+        public override void FinishObject()
+        {
+            this.m_Xml.WriteEndElement();
+        }
 
-				if ( File.Exists( m_RealFilePath ) )
-				{
-					renamed = Path.ChangeExtension( m_RealFilePath, ".rem" );
-					File.Move( m_RealFilePath, renamed );
-					File.Move( m_TempFilePath, m_RealFilePath );
-					File.Delete( renamed );
-				}
-				else
-				{
-					File.Move( m_TempFilePath, m_RealFilePath );
-				}
-			}
-			catch ( Exception ex )
-			{
-				Console.WriteLine( ex );
-			}
-		}
-	}
+        public override void WriteDocument(PersistableObject root)
+        {
+            Console.WriteLine("Reports: {0}: Save started", this.m_Title);
+
+            this.m_Xml.Formatting = Formatting.Indented;
+            this.m_Xml.IndentChar = '\t';
+            this.m_Xml.Indentation = 1;
+
+            this.m_Xml.WriteStartDocument(true);
+
+            root.Serialize(this);
+
+            Console.WriteLine("Reports: {0}: Save complete", this.m_Title);
+        }
+
+        public override void Close()
+        {
+            this.m_Xml.Close();
+            this.m_Writer.Close();
+
+            try
+            {
+                string renamed = null;
+
+                if (File.Exists(this.m_RealFilePath))
+                {
+                    renamed = Path.ChangeExtension(this.m_RealFilePath, ".rem");
+                    File.Move(this.m_RealFilePath, renamed);
+                    File.Move(this.m_TempFilePath, this.m_RealFilePath);
+                    File.Delete(renamed);
+                }
+                else
+                {
+                    File.Move(this.m_TempFilePath, this.m_RealFilePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+    }
 }

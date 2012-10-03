@@ -1,81 +1,85 @@
 using System;
-using System.Collections;
 using Server.Items;
-using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a krakens corpse" )]
-	public class Kraken : BaseCreature
-	{
-		[Constructable]
-		public Kraken() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Name = "a kraken";
-			Body = 77;
-			BaseSoundID = 353;
+    [CorpseName("a krakens corpse")]
+    public class Kraken : BaseCreature
+    {
+        [Constructable]
+        public Kraken() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            this.Name = "a kraken";
+            this.Body = 77;
+            this.BaseSoundID = 353;
 
-			SetStr( 756, 780 );
-			SetDex( 226, 245 );
-			SetInt( 26, 40 );
+            this.SetStr(756, 780);
+            this.SetDex(226, 245);
+            this.SetInt(26, 40);
 
-			SetHits( 454, 468 );
-			SetMana( 0 );
+            this.SetHits(454, 468);
+            this.SetMana(0);
 
-			SetDamage( 19, 33 );
+            this.SetDamage(19, 33);
 
-			SetDamageType( ResistanceType.Physical, 70 );
-			SetDamageType( ResistanceType.Cold, 30 );
+            this.SetDamageType(ResistanceType.Physical, 70);
+            this.SetDamageType(ResistanceType.Cold, 30);
 
-			SetResistance( ResistanceType.Physical, 45, 55 );
-			SetResistance( ResistanceType.Fire, 30, 40 );
-			SetResistance( ResistanceType.Cold, 30, 40 );
-			SetResistance( ResistanceType.Poison, 20, 30 );
-			SetResistance( ResistanceType.Energy, 10, 20 );
+            this.SetResistance(ResistanceType.Physical, 45, 55);
+            this.SetResistance(ResistanceType.Fire, 30, 40);
+            this.SetResistance(ResistanceType.Cold, 30, 40);
+            this.SetResistance(ResistanceType.Poison, 20, 30);
+            this.SetResistance(ResistanceType.Energy, 10, 20);
 
-			SetSkill( SkillName.MagicResist, 15.1, 20.0 );
-			SetSkill( SkillName.Tactics, 45.1, 60.0 );
-			SetSkill( SkillName.Wrestling, 45.1, 60.0 );
+            this.SetSkill(SkillName.MagicResist, 15.1, 20.0);
+            this.SetSkill(SkillName.Tactics, 45.1, 60.0);
+            this.SetSkill(SkillName.Wrestling, 45.1, 60.0);
 
-			Fame = 11000;
-			Karma = -11000;
+            this.Fame = 11000;
+            this.Karma = -11000;
 
-			VirtualArmor = 50;
+            this.VirtualArmor = 50;
 
-			CanSwim = true;
-			CantWalk = true;
+            this.CanSwim = true;
+            this.CantWalk = true;
 
-			Rope rope = new Rope();
-			rope.ItemID = 0x14F8;
-			PackItem( rope );
+            Rope rope = new Rope();
+            rope.ItemID = 0x14F8;
+            this.PackItem(rope);
 
-			if( Utility.RandomDouble() < .05 )
-				PackItem( new MessageInABottle() );
+            if (Utility.RandomDouble() < .05)
+                this.PackItem(new MessageInABottle());
 
-			PackItem( new SpecialFishingNet() ); //Confirm?
-		}
+            this.PackItem(new SpecialFishingNet()); //Confirm?
+        }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Rich );
-		}
+        public override void GenerateLoot()
+        {
+            this.AddLoot(LootPack.Rich);
+        }
 
-		public override int TreasureMapLevel{ get{ return 4; } }
+        public override int TreasureMapLevel
+        {
+            get
+            {
+                return 4;
+            }
+        }
 
-		public Kraken( Serial serial ) : base( serial )
-		{
-		}
+        public Kraken(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write((int)0);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+            int version = reader.ReadInt();
+        }
+    }
 }

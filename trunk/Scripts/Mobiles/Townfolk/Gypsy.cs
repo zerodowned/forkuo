@@ -1,82 +1,87 @@
 using System;
 using Server.Items;
-using Server;
-using Server.Misc;
 
 namespace Server.Mobiles
 {
-	public class Gypsy : BaseCreature
-	{
+    public class Gypsy : BaseCreature
+    {
+        [Constructable]
+        public Gypsy() : base(AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4)
+        {
+            this.InitStats(31, 41, 51);
 
+            this.SpeechHue = Utility.RandomDyedHue();
 
-		[Constructable]
-		public Gypsy()
-			: base( AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4 )
-		{
-			InitStats( 31, 41, 51 );
+            this.SetSkill(SkillName.Cooking, 65, 88);
+            this.SetSkill(SkillName.Snooping, 65, 88);
+            this.SetSkill(SkillName.Stealing, 65, 88);
 
-			SpeechHue = Utility.RandomDyedHue();
+            this.Hue = Utility.RandomSkinHue();
 
-			SetSkill( SkillName.Cooking, 65, 88 );
-			SetSkill( SkillName.Snooping, 65, 88 );
-			SetSkill( SkillName.Stealing, 65, 88 );
+            if (this.Female = Utility.RandomBool())
+            {
+                this.Body = 0x191;
+                this.Name = NameList.RandomName("female");
+                this.AddItem(new Kilt(Utility.RandomDyedHue()));
+                this.AddItem(new Shirt(Utility.RandomDyedHue()));
+                this.AddItem(new ThighBoots());
+                this.Title = "the gypsy";
+            }
+            else
+            {
+                this.Body = 0x190;
+                this.Name = NameList.RandomName("male");
+                this.AddItem(new ShortPants(Utility.RandomNeutralHue()));
+                this.AddItem(new Shirt(Utility.RandomDyedHue()));
+                this.AddItem(new Sandals());
+                this.Title = "the gypsy";
+            }
 
-			Hue = Utility.RandomSkinHue();
+            this.AddItem(new Bandana(Utility.RandomDyedHue()));
+            this.AddItem(new Dagger());
 
-			if( this.Female = Utility.RandomBool() )
-			{
-				this.Body = 0x191;
-				this.Name = NameList.RandomName( "female" );
-				AddItem( new Kilt( Utility.RandomDyedHue() ) );
-				AddItem( new Shirt( Utility.RandomDyedHue() ) );
-				AddItem( new ThighBoots() );
-				Title = "the gypsy";
-			}
-			else
-			{
-				this.Body = 0x190;
-				this.Name = NameList.RandomName( "male" );
-				AddItem( new ShortPants( Utility.RandomNeutralHue() ) );
-				AddItem( new Shirt( Utility.RandomDyedHue() ) );
-				AddItem( new Sandals() );
-				Title = "the gypsy";
-			}
+            Utility.AssignRandomHair(this);
 
-			AddItem( new Bandana( Utility.RandomDyedHue() ) );
-			AddItem( new Dagger() );
+            Container pack = new Backpack();
 
-			Utility.AssignRandomHair( this );
+            pack.DropItem(new Gold(250, 300));
 
-			Container pack = new Backpack();
+            pack.Movable = false;
 
-			pack.DropItem( new Gold( 250, 300 ) );
+            this.AddItem(pack);
+        }
 
-			pack.Movable = false;
+        public override bool CanTeach
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override bool ClickTitle
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-			AddItem( pack );
-		}
+        public Gypsy(Serial serial) : base(serial)
+        {
+        }
 
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-		public override bool CanTeach { get { return true; } }
-		public override bool ClickTitle { get { return false; } }
+            writer.Write((int)0); // version 
+        }
 
-		public Gypsy( Serial serial )
-			: base( serial )
-		{
-		}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int)0 ); // version 
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+            int version = reader.ReadInt();
+        }
+    }
 }

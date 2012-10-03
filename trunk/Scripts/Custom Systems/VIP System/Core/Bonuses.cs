@@ -1,7 +1,7 @@
 ﻿using System;
-using Server;
 using System.Collections;
 using System.Collections.Generic;
+using Server;
 
 namespace CustomsFramework.Systems.VIPSystem
 {
@@ -29,21 +29,21 @@ namespace CustomsFramework.Systems.VIPSystem
     [PropertyObject]
     public class Bonus
     {
-        private Bonuses _Bonuses;
-        private BonusInfo _Info;
+        private readonly Bonuses _Bonuses;
+        private readonly BonusInfo _Info;
         private bool _Enabled;
         private DateTime _TimeStarted;
         private TimeSpan _ServicePeriod;
 
         public override string ToString()
         {
- 	        return String.Format("[{0}: {1}]", Name, Enabled);
+            return String.Format("[{0}: {1}]", this.Name, this.Enabled);
         }
 
         public Bonus(Bonuses bonuses, BonusInfo info, GenericReader reader)
         {
-            _Bonuses = bonuses;
-            _Info = info;
+            this._Bonuses = bonuses;
+            this._Info = info;
 
             int version = reader.ReadInt();
 
@@ -51,9 +51,9 @@ namespace CustomsFramework.Systems.VIPSystem
             {
                 case 0:
                     {
-                        _Enabled = reader.ReadBool();
-                        _TimeStarted = reader.ReadDateTime();
-                        _ServicePeriod = reader.ReadTimeSpan();
+                        this._Enabled = reader.ReadBool();
+                        this._TimeStarted = reader.ReadDateTime();
+                        this._ServicePeriod = reader.ReadTimeSpan();
                         break;
                     }
             }
@@ -61,20 +61,20 @@ namespace CustomsFramework.Systems.VIPSystem
 
         public Bonus(Bonuses bonuses, BonusInfo info, bool enabled)
         {
-            _Bonuses = bonuses;
-            _Info = info;
-            _Enabled = enabled;
-            _TimeStarted = DateTime.MinValue;
-            _ServicePeriod = TimeSpan.Zero;
+            this._Bonuses = bonuses;
+            this._Info = info;
+            this._Enabled = enabled;
+            this._TimeStarted = DateTime.MinValue;
+            this._ServicePeriod = TimeSpan.Zero;
         }
 
         public Bonus(Bonuses bonuses, BonusInfo info)
         {
-            _Bonuses = bonuses;
-            _Info = info;
-            _Enabled = false;
-            _TimeStarted = DateTime.MinValue;
-            _ServicePeriod = TimeSpan.Zero;
+            this._Bonuses = bonuses;
+            this._Info = info;
+            this._Enabled = false;
+            this._TimeStarted = DateTime.MinValue;
+            this._ServicePeriod = TimeSpan.Zero;
         }
 
         public void Serialize(GenericWriter writer)
@@ -82,16 +82,16 @@ namespace CustomsFramework.Systems.VIPSystem
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_Enabled);
-            writer.Write(_TimeStarted);
-            writer.Write(_ServicePeriod);
+            writer.Write(this._Enabled);
+            writer.Write(this._TimeStarted);
+            writer.Write(this._ServicePeriod);
         }
 
         public Bonuses Bonuses
         {
             get
             {
-                return _Bonuses;
+                return this._Bonuses;
             }
         }
 
@@ -99,7 +99,7 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return (BonusName)_Info.BonusID;
+                return (BonusName)this._Info.BonusID;
             }
         }
 
@@ -107,7 +107,7 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _Info.BonusID;
+                return this._Info.BonusID;
             }
         }
 
@@ -116,7 +116,7 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _Info.BonusName;
+                return this._Info.BonusName;
             }
         }
 
@@ -125,11 +125,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _Enabled;
+                return this._Enabled;
             }
             set
             {
-                _Enabled = value;
+                this._Enabled = value;
             }
         }
 
@@ -138,11 +138,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _TimeStarted;
+                return this._TimeStarted;
             }
             set
             {
-                _TimeStarted = value;
+                this._TimeStarted = value;
             }
         }
 
@@ -151,11 +151,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _ServicePeriod;
+                return this._ServicePeriod;
             }
             set
             {
-                _ServicePeriod = value;
+                this._ServicePeriod = value;
             }
         }
     }
@@ -168,20 +168,20 @@ namespace CustomsFramework.Systems.VIPSystem
 
         public BonusInfo(int bonusID, string name, string description)
         {
-            _BonusID = bonusID;
-            _BonusName = name;
-            _BonusDescription = description;
+            this._BonusID = bonusID;
+            this._BonusName = name;
+            this._BonusDescription = description;
         }
 
         public int BonusID
         {
             get
             {
-                return _BonusID;
+                return this._BonusID;
             }
             set
             {
-                _BonusID = value;
+                this._BonusID = value;
             }
         }
 
@@ -189,11 +189,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _BonusName;
+                return this._BonusName;
             }
             set
             {
-                _BonusName = value;
+                this._BonusName = value;
             }
         }
 
@@ -201,11 +201,11 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _BonusDescription;
+                return this._BonusDescription;
             }
             set
             {
-                _BonusDescription = value;
+                this._BonusDescription = value;
             }
         }
 
@@ -430,7 +430,7 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                return _Bonuses.Length;
+                return this._Bonuses.Length;
             }
         }
 
@@ -446,13 +446,13 @@ namespace CustomsFramework.Systems.VIPSystem
         {
             get
             {
-                if (bonusID < 0 || bonusID >= _Bonuses.Length)
+                if (bonusID < 0 || bonusID >= this._Bonuses.Length)
                     return null;
 
-                Bonus bonus = _Bonuses[bonusID];
+                Bonus bonus = this._Bonuses[bonusID];
 
                 if (bonus == null)
-                    _Bonuses[bonusID] = bonus = new Bonus(this, BonusInfo.Table[bonusID]);
+                    this._Bonuses[bonusID] = bonus = new Bonus(this, BonusInfo.Table[bonusID]);
 
                 return bonus;
             }
@@ -460,16 +460,16 @@ namespace CustomsFramework.Systems.VIPSystem
 
         public override string ToString()
         {
- 	        return "...";
+            return "...";
         }
 
         public Bonuses()
         {
             BonusInfo[] info = BonusInfo.Table;
-            _Bonuses = new Bonus[info.Length];
+            this._Bonuses = new Bonus[info.Length];
 
             for (int i = 0; i < info.Length; ++i)
-                _Bonuses[i] = new Bonus(this, info[i]);
+                this._Bonuses[i] = new Bonus(this, info[i]);
         }
 
         public void StartBonuses()
@@ -478,7 +478,7 @@ namespace CustomsFramework.Systems.VIPSystem
 
             if (core != null)
             {
-                foreach (Bonus bonus in _Bonuses)
+                foreach (Bonus bonus in this._Bonuses)
                 {
                     if (bonus.Enabled)
                     {
@@ -491,7 +491,7 @@ namespace CustomsFramework.Systems.VIPSystem
 
         public Bonuses(GenericReader reader)
         {
-            Deserialize(reader);
+            this.Deserialize(reader);
         }
 
         public void Serialize(GenericWriter writer)
@@ -499,11 +499,11 @@ namespace CustomsFramework.Systems.VIPSystem
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_Bonuses.Length);
+            writer.Write(this._Bonuses.Length);
 
-            for (int i = 0; i < _Bonuses.Length; ++i)
+            for (int i = 0; i < this._Bonuses.Length; ++i)
             {
-                _Bonuses[i].Serialize(writer);
+                this._Bonuses[i].Serialize(writer);
             }
         }
 
@@ -516,13 +516,13 @@ namespace CustomsFramework.Systems.VIPSystem
                 case 0:
                     {
                         BonusInfo[] info = BonusInfo.Table;
-                        _Bonuses = new Bonus[info.Length];
+                        this._Bonuses = new Bonus[info.Length];
 
                         int count = reader.ReadInt();
 
                         for (int i = 0; i < count; ++i)
                         {
-                            _Bonuses[i] = new Bonus(this, info[i], reader);
+                            this._Bonuses[i] = new Bonus(this, info[i], reader);
                         }
 
                         break;
@@ -532,7 +532,7 @@ namespace CustomsFramework.Systems.VIPSystem
 
         public IEnumerator<Bonus> GetEnumerator()
         {
-            foreach (Bonus bonus in _Bonuses)
+            foreach (Bonus bonus in this._Bonuses)
             {
                 yield return bonus;
             }
@@ -540,7 +540,7 @@ namespace CustomsFramework.Systems.VIPSystem
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
     }
 }

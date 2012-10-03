@@ -1,39 +1,44 @@
 using System;
-using Server;
 
 namespace Server.Items
 {
-	public class ClaspOfConcentration : SilverBracelet
-	{
-		public override int LabelNumber{ get{ return 1077695; } } // Clasp of Concentration
+    public class ClaspOfConcentration : SilverBracelet
+    {
+        public override int LabelNumber
+        {
+            get
+            {
+                return 1077695;
+            }
+        }// Clasp of Concentration
 
-		[Constructable]
-		public ClaspOfConcentration()
-		{
-			LootType = LootType.Blessed;
+        [Constructable]
+        public ClaspOfConcentration()
+        {
+            this.LootType = LootType.Blessed;
 
-			Attributes.RegenStam = 2;
-			Attributes.RegenMana = 1;
-			Resistances.Fire = 5;
-			Resistances.Cold = 5;
-		}
+            this.Attributes.RegenStam = 2;
+            this.Attributes.RegenMana = 1;
+            this.Resistances.Fire = 5;
+            this.Resistances.Cold = 5;
+        }
 
-		public ClaspOfConcentration( Serial serial ) : base( serial )
-		{
-		}
+        public ClaspOfConcentration(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+            writer.WriteEncodedInt(0); // version
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+            int version = reader.ReadEncodedInt();
+        }
+    }
 }

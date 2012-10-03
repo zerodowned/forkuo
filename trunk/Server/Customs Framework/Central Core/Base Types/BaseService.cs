@@ -12,7 +12,7 @@ namespace CustomsFramework
             if (other == null)
                 return -1;
 
-            return _Serial.CompareTo(other.Serial);
+            return this._Serial.CompareTo(other.Serial);
         }
 
         public int CompareTo(BaseService other)
@@ -27,11 +27,12 @@ namespace CustomsFramework
 
             throw new ArgumentException();
         }
+
         #endregion
 
         public override string ToString()
         {
-            return Name;
+            return this.Name;
         }
 
         internal int _TypeID;
@@ -40,7 +41,7 @@ namespace CustomsFramework
         {
             get
             {
-                return _TypeID;
+                return this._TypeID;
             }
         }
 
@@ -48,7 +49,7 @@ namespace CustomsFramework
         {
             get
             {
-                return _Serial;
+                return this._Serial;
             }
         }
 
@@ -59,64 +60,91 @@ namespace CustomsFramework
         {
             get
             {
-                return _Serial;
+                return this._Serial;
             }
             set
             {
-                _Serial = value;
+                this._Serial = value;
             }
         }
 
-        public virtual string Name { get { return @"Base Service"; } }
-        public virtual string Description { get { return @"Base Service, inherit from this class and override the interface items."; } }
-        public virtual string Version { get { return "1.0"; } }
-        public virtual AccessLevel EditLevel { get { return AccessLevel.Developer; } }
-        public virtual Gump SettingsGump { get { return null; } }
+        public virtual string Name
+        {
+            get
+            {
+                return @"Base Service";
+            }
+        }
+        public virtual string Description
+        {
+            get
+            {
+                return @"Base Service, inherit from this class and override the interface items.";
+            }
+        }
+        public virtual string Version
+        {
+            get
+            {
+                return "1.0";
+            }
+        }
+        public virtual AccessLevel EditLevel
+        {
+            get
+            {
+                return AccessLevel.Developer;
+            }
+        }
+        public virtual Gump SettingsGump
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         public BaseService(CustomSerial serial)
         {
-            _Serial = serial;
+            this._Serial = serial;
 
             Type serviceType = this.GetType();
-            _TypeID = World._ServiceTypes.IndexOf(serviceType);
+            this._TypeID = World._ServiceTypes.IndexOf(serviceType);
 
-            if (_TypeID == -1)
+            if (this._TypeID == -1)
             {
                 World._ServiceTypes.Add(serviceType);
-                _TypeID = World._ServiceTypes.Count - 1;
+                this._TypeID = World._ServiceTypes.Count - 1;
             }
         }
 
         public BaseService()
         {
-            _Serial = CustomSerial.NewService;
+            this._Serial = CustomSerial.NewService;
 
             World.AddService(this);
 
             Type serviceType = this.GetType();
-            _TypeID = World._ServiceTypes.IndexOf(serviceType);
+            this._TypeID = World._ServiceTypes.IndexOf(serviceType);
 
-            if (_TypeID == -1)
+            if (this._TypeID == -1)
             {
                 World._ServiceTypes.Add(serviceType);
-                _TypeID = World._ServiceTypes.Count - 1;
+                this._TypeID = World._ServiceTypes.Count - 1;
             }
         }
 
         public virtual void Prep()
         {
-
         }
 
         public virtual void Delete()
         {
-
         }
 
         public virtual void Serialize(GenericWriter writer)
         {
             Utilities.WriteVersion(writer, 0);
-
             //Version 0
         }
 
@@ -128,7 +156,6 @@ namespace CustomsFramework
             {
                 case 0:
                     {
-
                         break;
                     }
             }

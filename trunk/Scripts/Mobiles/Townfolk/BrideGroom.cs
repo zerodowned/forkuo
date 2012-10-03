@@ -1,84 +1,97 @@
 using System;
-using Server;
 using Server.Items;
-using EDI = Server.Mobiles.EscortDestinationInfo;
 
 namespace Server.Mobiles
 {
-	public class BrideGroom : BaseEscortable
-	{
-		[Constructable]
-		public BrideGroom()
-		{
-			if ( Female )
-			Title = "the bride";
-			else
-			Title = "the groom";			
+    public class BrideGroom : BaseEscortable
+    {
+        [Constructable]
+        public BrideGroom()
+        {
+            if (this.Female)
+                this.Title = "the bride";
+            else
+                this.Title = "the groom";			
+        }
 
-		}
+        public override bool CanTeach
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override bool ClickTitle
+        {
+            get
+            {
+                return false;
+            }
+        }// Do not display 'the groom' when single-clicking
 
-		public override bool CanTeach{ get{ return true; } }
-		public override bool ClickTitle{ get{ return false; } } // Do not display 'the groom' when single-clicking
+        private static int GetRandomHue()
+        {
+            switch ( Utility.Random(6) )
+            {
+                default:
+                case 0:
+                    return 0;
+                case 1:
+                    return Utility.RandomBlueHue();
+                case 2:
+                    return Utility.RandomGreenHue();
+                case 3:
+                    return Utility.RandomRedHue();
+                case 4:
+                    return Utility.RandomYellowHue();
+                case 5:
+                    return Utility.RandomNeutralHue();
+            }
+        }
 
-		private static int GetRandomHue()
-		{
-			switch ( Utility.Random( 6 ) )
-			{
-				default:
-				case 0: return 0;
-				case 1: return Utility.RandomBlueHue();
-				case 2: return Utility.RandomGreenHue();
-				case 3: return Utility.RandomRedHue();
-				case 4: return Utility.RandomYellowHue();
-				case 5: return Utility.RandomNeutralHue();
-			}
-		}
-
-		public override void InitOutfit()
-		{
-			if ( Female )
+        public override void InitOutfit()
+        {
+            if (this.Female)
 				
-			AddItem( new FancyDress() );
-			else
-				AddItem( new FancyShirt() );
+                this.AddItem(new FancyDress());
+            else
+                this.AddItem(new FancyShirt());
 
-			int lowHue = GetRandomHue();
+            int lowHue = GetRandomHue();
 
-			AddItem( new LongPants( lowHue ) );
+            this.AddItem(new LongPants(lowHue));
 
-			if ( Female )
-				AddItem( new Shoes( lowHue ) );
-			else
-				AddItem( new Boots( lowHue ) );
+            if (this.Female)
+                this.AddItem(new Shoes(lowHue));
+            else
+                this.AddItem(new Boots(lowHue));
 
+            if (Utility.RandomBool())
+                this.HairItemID = 0x203B;
+            else
+                this.HairItemID = 0x203C;
 
+            this.HairHue = this.Race.RandomHairHue();
 
-			if( Utility.RandomBool() )
-				HairItemID = 0x203B;
-			else
-				HairItemID = 0x203C;
+            this.PackGold(200, 250);
+        }
 
-			HairHue = this.Race.RandomHairHue();
+        public BrideGroom(Serial serial) : base(serial)
+        {
+        }
 
-			PackGold( 200, 250 );
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-		public BrideGroom( Serial serial ) : base( serial )
-		{
-		}
+            writer.Write((int)0); // version
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			writer.Write( (int) 0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+            int version = reader.ReadInt();
+        }
+    }
 }

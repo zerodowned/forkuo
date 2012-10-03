@@ -1,117 +1,135 @@
 using System;
-using System.Collections.Generic;
-using Server;
-using Server.Mobiles;
 
 namespace Server.Items
 {
-	public class TransientItem : Item
-	{
-		private TimeSpan m_LifeSpan;
+    public class TransientItem : Item
+    {
+        private TimeSpan m_LifeSpan;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan LifeSpan
-		{
-			get { return m_LifeSpan; }
-			set { m_LifeSpan = value; }
-		}
+        [CommandProperty(AccessLevel.GameMaster)]
+        public TimeSpan LifeSpan
+        {
+            get
+            {
+                return this.m_LifeSpan;
+            }
+            set
+            {
+                this.m_LifeSpan = value;
+            }
+        }
 
-		private DateTime m_CreationTime;
+        private DateTime m_CreationTime;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime CreationTime
-		{
-			get { return m_CreationTime; }
-			set { m_CreationTime = value; }
-		}
+        [CommandProperty(AccessLevel.GameMaster)]
+        public DateTime CreationTime
+        {
+            get
+            {
+                return this.m_CreationTime;
+            }
+            set
+            {
+                this.m_CreationTime = value;
+            }
+        }
 
-		private Timer m_Timer;
+        private Timer m_Timer;
 
-		public override bool Nontransferable { get { return true; } }
-		public override void HandleInvalidTransfer( Mobile from )
-		{
-			if( InvalidTransferMessage != null )
-				TextDefinition.SendMessageTo( from, InvalidTransferMessage );
+        public override bool Nontransferable
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override void HandleInvalidTransfer(Mobile from)
+        {
+            if (this.InvalidTransferMessage != null)
+                TextDefinition.SendMessageTo(from, this.InvalidTransferMessage);
 
-			this.Delete();
-		}
+            this.Delete();
+        }
 
-		public virtual TextDefinition InvalidTransferMessage { get { return null; } }
+        public virtual TextDefinition InvalidTransferMessage
+        {
+            get
+            {
+                return null;
+            }
+        }
 
+        public virtual void Expire(Mobile parent)
+        {
+            if (parent != null)
+                parent.SendLocalizedMessage(1072515, (this.Name == null ? String.Format("#{0}", this.LabelNumber) : this.Name)); // The ~1_name~ expired...
 
-		public virtual void Expire( Mobile parent )
-		{
-			if( parent != null )
-				parent.SendLocalizedMessage( 1072515, (this.Name == null ? String.Format( "#{0}", LabelNumber ): this.Name) ); // The ~1_name~ expired...
+            Effects.PlaySound(this.GetWorldLocation(), this.Map, 0x201);
 
-			Effects.PlaySound( GetWorldLocation(), Map, 0x201 );
+            this.Delete();
+        }
 
-			this.Delete();
-		}
+        public virtual void SendTimeRemainingMessage(Mobile to)
+        {
+            to.SendLocalizedMessage(1072516, String.Format("{0}\t{1}", (this.Name == null ? String.Format("#{0}", this.LabelNumber) : this.Name), (int)this.m_LifeSpan.TotalSeconds)); // ~1_name~ will expire in ~2_val~ seconds!
+        }
 
-		public virtual void SendTimeRemainingMessage( Mobile to )
-		{
-			to.SendLocalizedMessage( 1072516, String.Format( "{0}\t{1}", (this.Name == null ? String.Format( "#{0}", LabelNumber ): this.Name), (int)m_LifeSpan.TotalSeconds ) ); // ~1_name~ will expire in ~2_val~ seconds!
-		}
+        public override void OnDelete()
+        {
+            if (this.m_Timer != null)
+                this.m_Timer.Stop();
 
-		public override void OnDelete()
-		{
-			if( m_Timer != null )
-				m_Timer.Stop();
+            base.OnDelete();
+        }
 
-			base.OnDelete();
-		}
+        public virtual void CheckExpiry()
+        {
+            if ((this.m_CreationTime + this.m_LifeSpan) < DateTime.Now)
+                this.Expire(RootParent as Mobile);
+            else
+                this.InvalidateProperties();
+        }
 
-		public virtual void CheckExpiry()
-		{
-			if( (m_CreationTime + m_LifeSpan) < DateTime.Now )
-				Expire( RootParent as Mobile );
-			else
-				InvalidateProperties();
-		}
+        [Constructable]
+        public TransientItem(int itemID, TimeSpan lifeSpan) : base(itemID)
+        {
+            this.m_CreationTime = DateTime.Now;
+            this.m_LifeSpan = lifeSpan;
 
-		[Constructable]
-		public TransientItem( int itemID, TimeSpan lifeSpan )
-			: base( itemID )
-		{
-			m_CreationTime = DateTime.Now;
-			m_LifeSpan = lifeSpan;
+            this.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), new TimerCallback(CheckExpiry));
+        }
 
-			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), new TimerCallback( CheckExpiry ) );
-		}
+        public TransientItem(Serial serial) : base(serial)
+        {
+        }
 
-		public TransientItem( Serial serial )
-			: base( serial )
-		{
-		}
+        public override void GetProperties(ObjectPropertyList list)
+        {
+            base.GetProperties(list);
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+            TimeSpan remaining = ((this.m_CreationTime + this.m_LifeSpan) - DateTime.Now);
 
-			TimeSpan remaining = ((m_CreationTime + m_LifeSpan) - DateTime.Now);
+            list.Add(1072517, ((int)remaining.TotalSeconds).ToString()); // Lifespan: ~1_val~ seconds
+        }
 
-			list.Add( 1072517, ((int)remaining.TotalSeconds).ToString() ); // Lifespan: ~1_val~ seconds
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write((int)0);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int)0 );
+            writer.Write(this.m_LifeSpan);
+            writer.Write(this.m_CreationTime);
+        }
 
-			writer.Write( m_LifeSpan );
-			writer.Write( m_CreationTime );
-		}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+            int version = reader.ReadInt();
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
+            this.m_LifeSpan = reader.ReadTimeSpan();
+            this.m_CreationTime = reader.ReadDateTime();
 
-			m_LifeSpan = reader.ReadTimeSpan();
-			m_CreationTime = reader.ReadDateTime();
-
-			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), new TimerCallback( CheckExpiry ) );
-		}
-	}
+            this.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), new TimerCallback(CheckExpiry));
+        }
+    }
 }

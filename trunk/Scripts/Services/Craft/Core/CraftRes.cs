@@ -2,70 +2,88 @@ using System;
 
 namespace Server.Engines.Craft
 {
-	public class CraftRes
-	{
-		private Type m_Type;
-		private int m_Amount;
+    public class CraftRes
+    {
+        private readonly Type m_Type;
+        private readonly int m_Amount;
 
-		private string m_MessageString;
-		private int m_MessageNumber;
+        private readonly string m_MessageString;
+        private readonly int m_MessageNumber;
 
-		private string m_NameString;
-		private int m_NameNumber;
+        private readonly string m_NameString;
+        private readonly int m_NameNumber;
 
-		public CraftRes( Type type, int amount )
-		{
-			m_Type = type;
-			m_Amount = amount;
-		}
+        public CraftRes(Type type, int amount)
+        {
+            this.m_Type = type;
+            this.m_Amount = amount;
+        }
 
-		public CraftRes( Type type, TextDefinition name, int amount, TextDefinition message ): this ( type, amount )
-		{
-			m_NameNumber = name;
-			m_MessageNumber = message;
+        public CraftRes(Type type, TextDefinition name, int amount, TextDefinition message) : this(type, amount)
+        {
+            this.m_NameNumber = name;
+            this.m_MessageNumber = message;
 
-			m_NameString = name;
-			m_MessageString = message;
-		}
+            this.m_NameString = name;
+            this.m_MessageString = message;
+        }
 
-		public void SendMessage( Mobile from )
-		{
-			if ( m_MessageNumber > 0 )
-				from.SendLocalizedMessage( m_MessageNumber );
-			else if ( !String.IsNullOrEmpty( m_MessageString ) )
-				from.SendMessage( m_MessageString );
-			else
-				from.SendLocalizedMessage( 502925 ); // You don't have the resources required to make that item.
-		}
+        public void SendMessage(Mobile from)
+        {
+            if (this.m_MessageNumber > 0)
+                from.SendLocalizedMessage(this.m_MessageNumber);
+            else if (!String.IsNullOrEmpty(this.m_MessageString))
+                from.SendMessage(this.m_MessageString);
+            else
+                from.SendLocalizedMessage(502925); // You don't have the resources required to make that item.
+        }
 
-		public Type ItemType
-		{
-			get { return m_Type; }
-		}
+        public Type ItemType
+        {
+            get
+            {
+                return this.m_Type;
+            }
+        }
 
-		public string MessageString
-		{
-			get { return m_MessageString; }
-		}
+        public string MessageString
+        {
+            get
+            {
+                return this.m_MessageString;
+            }
+        }
 
-		public int MessageNumber
-		{
-			get { return m_MessageNumber; }
-		}
+        public int MessageNumber
+        {
+            get
+            {
+                return this.m_MessageNumber;
+            }
+        }
 
-		public string NameString
-		{
-			get { return m_NameString; }
-		}
+        public string NameString
+        {
+            get
+            {
+                return this.m_NameString;
+            }
+        }
 
-		public int NameNumber
-		{
-			get { return m_NameNumber; }
-		}
+        public int NameNumber
+        {
+            get
+            {
+                return this.m_NameNumber;
+            }
+        }
 
-		public int Amount
-		{
-			get { return m_Amount; }
-		}
-	}
+        public int Amount
+        {
+            get
+            {
+                return this.m_Amount;
+            }
+        }
+    }
 }

@@ -1,47 +1,70 @@
 using System;
-using Server;
 
 namespace Server.Items
 {
-	public class Quell : Bardiche
-	{
-		public override int LabelNumber{ get{ return 1094928; } } // Quell [Replica]
+    public class Quell : Bardiche
+    {
+        public override int LabelNumber
+        {
+            get
+            {
+                return 1094928;
+            }
+        }// Quell [Replica]
 
-		public override int InitMinHits{ get{ return 150; } }
-		public override int InitMaxHits{ get{ return 150; } }
+        public override int InitMinHits
+        {
+            get
+            {
+                return 150;
+            }
+        }
+        public override int InitMaxHits
+        {
+            get
+            {
+                return 150;
+            }
+        }
 
-		public override bool CanFortify{ get{ return false; } }
+        public override bool CanFortify
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		[Constructable]
-		public Quell()
-		{
-			Hue = 0x225;
+        [Constructable]
+        public Quell()
+        {
+            this.Hue = 0x225;
 
-			Attributes.SpellChanneling = 1;
-			Attributes.WeaponSpeed = 20;
-			Attributes.WeaponDamage = 50;
-			Attributes.AttackChance = 10;
+            this.Attributes.SpellChanneling = 1;
+            this.Attributes.WeaponSpeed = 20;
+            this.Attributes.WeaponDamage = 50;
+            this.Attributes.AttackChance = 10;
 
-			WeaponAttributes.HitLeechMana = 100;
-			WeaponAttributes.UseBestSkill = 1;
-		}
+            this.WeaponAttributes.HitLeechMana = 100;
+            this.WeaponAttributes.UseBestSkill = 1;
+        }
 
-		public Quell( Serial serial ) : base( serial )
-		{
-		}
+        public Quell(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+            writer.Write((int)0);
+        }
 		
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+            int version = reader.ReadInt();
+        }
+    }
 }

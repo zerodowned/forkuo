@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Server.Accounting;
 using Server.Engines.Help;
-using Server.Items;
 using Server.Gumps;
+using Server.Items;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
@@ -58,9 +58,15 @@ namespace Server.Commands.Generic
             Register(new TraceLockdownCommand());
         }
 
-        private static List<BaseCommand> m_AllCommands = new List<BaseCommand>();
+        private static readonly List<BaseCommand> m_AllCommands = new List<BaseCommand>();
 
-        public static List<BaseCommand> AllCommands { get { return m_AllCommands; } }
+        public static List<BaseCommand> AllCommands
+        {
+            get
+            {
+                return m_AllCommands;
+            }
+        }
 
         public static void Register(BaseCommand command)
         {
@@ -82,13 +88,13 @@ namespace Server.Commands.Generic
     {
         public ConditionCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.Simple | CommandSupport.Complex | CommandSupport.Self;
-            Commands = new string[] { "Condition" };
-            ObjectTypes = ObjectTypes.All;
-            Usage = "Condition <condition>";
-            Description = "Checks that the given condition matches a targeted object.";
-            ListOptimized = true;
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.Simple | CommandSupport.Complex | CommandSupport.Self;
+            this.Commands = new string[] { "Condition" };
+            this.ObjectTypes = ObjectTypes.All;
+            this.Usage = "Condition <condition>";
+            this.Description = "Checks that the given condition matches a targeted object.";
+            this.ListOptimized = true;
         }
 
         public override void ExecuteList(CommandEventArgs e, ArrayList list)
@@ -101,9 +107,9 @@ namespace Server.Commands.Generic
                 for (int i = 0; i < list.Count; ++i)
                 {
                     if (condition.CheckCondition(list[i]))
-                        AddResponse("True - that object matches the condition.");
+                        this.AddResponse("True - that object matches the condition.");
                     else
-                        AddResponse("False - that object does not match the condition.");
+                        this.AddResponse("False - that object does not match the condition.");
                 }
             }
             catch (Exception ex)
@@ -117,12 +123,12 @@ namespace Server.Commands.Generic
     {
         public BringToPackCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.AllItems;
-            Commands = new string[] { "BringToPack" };
-            ObjectTypes = ObjectTypes.Items;
-            Usage = "BringToPack";
-            Description = "Brings a targeted item to your backpack.";
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.AllItems;
+            this.Commands = new string[] { "BringToPack" };
+            this.ObjectTypes = ObjectTypes.Items;
+            this.Usage = "BringToPack";
+            this.Description = "Brings a targeted item to your backpack.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -132,9 +138,9 @@ namespace Server.Commands.Generic
             if (item != null)
             {
                 if (e.Mobile.PlaceInBackpack(item))
-                    AddResponse("The item has been placed in your backpack.");
+                    this.AddResponse("The item has been placed in your backpack.");
                 else
-                    AddResponse("Your backpack could not hold the item.");
+                    this.AddResponse("Your backpack could not hold the item.");
             }
         }
     }
@@ -143,12 +149,12 @@ namespace Server.Commands.Generic
     {
         public RefreshHouseCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.Simple;
-            Commands = new string[] { "RefreshHouse" };
-            ObjectTypes = ObjectTypes.Items;
-            Usage = "RefreshHouse";
-            Description = "Refreshes a targeted house sign.";
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.Simple;
+            this.Commands = new string[] { "RefreshHouse" };
+            this.ObjectTypes = ObjectTypes.Items;
+            this.Usage = "RefreshHouse";
+            this.Description = "Refreshes a targeted house sign.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -159,17 +165,17 @@ namespace Server.Commands.Generic
 
                 if (house == null)
                 {
-                    LogFailure("That sign has no house attached.");
+                    this.LogFailure("That sign has no house attached.");
                 }
                 else
                 {
                     house.RefreshDecay();
-                    AddResponse("The house has been refreshed.");
+                    this.AddResponse("The house has been refreshed.");
                 }
             }
             else
             {
-                LogFailure("That is not a house sign.");
+                this.LogFailure("That is not a house sign.");
             }
         }
     }
@@ -178,21 +184,21 @@ namespace Server.Commands.Generic
     {
         public CountCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.Complex;
-            Commands = new string[] { "Count" };
-            ObjectTypes = ObjectTypes.All;
-            Usage = "Count";
-            Description = "Counts the number of objects that a command modifier would use. Generally used with condition arguments.";
-            ListOptimized = true;
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.Complex;
+            this.Commands = new string[] { "Count" };
+            this.ObjectTypes = ObjectTypes.All;
+            this.Usage = "Count";
+            this.Description = "Counts the number of objects that a command modifier would use. Generally used with condition arguments.";
+            this.ListOptimized = true;
         }
 
         public override void ExecuteList(CommandEventArgs e, ArrayList list)
         {
             if (list.Count == 1)
-                AddResponse("There is one matching object.");
+                this.AddResponse("There is one matching object.");
             else
-                AddResponse(String.Format("There are {0} matching objects.", list.Count));
+                this.AddResponse(String.Format("There are {0} matching objects.", list.Count));
         }
     }
 
@@ -200,12 +206,12 @@ namespace Server.Commands.Generic
     {
         public OpenBrowserCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.AllMobiles;
-            Commands = new string[] { "OpenBrowser", "OB" };
-            ObjectTypes = ObjectTypes.Mobiles;
-            Usage = "OpenBrowser <url>";
-            Description = "Opens the web browser of a targeted player to a specified url.";
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.AllMobiles;
+            this.Commands = new string[] { "OpenBrowser", "OB" };
+            this.ObjectTypes = ObjectTypes.Mobiles;
+            this.Usage = "OpenBrowser <url>";
+            this.Description = "Opens the web browser of a targeted player to a specified url.";
         }
 
         public static void OpenBrowser_Callback(Mobile from, bool okay, object state)
@@ -244,7 +250,7 @@ namespace Server.Commands.Generic
 
                     if (ns == null)
                     {
-                        LogFailure("That player is not online.");
+                        this.LogFailure("That player is not online.");
                     }
                     else
                     {
@@ -253,33 +259,33 @@ namespace Server.Commands.Generic
                         CommandLogging.WriteLine(from, "{0} {1} requesting to open web browser of {2} to {3}", from.AccessLevel, CommandLogging.Format(from), CommandLogging.Format(mob), url);
 
                         if (echo)
-                            AddResponse("Awaiting user confirmation...");
+                            this.AddResponse("Awaiting user confirmation...");
                         else
-                            AddResponse("Open web browser request sent.");
+                            this.AddResponse("Open web browser request sent.");
 
                         mob.SendGump(new WarningGump(1060637, 30720, String.Format("A game master is requesting to open your web browser to the following URL:<br>{0}", url), 0xFFC000, 320, 240, new WarningGumpCallback(OpenBrowser_Callback), new object[] { from, url, echo }));
                     }
                 }
                 else
                 {
-                    LogFailure("That is not a player.");
+                    this.LogFailure("That is not a player.");
                 }
             }
             else
             {
-                LogFailure("Format: OpenBrowser <url>");
+                this.LogFailure("Format: OpenBrowser <url>");
             }
         }
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            Execute(e, obj, true);
+            this.Execute(e, obj, true);
         }
 
         public override void ExecuteList(CommandEventArgs e, ArrayList list)
         {
             for (int i = 0; i < list.Count; ++i)
-                Execute(e, list[i], false);
+                this.Execute(e, list[i], false);
         }
     }
 
@@ -287,32 +293,32 @@ namespace Server.Commands.Generic
     {
         public IncreaseCommand()
         {
-            AccessLevel = AccessLevel.Counselor;
-            Supports = CommandSupport.All;
-            Commands = new string[] { "Increase", "Inc" };
-            ObjectTypes = ObjectTypes.Both;
-            Usage = "Increase {<propertyName> <offset> ...}";
-            Description = "Increases the value of a specified property by the specified offset.";
+            this.AccessLevel = AccessLevel.Counselor;
+            this.Supports = CommandSupport.All;
+            this.Commands = new string[] { "Increase", "Inc" };
+            this.ObjectTypes = ObjectTypes.Both;
+            this.Usage = "Increase {<propertyName> <offset> ...}";
+            this.Description = "Increases the value of a specified property by the specified offset.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
         {
             if (obj is BaseMulti)
             {
-                LogFailure("This command does not work on multis.");
+                this.LogFailure("This command does not work on multis.");
             }
             else if (e.Length >= 2)
             {
                 string result = Properties.IncreaseValue(e.Mobile, obj, e.Arguments);
 
                 if (result == "The property has been increased." || result == "The properties have been increased." || result == "The property has been decreased." || result == "The properties have been decreased." || result == "The properties have been changed.")
-                    AddResponse(result);
+                    this.AddResponse(result);
                 else
-                    LogFailure(result);
+                    this.LogFailure(result);
             }
             else
             {
-                LogFailure("Format: Increase {<propertyName> <offset> ...}");
+                this.LogFailure("Format: Increase {<propertyName> <offset> ...}");
             }
         }
     }
@@ -321,12 +327,12 @@ namespace Server.Commands.Generic
     {
         public PrivSoundCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.AllMobiles;
-            Commands = new string[] { "PrivSound" };
-            ObjectTypes = ObjectTypes.Mobiles;
-            Usage = "PrivSound <index>";
-            Description = "Plays a sound to a given target.";
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.AllMobiles;
+            this.Commands = new string[] { "PrivSound" };
+            this.ObjectTypes = ObjectTypes.Mobiles;
+            this.Usage = "PrivSound <index>";
+            this.Description = "Plays a sound to a given target.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -350,27 +356,27 @@ namespace Server.Commands.Generic
 
     public class TellCommand : BaseCommand
     {
-        private bool m_InGump;
+        private readonly bool m_InGump;
 
         public TellCommand(bool inGump)
         {
-            m_InGump = inGump;
+            this.m_InGump = inGump;
 
-            AccessLevel = AccessLevel.Counselor;
-            Supports = CommandSupport.AllMobiles;
-            ObjectTypes = ObjectTypes.Mobiles;
+            this.AccessLevel = AccessLevel.Counselor;
+            this.Supports = CommandSupport.AllMobiles;
+            this.ObjectTypes = ObjectTypes.Mobiles;
 
             if (inGump)
             {
-                Commands = new string[] { "Message", "Msg" };
-                Usage = "Message \"text\"";
-                Description = "Sends a message to a targeted player.";
+                this.Commands = new string[] { "Message", "Msg" };
+                this.Usage = "Message \"text\"";
+                this.Description = "Sends a message to a targeted player.";
             }
             else
             {
-                Commands = new string[] { "Tell" };
-                Usage = "Tell \"text\"";
-                Description = "Sends a system message to a targeted player.";
+                this.Commands = new string[] { "Tell" };
+                this.Usage = "Tell \"text\"";
+                this.Description = "Sends a system message to a targeted player.";
             }
         }
 
@@ -379,9 +385,9 @@ namespace Server.Commands.Generic
             Mobile mob = (Mobile)obj;
             Mobile from = e.Mobile;
 
-            CommandLogging.WriteLine(from, "{0} {1} {2} {3} \"{4}\"", from.AccessLevel, CommandLogging.Format(from), m_InGump ? "messaging" : "telling", CommandLogging.Format(mob), e.ArgString);
+            CommandLogging.WriteLine(from, "{0} {1} {2} {3} \"{4}\"", from.AccessLevel, CommandLogging.Format(from), this.m_InGump ? "messaging" : "telling", CommandLogging.Format(mob), e.ArgString);
 
-            if (m_InGump)
+            if (this.m_InGump)
                 mob.SendGump(new MessageSentGump(mob, from.Name, e.ArgString));
             else
                 mob.SendMessage(e.ArgString);
@@ -392,13 +398,13 @@ namespace Server.Commands.Generic
     {
         public AddToPackCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.All;
-            Commands = new string[] { "AddToPack", "AddToCont" };
-            ObjectTypes = ObjectTypes.Both;
-            ListOptimized = true;
-            Usage = "AddToPack <name> [params] [set {<propertyName> <value> ...}]";
-            Description = "Adds an item by name to the backpack of a targeted player or npc, or a targeted container. Optional constructor parameters. Optional set property list.";
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.All;
+            this.Commands = new string[] { "AddToPack", "AddToCont" };
+            this.ObjectTypes = ObjectTypes.Both;
+            this.ListOptimized = true;
+            this.Usage = "AddToPack <name> [params] [set {<propertyName> <value> ...}]";
+            this.Description = "Adds an item by name to the backpack of a targeted player or npc, or a targeted container. Optional constructor parameters. Optional set property list.";
         }
 
         public override void ExecuteList(CommandEventArgs e, ArrayList list)
@@ -421,7 +427,7 @@ namespace Server.Commands.Generic
                 if (cont != null)
                     packs.Add(cont);
                 else
-                    LogFailure("That is not a container.");
+                    this.LogFailure("That is not a container.");
             }
 
             Add.Invoke(e.Mobile, e.Mobile.Location, e.Mobile.Location, e.Arguments, packs);
@@ -432,12 +438,12 @@ namespace Server.Commands.Generic
     {
         public AddCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.Simple | CommandSupport.Self;
-            Commands = new string[] { "Add" };
-            ObjectTypes = ObjectTypes.All;
-            Usage = "Add [<name> [params] [set {<propertyName> <value> ...}]]";
-            Description = "Adds an item or npc by name to a targeted location. Optional constructor parameters. Optional set property list. If no arguments are specified, this brings up a categorized add menu.";
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.Simple | CommandSupport.Self;
+            this.Commands = new string[] { "Add" };
+            this.ObjectTypes = ObjectTypes.All;
+            this.Usage = "Add [<name> [params] [set {<propertyName> <value> ...}]]";
+            this.Description = "Adds an item or npc by name to a targeted location. Optional constructor parameters. Optional set property list. If no arguments are specified, this brings up a categorized add menu.";
         }
 
         public override bool ValidateArgs(BaseCommandImplementor impl, CommandEventArgs e)
@@ -495,12 +501,12 @@ namespace Server.Commands.Generic
     {
         public TeleCommand()
         {
-            AccessLevel = AccessLevel.Counselor;
-            Supports = CommandSupport.Simple;
-            Commands = new string[] { "Teleport", "Tele" };
-            ObjectTypes = ObjectTypes.All;
-            Usage = "Teleport";
-            Description = "Teleports your character to a targeted location.";
+            this.AccessLevel = AccessLevel.Counselor;
+            this.Supports = CommandSupport.Simple;
+            this.Commands = new string[] { "Teleport", "Tele" };
+            this.ObjectTypes = ObjectTypes.All;
+            this.Usage = "Teleport";
+            this.Description = "Teleports your character to a targeted location.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -536,12 +542,12 @@ namespace Server.Commands.Generic
     {
         public DismountCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.AllMobiles;
-            Commands = new string[] { "Dismount" };
-            ObjectTypes = ObjectTypes.Mobiles;
-            Usage = "Dismount";
-            Description = "Forcefully dismounts a given target.";
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.AllMobiles;
+            this.Commands = new string[] { "Dismount" };
+            this.ObjectTypes = ObjectTypes.Mobiles;
+            this.Usage = "Dismount";
+            this.Description = "Forcefully dismounts a given target.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -585,9 +591,9 @@ namespace Server.Commands.Generic
             }
 
             if (takenAction)
-                AddResponse("They have been dismounted.");
+                this.AddResponse("They have been dismounted.");
             else
-                LogFailure("They were not mounted.");
+                this.LogFailure("They were not mounted.");
         }
     }
 
@@ -595,12 +601,12 @@ namespace Server.Commands.Generic
     {
         public RestockCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.AllNPCs;
-            Commands = new string[] { "Restock" };
-            ObjectTypes = ObjectTypes.Mobiles;
-            Usage = "Restock";
-            Description = "Manually restocks a targeted vendor, refreshing the quantity of every item the vendor sells to the maximum. This also invokes the maximum quantity adjustment algorithms.";
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.AllNPCs;
+            this.Commands = new string[] { "Restock" };
+            this.ObjectTypes = ObjectTypes.Mobiles;
+            this.Usage = "Restock";
+            this.Description = "Manually restocks a targeted vendor, refreshing the quantity of every item the vendor sells to the maximum. This also invokes the maximum quantity adjustment algorithms.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -610,11 +616,11 @@ namespace Server.Commands.Generic
                 CommandLogging.WriteLine(e.Mobile, "{0} {1} restocking {2}", e.Mobile.AccessLevel, CommandLogging.Format(e.Mobile), CommandLogging.Format(obj));
 
                 ((BaseVendor)obj).Restock();
-                AddResponse("The vendor has been restocked.");
+                this.AddResponse("The vendor has been restocked.");
             }
             else
             {
-                AddResponse("That is not a vendor.");
+                this.AddResponse("That is not a vendor.");
             }
         }
     }
@@ -623,28 +629,28 @@ namespace Server.Commands.Generic
     {
         public GetTypeCommand()
         {
-            AccessLevel = AccessLevel.Counselor;
-            Supports = CommandSupport.All;
-            Commands = new string[] { "GetType" };
-            ObjectTypes = ObjectTypes.All;
-            Usage = "GetType";
-            Description = "Gets the type name of a targeted object.";
+            this.AccessLevel = AccessLevel.Counselor;
+            this.Supports = CommandSupport.All;
+            this.Commands = new string[] { "GetType" };
+            this.ObjectTypes = ObjectTypes.All;
+            this.Usage = "GetType";
+            this.Description = "Gets the type name of a targeted object.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
         {
             if (obj == null)
             {
-                AddResponse("The object is null.");
+                this.AddResponse("The object is null.");
             }
             else
             {
                 Type type = obj.GetType();
 
                 if (type.DeclaringType == null)
-                    AddResponse(String.Format("The type of that object is {0}.", type.Name));
+                    this.AddResponse(String.Format("The type of that object is {0}.", type.Name));
                 else
-                    AddResponse(String.Format("The type of that object is {0}.", type.FullName));
+                    this.AddResponse(String.Format("The type of that object is {0}.", type.FullName));
             }
         }
     }
@@ -653,12 +659,12 @@ namespace Server.Commands.Generic
     {
         public GetCommand()
         {
-            AccessLevel = AccessLevel.Counselor;
-            Supports = CommandSupport.All;
-            Commands = new string[] { "Get" };
-            ObjectTypes = ObjectTypes.All;
-            Usage = "Get <propertyName>";
-            Description = "Gets one or more property values by name of a targeted object.";
+            this.AccessLevel = AccessLevel.Counselor;
+            this.Supports = CommandSupport.All;
+            this.Commands = new string[] { "Get" };
+            this.ObjectTypes = ObjectTypes.All;
+            this.Usage = "Get <propertyName>";
+            this.Description = "Gets one or more property values by name of a targeted object.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -670,51 +676,51 @@ namespace Server.Commands.Generic
                     string result = Properties.GetValue(e.Mobile, obj, e.GetString(i));
 
                     if (result == "Property not found." || result == "Property is write only." || result.StartsWith("Getting this property"))
-                        LogFailure(result);
+                        this.LogFailure(result);
                     else
-                        AddResponse(result);
+                        this.AddResponse(result);
                 }
             }
             else
             {
-                LogFailure("Format: Get <propertyName>");
+                this.LogFailure("Format: Get <propertyName>");
             }
         }
     }
 
     public class AliasedSetCommand : BaseCommand
     {
-        private string m_Name;
-        private string m_Value;
+        private readonly string m_Name;
+        private readonly string m_Value;
 
         public AliasedSetCommand(AccessLevel level, string command, string name, string value, ObjectTypes objects)
         {
-            m_Name = name;
-            m_Value = value;
+            this.m_Name = name;
+            this.m_Value = value;
 
-            AccessLevel = level;
+            this.AccessLevel = level;
 
             if (objects == ObjectTypes.Items)
-                Supports = CommandSupport.AllItems;
+                this.Supports = CommandSupport.AllItems;
             else if (objects == ObjectTypes.Mobiles)
-                Supports = CommandSupport.AllMobiles;
+                this.Supports = CommandSupport.AllMobiles;
             else
-                Supports = CommandSupport.All;
+                this.Supports = CommandSupport.All;
 
-            Commands = new string[] { command };
-            ObjectTypes = objects;
-            Usage = command;
-            Description = String.Format("Sets the {0} property to {1}.", name, value);
+            this.Commands = new string[] { command };
+            this.ObjectTypes = objects;
+            this.Usage = command;
+            this.Description = String.Format("Sets the {0} property to {1}.", name, value);
         }
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            string result = Properties.SetValue(e.Mobile, obj, m_Name, m_Value);
+            string result = Properties.SetValue(e.Mobile, obj, this.m_Name, this.m_Value);
 
             if (result == "Property has been set.")
-                AddResponse(result);
+                this.AddResponse(result);
             else
-                LogFailure(result);
+                this.LogFailure(result);
         }
     }
 
@@ -722,12 +728,12 @@ namespace Server.Commands.Generic
     {
         public SetCommand()
         {
-            AccessLevel = AccessLevel.Counselor;
-            Supports = CommandSupport.All;
-            Commands = new string[] { "Set" };
-            ObjectTypes = ObjectTypes.Both;
-            Usage = "Set <propertyName> <value> [...]";
-            Description = "Sets one or more property values by name of a targeted object.";
+            this.AccessLevel = AccessLevel.Counselor;
+            this.Supports = CommandSupport.All;
+            this.Commands = new string[] { "Set" };
+            this.ObjectTypes = ObjectTypes.Both;
+            this.Usage = "Set <propertyName> <value> [...]";
+            this.Description = "Sets one or more property values by name of a targeted object.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -739,14 +745,14 @@ namespace Server.Commands.Generic
                     string result = Properties.SetValue(e.Mobile, obj, e.GetString(i), e.GetString(i + 1));
 
                     if (result == "Property has been set.")
-                        AddResponse(result);
+                        this.AddResponse(result);
                     else
-                        LogFailure(result);
+                        this.LogFailure(result);
                 }
             }
             else
             {
-                LogFailure("Format: Set <propertyName> <value>");
+                this.LogFailure("Format: Set <propertyName> <value>");
             }
         }
     }
@@ -755,12 +761,12 @@ namespace Server.Commands.Generic
     {
         public DeleteCommand()
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.AllNPCs | CommandSupport.AllItems;
-            Commands = new string[] { "Delete", "Remove" };
-            ObjectTypes = ObjectTypes.Both;
-            Usage = "Delete";
-            Description = "Deletes a targeted item or mobile. Does not delete players.";
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.AllNPCs | CommandSupport.AllItems;
+            this.Commands = new string[] { "Delete", "Remove" };
+            this.ObjectTypes = ObjectTypes.Both;
+            this.Usage = "Delete";
+            this.Description = "Deletes a targeted item or mobile. Does not delete players.";
         }
 
         private void OnConfirmCallback(Mobile from, bool okay, object state)
@@ -773,7 +779,7 @@ namespace Server.Commands.Generic
 
             if (okay)
             {
-                AddResponse("Delete command confirmed.");
+                this.AddResponse("Delete command confirmed.");
 
                 if (list.Count > 20)
                 {
@@ -792,10 +798,10 @@ namespace Server.Commands.Generic
             }
             else
             {
-                AddResponse("Delete command aborted.");
+                this.AddResponse("Delete command aborted.");
             }
 
-            Flush(from, flushToLog);
+            this.Flush(from, flushToLog);
         }
 
         public override void ExecuteList(CommandEventArgs e, ArrayList list)
@@ -803,7 +809,7 @@ namespace Server.Commands.Generic
             if (list.Count > 1)
             {
                 e.Mobile.SendGump(new WarningGump(1060637, 30720, String.Format("You are about to delete {0} objects. This cannot be undone without a full server revert.<br><br>Continue?", list.Count), 0xFFC000, 420, 280, new WarningGumpCallback(OnConfirmCallback), new object[] { e, list }));
-                AddResponse("Awaiting confirmation...");
+                this.AddResponse("Awaiting confirmation...");
             }
             else
             {
@@ -817,43 +823,43 @@ namespace Server.Commands.Generic
             {
                 CommandLogging.WriteLine(e.Mobile, "{0} {1} deleting {2}", e.Mobile.AccessLevel, CommandLogging.Format(e.Mobile), CommandLogging.Format(obj));
                 ((Item)obj).Delete();
-                AddResponse("The item has been deleted.");
+                this.AddResponse("The item has been deleted.");
             }
             else if (obj is Mobile && !((Mobile)obj).Player)
             {
                 CommandLogging.WriteLine(e.Mobile, "{0} {1} deleting {2}", e.Mobile.AccessLevel, CommandLogging.Format(e.Mobile), CommandLogging.Format(obj));
                 ((Mobile)obj).Delete();
-                AddResponse("The mobile has been deleted.");
+                this.AddResponse("The mobile has been deleted.");
             }
             else
             {
-                LogFailure("That cannot be deleted.");
+                this.LogFailure("That cannot be deleted.");
             }
         }
     }
 
     public class KillCommand : BaseCommand
     {
-        private bool m_Value;
+        private readonly bool m_Value;
 
         public KillCommand(bool value)
         {
-            m_Value = value;
+            this.m_Value = value;
 
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.AllMobiles;
-            Commands = value ? new string[] { "Kill" } : new string[] { "Resurrect", "Res" };
-            ObjectTypes = ObjectTypes.Mobiles;
+            this.AccessLevel = AccessLevel.GameMaster;
+            this.Supports = CommandSupport.AllMobiles;
+            this.Commands = value ? new string[] { "Kill" } : new string[] { "Resurrect", "Res" };
+            this.ObjectTypes = ObjectTypes.Mobiles;
 
             if (value)
             {
-                Usage = "Kill";
-                Description = "Kills a targeted player or npc.";
+                this.Usage = "Kill";
+                this.Description = "Kills a targeted player or npc.";
             }
             else
             {
-                Usage = "Resurrect";
-                Description = "Resurrects a targeted ghost.";
+                this.Usage = "Resurrect";
+                this.Description = "Resurrects a targeted ghost.";
             }
         }
 
@@ -862,22 +868,22 @@ namespace Server.Commands.Generic
             Mobile mob = (Mobile)obj;
             Mobile from = e.Mobile;
 
-            if (m_Value)
+            if (this.m_Value)
             {
                 if (!mob.Alive)
                 {
-                    LogFailure("They are already dead.");
+                    this.LogFailure("They are already dead.");
                 }
                 else if (!mob.CanBeDamaged())
                 {
-                    LogFailure("They cannot be harmed.");
+                    this.LogFailure("They cannot be harmed.");
                 }
                 else
                 {
                     CommandLogging.WriteLine(from, "{0} {1} killing {2}", from.AccessLevel, CommandLogging.Format(from), CommandLogging.Format(mob));
                     mob.Kill();
 
-                    AddResponse("They have been killed.");
+                    this.AddResponse("They have been killed.");
                 }
             }
             else
@@ -895,7 +901,7 @@ namespace Server.Commands.Generic
 
                         bc.ResurrectPet();
 
-                        AddResponse("It has been resurrected.");
+                        this.AddResponse("It has been resurrected.");
                     }
                 }
                 else if (!mob.Alive)
@@ -907,11 +913,11 @@ namespace Server.Commands.Generic
 
                     mob.Resurrect();
 
-                    AddResponse("They have been resurrected.");
+                    this.AddResponse("They have been resurrected.");
                 }
                 else
                 {
-                    LogFailure("They are not dead.");
+                    this.LogFailure("They are not dead.");
                 }
             }
         }
@@ -919,26 +925,26 @@ namespace Server.Commands.Generic
 
     public class HideCommand : BaseCommand
     {
-        private bool m_Value;
+        private readonly bool m_Value;
 
         public HideCommand(bool value)
         {
-            m_Value = value;
+            this.m_Value = value;
 
-            AccessLevel = AccessLevel.Counselor;
-            Supports = CommandSupport.AllMobiles;
-            Commands = new string[] { value ? "Hide" : "Unhide" };
-            ObjectTypes = ObjectTypes.Mobiles;
+            this.AccessLevel = AccessLevel.Counselor;
+            this.Supports = CommandSupport.AllMobiles;
+            this.Commands = new string[] { value ? "Hide" : "Unhide" };
+            this.ObjectTypes = ObjectTypes.Mobiles;
 
             if (value)
             {
-                Usage = "Hide";
-                Description = "Makes a targeted mobile disappear in a puff of smoke.";
+                this.Usage = "Hide";
+                this.Description = "Makes a targeted mobile disappear in a puff of smoke.";
             }
             else
             {
-                Usage = "Unhide";
-                Description = "Makes a targeted mobile appear in a puff of smoke.";
+                this.Usage = "Unhide";
+                this.Description = "Makes a targeted mobile appear in a puff of smoke.";
             }
         }
 
@@ -946,7 +952,7 @@ namespace Server.Commands.Generic
         {
             Mobile m = (Mobile)obj;
 
-            CommandLogging.WriteLine(e.Mobile, "{0} {1} {2} {3}", e.Mobile.AccessLevel, CommandLogging.Format(e.Mobile), m_Value ? "hiding" : "unhiding", CommandLogging.Format(m));
+            CommandLogging.WriteLine(e.Mobile, "{0} {1} {2} {3}", e.Mobile.AccessLevel, CommandLogging.Format(e.Mobile), this.m_Value ? "hiding" : "unhiding", CommandLogging.Format(m));
 
             Effects.SendLocationEffect(new Point3D(m.X + 1, m.Y, m.Z + 4), m.Map, 0x3728, 13);
             Effects.SendLocationEffect(new Point3D(m.X + 1, m.Y, m.Z), m.Map, 0x3728, 13);
@@ -961,12 +967,12 @@ namespace Server.Commands.Generic
             Effects.SendLocationEffect(new Point3D(m.X + 1, m.Y + 1, m.Z - 1), m.Map, 0x3728, 13);
 
             m.PlaySound(0x228);
-            m.Hidden = m_Value;
+            m.Hidden = this.m_Value;
 
-            if (m_Value)
-                AddResponse("They have been hidden.");
+            if (this.m_Value)
+                this.AddResponse("They have been hidden.");
             else
-                AddResponse("They have been revealed.");
+                this.AddResponse("They have been revealed.");
         }
     }
 
@@ -974,12 +980,12 @@ namespace Server.Commands.Generic
     {
         public FirewallCommand()
         {
-            AccessLevel = AccessLevel.Administrator;
-            Supports = CommandSupport.AllMobiles;
-            Commands = new string[] { "Firewall" };
-            ObjectTypes = ObjectTypes.Mobiles;
-            Usage = "Firewall";
-            Description = "Adds a targeted player to the firewall (list of blocked IP addresses). This command does not ban or kick.";
+            this.AccessLevel = AccessLevel.Administrator;
+            this.Supports = CommandSupport.AllMobiles;
+            this.Commands = new string[] { "Firewall" };
+            this.ObjectTypes = ObjectTypes.Mobiles;
+            this.Usage = "Firewall";
+            this.Description = "Adds a targeted player to the firewall (list of blocked IP addresses). This command does not ban or kick.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -995,42 +1001,42 @@ namespace Server.Commands.Generic
                 try
                 {
                     Firewall.Add(state.Address);
-                    AddResponse("They have been firewalled.");
+                    this.AddResponse("They have been firewalled.");
                 }
                 catch (Exception ex)
                 {
-                    LogFailure(ex.Message);
+                    this.LogFailure(ex.Message);
                 }
             }
             else
             {
-                LogFailure("They are not online.");
+                this.LogFailure("They are not online.");
             }
         }
     }
 
     public class KickCommand : BaseCommand
     {
-        private bool m_Ban;
+        private readonly bool m_Ban;
 
         public KickCommand(bool ban)
         {
-            m_Ban = ban;
+            this.m_Ban = ban;
 
-            AccessLevel = (ban ? AccessLevel.Administrator : AccessLevel.GameMaster);
-            Supports = CommandSupport.AllMobiles;
-            Commands = new string[] { ban ? "Ban" : "Kick" };
-            ObjectTypes = ObjectTypes.Mobiles;
+            this.AccessLevel = (ban ? AccessLevel.Administrator : AccessLevel.GameMaster);
+            this.Supports = CommandSupport.AllMobiles;
+            this.Commands = new string[] { ban ? "Ban" : "Kick" };
+            this.ObjectTypes = ObjectTypes.Mobiles;
 
             if (ban)
             {
-                Usage = "Ban";
-                Description = "Bans the account of a targeted player.";
+                this.Usage = "Ban";
+                this.Description = "Bans the account of a targeted player.";
             }
             else
             {
-                Usage = "Kick";
-                Description = "Disconnects a targeted player.";
+                this.Usage = "Kick";
+                this.Description = "Disconnects a targeted player.";
             }
         }
 
@@ -1050,15 +1056,15 @@ namespace Server.Commands.Generic
 
                     if (fromAccount != null && targAccount != null)
                     {
-                        CommandLogging.WriteLine(from, "{0} {1} {2} {3}", from.AccessLevel, CommandLogging.Format(from), m_Ban ? "banning" : "kicking", CommandLogging.Format(targ));
+                        CommandLogging.WriteLine(from, "{0} {1} {2} {3}", from.AccessLevel, CommandLogging.Format(from), this.m_Ban ? "banning" : "kicking", CommandLogging.Format(targ));
 
-                        targ.Say("I've been {0}!", m_Ban ? "banned" : "kicked");
+                        targ.Say("I've been {0}!", this.m_Ban ? "banned" : "kicked");
 
-                        AddResponse(String.Format("They have been {0}.", m_Ban ? "banned" : "kicked"));
+                        this.AddResponse(String.Format("They have been {0}.", m_Ban ? "banned" : "kicked"));
 
                         targState.Dispose();
 
-                        if (m_Ban)
+                        if (this.m_Ban)
                         {
                             targAccount.Banned = true;
                             targAccount.SetUnspecifiedBan(from);
@@ -1068,12 +1074,12 @@ namespace Server.Commands.Generic
                 }
                 else if (targState == null)
                 {
-                    LogFailure("They are not online.");
+                    this.LogFailure("They are not online.");
                 }
             }
             else
             {
-                LogFailure("You do not have the required access level to do this.");
+                this.LogFailure("You do not have the required access level to do this.");
             }
         }
     }
@@ -1082,12 +1088,12 @@ namespace Server.Commands.Generic
     {
         public TraceLockdownCommand()
         {
-            AccessLevel = AccessLevel.Administrator;
-            Supports = CommandSupport.Simple;
-            Commands = new string[] { "TraceLockdown" };
-            ObjectTypes = ObjectTypes.Items;
-            Usage = "TraceLockdown";
-            Description = "Finds the BaseHouse for which a targeted item is locked down or secured.";
+            this.AccessLevel = AccessLevel.Administrator;
+            this.Supports = CommandSupport.Simple;
+            this.Commands = new string[] { "TraceLockdown" };
+            this.ObjectTypes = ObjectTypes.Items;
+            this.Usage = "TraceLockdown";
+            this.Description = "Finds the BaseHouse for which a targeted item is locked down or secured.";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -1099,7 +1105,7 @@ namespace Server.Commands.Generic
 
             if (!item.IsLockedDown && !item.IsSecure)
             {
-                LogFailure("That is not locked down.");
+                this.LogFailure("That is not locked down.");
                 return;
             }
 
@@ -1112,7 +1118,7 @@ namespace Server.Commands.Generic
                 }
             }
 
-            LogFailure("No house was found.");
+            this.LogFailure("No house was found.");
         }
     }
 }

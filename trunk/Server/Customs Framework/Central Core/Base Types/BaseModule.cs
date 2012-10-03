@@ -12,7 +12,7 @@ namespace CustomsFramework
             if (other == null)
                 return -1;
 
-            return _Serial.CompareTo(other.Serial);
+            return this._Serial.CompareTo(other.Serial);
         }
 
         public int CompareTo(BaseModule other)
@@ -27,11 +27,12 @@ namespace CustomsFramework
 
             throw new ArgumentException();
         }
+
         #endregion
 
         public override string ToString()
         {
-            return Name;
+            return this.Name;
         }
 
         internal int _TypeID;
@@ -40,7 +41,7 @@ namespace CustomsFramework
         {
             get
             {
-                return _TypeID;
+                return this._TypeID;
             }
         }
 
@@ -48,15 +49,45 @@ namespace CustomsFramework
         {
             get
             {
-                return _Serial;
+                return this._Serial;
             }
         }
 
-        public virtual string Name { get { return @"Base Module"; } }
-        public virtual string Description { get { return "Base Module, inherit from this class and override all interface items."; } }
-        public virtual string Version { get { return "1.0"; } }
-        public virtual AccessLevel EditLevel { get { return AccessLevel.Developer; } }
-        public virtual Gump SettingsGump { get { return null; } }
+        public virtual string Name
+        {
+            get
+            {
+                return @"Base Module";
+            }
+        }
+        public virtual string Description
+        {
+            get
+            {
+                return "Base Module, inherit from this class and override all interface items.";
+            }
+        }
+        public virtual string Version
+        {
+            get
+            {
+                return "1.0";
+            }
+        }
+        public virtual AccessLevel EditLevel
+        {
+            get
+            {
+                return AccessLevel.Developer;
+            }
+        }
+        public virtual Gump SettingsGump
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         private bool _Deleted;
 
@@ -72,11 +103,11 @@ namespace CustomsFramework
         {
             get
             {
-                return _Deleted;
+                return this._Deleted;
             }
             set
             {
-                _Deleted = value;
+                this._Deleted = value;
             }
         }
 
@@ -85,11 +116,11 @@ namespace CustomsFramework
         {
             get
             {
-                return _Serial;
+                return this._Serial;
             }
             set
             {
-                _Serial = value;
+                this._Serial = value;
             }
         }
 
@@ -98,11 +129,11 @@ namespace CustomsFramework
         {
             get
             {
-                return _LinkedMobile;
+                return this._LinkedMobile;
             }
             set
             {
-                _LinkedMobile = value;
+                this._LinkedMobile = value;
             }
         }
 
@@ -111,11 +142,11 @@ namespace CustomsFramework
         {
             get
             {
-                return _LinkedItem;
+                return this._LinkedItem;
             }
             set
             {
-                _LinkedItem = value;
+                this._LinkedItem = value;
             }
         }
 
@@ -124,7 +155,7 @@ namespace CustomsFramework
         {
             get
             {
-                return _CreatedTime;
+                return this._CreatedTime;
             }
         }
 
@@ -133,103 +164,101 @@ namespace CustomsFramework
         {
             get
             {
-                return _LastEditedTime;
+                return this._LastEditedTime;
             }
         }
 
         public BaseModule(CustomSerial serial)
         {
-            _Serial = serial;
+            this._Serial = serial;
 
             Type moduleType = this.GetType();
-            _TypeID = World._ModuleTypes.IndexOf(moduleType);
+            this._TypeID = World._ModuleTypes.IndexOf(moduleType);
 
-            if (_TypeID == -1)
+            if (this._TypeID == -1)
             {
                 World._ModuleTypes.Add(moduleType);
-                _TypeID = World._ModuleTypes.Count - 1;
+                this._TypeID = World._ModuleTypes.Count - 1;
             }
         }
 
         public BaseModule()
         {
-            _Serial = CustomSerial.NewModule;
+            this._Serial = CustomSerial.NewModule;
 
             World.AddModule(this);
 
             Type moduleType = this.GetType();
-            _TypeID = World._ModuleTypes.IndexOf(moduleType);
+            this._TypeID = World._ModuleTypes.IndexOf(moduleType);
 
-            if (_TypeID == -1)
+            if (this._TypeID == -1)
             {
                 World._ModuleTypes.Add(moduleType);
-                _TypeID = World._ModuleTypes.Count - 1;
+                this._TypeID = World._ModuleTypes.Count - 1;
             }
         }
 
         public virtual void Prep()
         {
-
         }
 
         public virtual void Delete()
         {
-
         }
 
         public virtual void Update()
         {
-            _LastEditedTime = DateTime.Now;
+            this._LastEditedTime = DateTime.Now;
         }
 
         public virtual bool LinkMobile(Mobile from)
         {
-            if (_LinkedMobile != null)
+            if (this._LinkedMobile != null)
                 return false;
-            else if (_LinkedMobile == from)
+            else if (this._LinkedMobile == from)
                 return false;
             else
             {
-                _LinkedMobile = from;
-                Update();
+                this._LinkedMobile = from;
+                this.Update();
                 return true;
             }
         }
 
         public virtual bool LinkItem(Item item)
         {
-            if (_LinkedItem == null)
+            if (this._LinkedItem == null)
                 return false;
-            else if (_LinkedItem == item)
+            else if (this._LinkedItem == item)
                 return false;
             else
             {
-                _LinkedItem = item;
-                Update();
+                this._LinkedItem = item;
+                this.Update();
                 return true;
             }
         }
 
         public virtual bool UnlinkMobile()
         {
-            if (_LinkedMobile == null)
+            if (this._LinkedMobile == null)
                 return false;
             else
             {
-                _LinkedMobile = null;
-                Update();
+                this._LinkedMobile = null;
+                this.Update();
                 return true;
             }
         }
 
         public virtual bool UnlinkItem()
         {
-            if (_LinkedItem == null)
+            if (this._LinkedItem == null)
                 return false;
             else
             {
-                _LinkedItem = null;
-                Update();
+                this._LinkedItem = null;
+                this.Update();
                 return true;
             }
         }
@@ -239,11 +268,11 @@ namespace CustomsFramework
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_Deleted);
-            writer.Write(_LinkedMobile);
-            writer.Write(_LinkedItem);
-            writer.Write(_CreatedTime);
-            writer.Write(_LastEditedTime);
+            writer.Write(this._Deleted);
+            writer.Write(this._LinkedMobile);
+            writer.Write(this._LinkedItem);
+            writer.Write(this._CreatedTime);
+            writer.Write(this._LastEditedTime);
         }
 
         public virtual void Deserialize(GenericReader reader)
@@ -254,11 +283,11 @@ namespace CustomsFramework
             {
                 case 0:
                     {
-                        _Deleted = reader.ReadBool();
-                        _LinkedMobile = reader.ReadMobile();
-                        _LinkedItem = reader.ReadItem();
-                        _CreatedTime = reader.ReadDateTime();
-                        _LastEditedTime = reader.ReadDateTime();
+                        this._Deleted = reader.ReadBool();
+                        this._LinkedMobile = reader.ReadMobile();
+                        this._LinkedItem = reader.ReadItem();
+                        this._CreatedTime = reader.ReadDateTime();
+                        this._LastEditedTime = reader.ReadDateTime();
                         break;
                     }
             }

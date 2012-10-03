@@ -4,119 +4,125 @@ using System.Xml;
 
 namespace Server.Engines.Reports
 {
-	public abstract class PersistanceReader
-	{
-		public abstract int GetInt32( string key );
-		public abstract bool GetBoolean( string key );
-		public abstract string GetString( string key );
-		public abstract DateTime GetDateTime( string key );
+    public abstract class PersistanceReader
+    {
+        public abstract int GetInt32(string key);
 
-		public abstract bool BeginChildren();
-		public abstract void FinishChildren();
-		public abstract bool HasChild{ get; }
-		public abstract PersistableObject GetChild();
+        public abstract bool GetBoolean(string key);
 
-		public abstract void ReadDocument( PersistableObject root );
-		public abstract void Close();
+        public abstract string GetString(string key);
 
-		public PersistanceReader()
-		{
-		}
-	}
+        public abstract DateTime GetDateTime(string key);
 
-	public class XmlPersistanceReader : PersistanceReader
-	{
-		private StreamReader m_Reader;
-		private XmlTextReader m_Xml;
-		private string m_Title;
+        public abstract bool BeginChildren();
 
-		public XmlPersistanceReader( string filePath, string title )
-		{
-			m_Reader = new StreamReader( filePath );
-			m_Xml = new XmlTextReader( m_Reader );
-			m_Xml.WhitespaceHandling=WhitespaceHandling.None;
-			m_Title = title;
-		}
+        public abstract void FinishChildren();
 
-		public override int GetInt32( string key )
-		{
-			return XmlConvert.ToInt32( m_Xml.GetAttribute( key ) );
-		}
+        public abstract bool HasChild { get; }
+        public abstract PersistableObject GetChild();
 
-		public override bool GetBoolean( string key )
-		{
-			return XmlConvert.ToBoolean( m_Xml.GetAttribute( key ) );
-		}
+        public abstract void ReadDocument(PersistableObject root);
 
-		public override string GetString( string key )
-		{
-			return m_Xml.GetAttribute( key );
-		}
+        public abstract void Close();
 
-		public override DateTime GetDateTime( string key )
-		{
-			string val = m_Xml.GetAttribute( key );
+        public PersistanceReader()
+        {
+        }
+    }
 
-			if ( val == null )
-				return DateTime.MinValue;
+    public class XmlPersistanceReader : PersistanceReader
+    {
+        private readonly StreamReader m_Reader;
+        private readonly XmlTextReader m_Xml;
+        private readonly string m_Title;
 
-			return XmlConvert.ToDateTime( val, XmlDateTimeSerializationMode.Local );
-		}
+        public XmlPersistanceReader(string filePath, string title)
+        {
+            this.m_Reader = new StreamReader(filePath);
+            this.m_Xml = new XmlTextReader(this.m_Reader);
+            this.m_Xml.WhitespaceHandling = WhitespaceHandling.None;
+            this.m_Title = title;
+        }
 
-		private bool m_HasChild;
+        public override int GetInt32(string key)
+        {
+            return XmlConvert.ToInt32(this.m_Xml.GetAttribute(key));
+        }
 
-		public override bool HasChild
-		{
-			get
-			{
-				return m_HasChild;
-			}
-		}
+        public override bool GetBoolean(string key)
+        {
+            return XmlConvert.ToBoolean(this.m_Xml.GetAttribute(key));
+        }
 
-		private bool m_WasEmptyElement;
+        public override string GetString(string key)
+        {
+            return this.m_Xml.GetAttribute(key);
+        }
 
-		public override bool BeginChildren()
-		{
-			m_HasChild = !m_WasEmptyElement;
+        public override DateTime GetDateTime(string key)
+        {
+            string val = this.m_Xml.GetAttribute(key);
 
-			m_Xml.Read();
+            if (val == null)
+                return DateTime.MinValue;
 
-			return m_HasChild;
-		}
+            return XmlConvert.ToDateTime(val, XmlDateTimeSerializationMode.Local);
+        }
 
-		public override void FinishChildren()
-		{
-			m_Xml.Read();
-		}
+        private bool m_HasChild;
 
-		public override PersistableObject GetChild()
-		{
-			PersistableType type = PersistableTypeRegistry.Find( m_Xml.Name );
-			PersistableObject obj = type.Constructor();
+        public override bool HasChild
+        {
+            get
+            {
+                return this.m_HasChild;
+            }
+        }
 
-			m_WasEmptyElement = m_Xml.IsEmptyElement;
+        private bool m_WasEmptyElement;
 
-			obj.Deserialize( this );
+        public override bool BeginChildren()
+        {
+            this.m_HasChild = !this.m_WasEmptyElement;
 
-			m_HasChild = ( m_Xml.NodeType == XmlNodeType.Element );
+            this.m_Xml.Read();
 
-			return obj;
-		}
+            return this.m_HasChild;
+        }
 
-		public override void ReadDocument( PersistableObject root )
-		{
-			Console.Write( "Reports: {0}: Loading...", m_Title );
-			m_Xml.Read();
-			m_Xml.Read();
-			m_HasChild = !m_Xml.IsEmptyElement;
-			root.Deserialize( this );
-			Console.WriteLine( "done" );
-		}
+        public override void FinishChildren()
+        {
+            this.m_Xml.Read();
+        }
 
-		public override void Close()
-		{
-			m_Xml.Close();
-			m_Reader.Close();
-		}
-	}
+        public override PersistableObject GetChild()
+        {
+            PersistableType type = PersistableTypeRegistry.Find(this.m_Xml.Name);
+            PersistableObject obj = type.Constructor();
+
+            this.m_WasEmptyElement = this.m_Xml.IsEmptyElement;
+
+            obj.Deserialize(this);
+
+            this.m_HasChild = (this.m_Xml.NodeType == XmlNodeType.Element);
+
+            return obj;
+        }
+
+        public override void ReadDocument(PersistableObject root)
+        {
+            Console.Write("Reports: {0}: Loading...", this.m_Title);
+            this.m_Xml.Read();
+            this.m_Xml.Read();
+            this.m_HasChild = !this.m_Xml.IsEmptyElement;
+            root.Deserialize(this);
+            Console.WriteLine("done");
+        }
+
+        public override void Close()
+        {
+            this.m_Xml.Close();
+            this.m_Reader.Close();
+        }
+    }
 }

@@ -13,20 +13,18 @@ namespace CustomsFramework.Systems.VIPSystem
         }
 
         [Constructable(AccessLevel.Developer)]
-        public GoldVIPDeed()
-            : base()
+        public GoldVIPDeed() : base()
         {
-            Hue = 2213;
-            Tier = VIPTier.Gold;
+            this.Hue = 2213;
+            this.Tier = VIPTier.Gold;
 
-            foreach (Bonus bonus in Bonuses)
+            foreach (Bonus bonus in this.Bonuses)
             {
                 bonus.Enabled = true;
             }
         }
 
-        public GoldVIPDeed(Serial serial)
-            : base(serial)
+        public GoldVIPDeed(Serial serial) : base(serial)
         {
         }
 
@@ -47,7 +45,6 @@ namespace CustomsFramework.Systems.VIPSystem
             {
                 case 0:
                     {
-
                         break;
                     }
             }

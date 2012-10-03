@@ -1,211 +1,216 @@
 using System;
-using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xc77, 0xc78 )]
-	public class Carrot : Food
-	{
-		[Constructable]
-		public Carrot() : this( 1 )
-		{
-		}
+    [FlipableAttribute(0xc77, 0xc78)]
+    public class Carrot : Food
+    {
+        [Constructable]
+        public Carrot() : this(1)
+        {
+        }
 
-		[Constructable]
-		public Carrot( int amount ) : base( amount, 0xc78 )
-		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
-		}
+        [Constructable]
+        public Carrot(int amount) : base(amount, 0xc78)
+        {
+            this.Weight = 1.0;
+            this.FillFactor = 1;
+        }
 
-		public Carrot( Serial serial ) : base( serial )
-		{
-		}
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public Carrot(Serial serial) : base(serial)
+        {
+        }
 
-			writer.Write( (int) 0 ); // version
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+            writer.Write((int)0); // version
+        }
 
-			int version = reader.ReadInt();
-		}
-	}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-	[FlipableAttribute( 0xc7b, 0xc7c )]
-	public class Cabbage : Food
-	{
-		[Constructable]
-		public Cabbage() : this( 1 )
-		{
-		}
+            int version = reader.ReadInt();
+        }
+    }
 
-		[Constructable]
-		public Cabbage( int amount ) : base( amount, 0xc7b )
-		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
-		}
+    [FlipableAttribute(0xc7b, 0xc7c)]
+    public class Cabbage : Food
+    {
+        [Constructable]
+        public Cabbage() : this(1)
+        {
+        }
 
-		public Cabbage( Serial serial ) : base( serial )
-		{
-		}
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        [Constructable]
+        public Cabbage(int amount) : base(amount, 0xc7b)
+        {
+            this.Weight = 1.0;
+            this.FillFactor = 1;
+        }
 
-			writer.Write( (int) 0 ); // version
-		}
+        public Cabbage(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			int version = reader.ReadInt();
-		}
-	}
+            writer.Write((int)0); // version
+        }
 
-	[FlipableAttribute( 0xc6d, 0xc6e )]
-	public class Onion : Food
-	{
-		[Constructable]
-		public Onion() : this( 1 )
-		{
-		}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-		[Constructable]
-		public Onion( int amount ) : base( amount, 0xc6d )
-		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
-		}
+            int version = reader.ReadInt();
+        }
+    }
 
-		public Onion( Serial serial ) : base( serial )
-		{
-		}
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    [FlipableAttribute(0xc6d, 0xc6e)]
+    public class Onion : Food
+    {
+        [Constructable]
+        public Onion() : this(1)
+        {
+        }
 
-			writer.Write( (int) 0 ); // version
-		}
+        [Constructable]
+        public Onion(int amount) : base(amount, 0xc6d)
+        {
+            this.Weight = 1.0;
+            this.FillFactor = 1;
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public Onion(Serial serial) : base(serial)
+        {
+        }
 
-			int version = reader.ReadInt();
-		}
-	}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-	[FlipableAttribute( 0xc70, 0xc71 )]
-	public class Lettuce : Food
-	{
-		[Constructable]
-		public Lettuce() : this( 1 )
-		{
-		}
+            writer.Write((int)0); // version
+        }
 
-		[Constructable]
-		public Lettuce( int amount ) : base( amount, 0xc70 )
-		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
-		}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-		public Lettuce( Serial serial ) : base( serial )
-		{
-		}
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+            int version = reader.ReadInt();
+        }
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    [FlipableAttribute(0xc70, 0xc71)]
+    public class Lettuce : Food
+    {
+        [Constructable]
+        public Lettuce() : this(1)
+        {
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        [Constructable]
+        public Lettuce(int amount) : base(amount, 0xc70)
+        {
+            this.Weight = 1.0;
+            this.FillFactor = 1;
+        }
 
-			int version = reader.ReadInt();
-		}
-	}
+        public Lettuce(Serial serial) : base(serial)
+        {
+        }
 
-	[FlipableAttribute( 0xC6A, 0xC6B )]
-	public class Pumpkin : Food
-	{
-		[Constructable]
-		public Pumpkin() : this( 1 )
-		{
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-		[Constructable]
-		public Pumpkin( int amount ) : base( amount, 0xC6A )
-		{
-			this.Weight = 1.0;
-			this.FillFactor = 8;
-		}
+            writer.Write((int)0); // version
+        }
 
-		public Pumpkin( Serial serial ) : base( serial )
-		{
-		}
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			writer.Write( (int) 1 ); // version
-		}
+            int version = reader.ReadInt();
+        }
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    [FlipableAttribute(0xC6A, 0xC6B)]
+    public class Pumpkin : Food
+    {
+        [Constructable]
+        public Pumpkin() : this(1)
+        {
+        }
 
-			int version = reader.ReadInt();
+        [Constructable]
+        public Pumpkin(int amount) : base(amount, 0xC6A)
+        {
+            this.Weight = 1.0;
+            this.FillFactor = 8;
+        }
 
-			if ( version < 1 )
-			{
-				if ( FillFactor == 4 )
-					FillFactor = 8;
+        public Pumpkin(Serial serial) : base(serial)
+        {
+        }
 
-				if ( Weight == 5.0 )
-					Weight = 1.0;
-			}
-		}
-	}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-	public class SmallPumpkin : Food
-	{
-		[Constructable]
-		public SmallPumpkin() : this( 1 )
-		{
-		}
+            writer.Write((int)1); // version
+        }
 
-		[Constructable]
-		public SmallPumpkin( int amount ) : base( amount, 0xC6C )
-		{
-			this.Weight = 1.0;
-			this.FillFactor = 8;
-		}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-		public SmallPumpkin( Serial serial ) : base( serial )
-		{
-		}
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+            int version = reader.ReadInt();
 
-			writer.Write( (int) 0 ); // version
-		}
+            if (version < 1)
+            {
+                if (this.FillFactor == 4)
+                    this.FillFactor = 8;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+                if (this.Weight == 5.0)
+                    this.Weight = 1.0;
+            }
+        }
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public class SmallPumpkin : Food
+    {
+        [Constructable]
+        public SmallPumpkin() : this(1)
+        {
+        }
+
+        [Constructable]
+        public SmallPumpkin(int amount) : base(amount, 0xC6C)
+        {
+            this.Weight = 1.0;
+            this.FillFactor = 8;
+        }
+
+        public SmallPumpkin(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write((int)0); // version
+        }
+
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+        }
+    }
 }

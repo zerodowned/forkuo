@@ -1,42 +1,42 @@
 ﻿/***************************************************************************
- *                          DynamicSaveStrategy.cs
- *                            -------------------
- *   begin                : December 16, 2010
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: DynamicSaveStrategy.cs 844 2012-03-07 13:47:33Z mark $
- *
- ***************************************************************************/
+*                          DynamicSaveStrategy.cs
+*                            -------------------
+*   begin                : December 16, 2010
+*   copyright            : (C) The RunUO Software Team
+*   email                : info@runuo.com
+*
+*   $Id: DynamicSaveStrategy.cs 844 2012-03-07 13:47:33Z mark $
+*
+***************************************************************************/
 
 /***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+*
+*   This program is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation; either version 2 of the License, or
+*   (at your option) any later version.
+*
+***************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
-
-using Server;
-using Server.Guilds;
+using System.Threading.Tasks;
 using CustomsFramework;
+using Server.Guilds;
 
 namespace Server
 {
     public sealed class DynamicSaveStrategy : SaveStrategy
     {
-        public override string Name { get { return "Dynamic"; } }
+        public override string Name
+        {
+            get
+            {
+                return "Dynamic";
+            }
+        }
 
         private SaveMetrics _metrics;
 
@@ -47,57 +47,57 @@ namespace Server
         private SequentialFileWriter _moduleData, _moduleIndex;
         private SequentialFileWriter _serviceData, _serviceIndex;
 
-        private ConcurrentBag<Item> _decayBag;
+        private readonly ConcurrentBag<Item> _decayBag;
 
-        private BlockingCollection<QueuedMemoryWriter> _itemThreadWriters;
-        private BlockingCollection<QueuedMemoryWriter> _mobileThreadWriters;
-        private BlockingCollection<QueuedMemoryWriter> _guildThreadWriters;
-        private BlockingCollection<QueuedMemoryWriter> _coreThreadWriters;
-        private BlockingCollection<QueuedMemoryWriter> _moduleThreadWriters;
-        private BlockingCollection<QueuedMemoryWriter> _serviceThreadwriters;
+        private readonly BlockingCollection<QueuedMemoryWriter> _itemThreadWriters;
+        private readonly BlockingCollection<QueuedMemoryWriter> _mobileThreadWriters;
+        private readonly BlockingCollection<QueuedMemoryWriter> _guildThreadWriters;
+        private readonly BlockingCollection<QueuedMemoryWriter> _coreThreadWriters;
+        private readonly BlockingCollection<QueuedMemoryWriter> _moduleThreadWriters;
+        private readonly BlockingCollection<QueuedMemoryWriter> _serviceThreadwriters;
 
         public DynamicSaveStrategy()
         {
-            _decayBag = new ConcurrentBag<Item>();
-            _itemThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
-            _mobileThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
-            _guildThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
-            _coreThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
-            _moduleThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
-            _serviceThreadwriters = new BlockingCollection<QueuedMemoryWriter>();
+            this._decayBag = new ConcurrentBag<Item>();
+            this._itemThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
+            this._mobileThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
+            this._guildThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
+            this._coreThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
+            this._moduleThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
+            this._serviceThreadwriters = new BlockingCollection<QueuedMemoryWriter>();
         }
 
         public override void Save(SaveMetrics metrics, bool permitBackgroundWrite)
         {
             this._metrics = metrics;
 
-            OpenFiles();
+            this.OpenFiles();
 
             Task[] saveTasks = new Task[3];
 
-            saveTasks[0] = SaveItems();
-            saveTasks[1] = SaveMobiles();
-            saveTasks[2] = SaveGuilds();
-            saveTasks[3] = SaveCores();
-            saveTasks[4] = SaveModules();
-            saveTasks[5] = SaveServices();
+            saveTasks[0] = this.SaveItems();
+            saveTasks[1] = this.SaveMobiles();
+            saveTasks[2] = this.SaveGuilds();
+            saveTasks[3] = this.SaveCores();
+            saveTasks[4] = this.SaveModules();
+            saveTasks[5] = this.SaveServices();
 
-            SaveTypeDatabases();
+            this.SaveTypeDatabases();
 
             if (permitBackgroundWrite)
             {
                 //This option makes it finish the writing to disk in the background, continuing even after Save() returns.
                 Task.Factory.ContinueWhenAll(saveTasks, _ =>
-                    {
-                        CloseFiles();
+                {
+                    this.CloseFiles();
 
-                        World.NotifyDiskWriteComplete();
-                    });
+                    World.NotifyDiskWriteComplete();
+                });
             }
             else
             {
                 Task.WaitAll(saveTasks);	//Waits for the completion of all of the tasks(committing to disk)
-                CloseFiles();
+                this.CloseFiles();
             }
         }
 
@@ -129,7 +129,7 @@ namespace Server
         private Task SaveItems()
         {
             //Start the blocking consumer; this runs in background.
-            Task commitTask = StartCommitTask(_itemThreadWriters, _itemData, _itemIndex);
+            Task commitTask = this.StartCommitTask(_itemThreadWriters, _itemData, _itemIndex);
 
             IEnumerable<Item> items = World.Items.Values;
 
@@ -147,12 +147,12 @@ namespace Server
 
                     if (item.Decays && item.Parent == null && item.Map != Map.Internal && DateTime.Now > (item.LastMoved + item.DecayTime))
                     {
-                        _decayBag.Add(item);
+                        this._decayBag.Add(item);
                     }
 
-                    if (_metrics != null)
+                    if (this._metrics != null)
                     {
-                        _metrics.OnItemSaved(size);
+                        this._metrics.OnItemSaved(size);
                     }
 
                     return writer;
@@ -161,20 +161,18 @@ namespace Server
                 {
                     writer.Flush();
 
-                    _itemThreadWriters.Add(writer);
+                    this._itemThreadWriters.Add(writer);
                 });
 
-            _itemThreadWriters.CompleteAdding();	//We only get here after the Parallel.ForEach completes.  Lets our task 
+            this._itemThreadWriters.CompleteAdding();	//We only get here after the Parallel.ForEach completes.  Lets our task 
 
             return commitTask;
         }
 
-
-
         private Task SaveMobiles()
         {
             //Start the blocking consumer; this runs in background.
-            Task commitTask = StartCommitTask(_mobileThreadWriters, _mobileData, _mobileIndex);
+            Task commitTask = this.StartCommitTask(_mobileThreadWriters, _mobileData, _mobileIndex);
 
             IEnumerable<Mobile> mobiles = World.Mobiles.Values;
 
@@ -190,9 +188,9 @@ namespace Server
 
                     writer.QueueForIndex(mobile, size);
 
-                    if (_metrics != null)
+                    if (this._metrics != null)
                     {
-                        _metrics.OnMobileSaved(size);
+                        this._metrics.OnMobileSaved(size);
                     }
 
                     return writer;
@@ -201,10 +199,10 @@ namespace Server
                 {
                     writer.Flush();
 
-                    _mobileThreadWriters.Add(writer);
+                    this._mobileThreadWriters.Add(writer);
                 });
 
-            _mobileThreadWriters.CompleteAdding();	//We only get here after the Parallel.ForEach completes.  Lets our task tell the consumer that we're done
+            this._mobileThreadWriters.CompleteAdding();	//We only get here after the Parallel.ForEach completes.  Lets our task tell the consumer that we're done
 
             return commitTask;
         }
@@ -212,7 +210,7 @@ namespace Server
         private Task SaveGuilds()
         {
             //Start the blocking consumer; this runs in background.
-            Task commitTask = StartCommitTask(_guildThreadWriters, _guildData, _guildIndex);
+            Task commitTask = this.StartCommitTask(_guildThreadWriters, _guildData, _guildIndex);
 
             IEnumerable<BaseGuild> guilds = BaseGuild.List.Values;
 
@@ -228,9 +226,9 @@ namespace Server
 
                     writer.QueueForIndex(guild, size);
 
-                    if (_metrics != null)
+                    if (this._metrics != null)
                     {
-                        _metrics.OnGuildSaved(size);
+                        this._metrics.OnGuildSaved(size);
                     }
 
                     return writer;
@@ -239,17 +237,17 @@ namespace Server
                 {
                     writer.Flush();
 
-                    _guildThreadWriters.Add(writer);
+                    this._guildThreadWriters.Add(writer);
                 });
 
-            _guildThreadWriters.CompleteAdding();	//We only get here after the Parallel.ForEach completes.  Lets our task 
+            this._guildThreadWriters.CompleteAdding();	//We only get here after the Parallel.ForEach completes.  Lets our task 
 
             return commitTask;
         }
 
         private Task SaveCores()
         {
-            Task commitTask = StartCommitTask(_coreThreadWriters, _coreData, _coreIndex);
+            Task commitTask = this.StartCommitTask(_coreThreadWriters, _coreData, _coreIndex);
 
             IEnumerable<BaseCore> cores = World.Cores.Values;
 
@@ -264,26 +262,26 @@ namespace Server
 
                     writer.QueueForIndex(core, size);
 
-                    if (_metrics != null)
-                        _metrics.OnCoreSaved(size);
+                    if (this._metrics != null)
+                        this._metrics.OnCoreSaved(size);
 
                     return writer;
                 },
-                    (writer) =>
-                    {
-                        writer.Flush();
+                (writer) =>
+                {
+                    writer.Flush();
 
-                        _coreThreadWriters.Add(writer);
-                    });
+                    this._coreThreadWriters.Add(writer);
+                });
 
-            _coreThreadWriters.CompleteAdding();
+            this._coreThreadWriters.CompleteAdding();
 
             return commitTask;
         }
 
         private Task SaveModules()
         {
-            Task commitTask = StartCommitTask(_moduleThreadWriters, _moduleData, _moduleIndex);
+            Task commitTask = this.StartCommitTask(_moduleThreadWriters, _moduleData, _moduleIndex);
 
             IEnumerable<BaseModule> modules = World.Modules.Values;
 
@@ -298,26 +296,26 @@ namespace Server
 
                     writer.QueueForIndex(module, size);
 
-                    if (_metrics != null)
-                        _metrics.OnModuleSaved(size);
+                    if (this._metrics != null)
+                        this._metrics.OnModuleSaved(size);
 
                     return writer;
                 },
-                    (writer) =>
-                    {
-                        writer.Flush();
+                (writer) =>
+                {
+                    writer.Flush();
 
-                        _moduleThreadWriters.Add(writer);
-                    });
+                    this._moduleThreadWriters.Add(writer);
+                });
 
-            _moduleThreadWriters.CompleteAdding();
+            this._moduleThreadWriters.CompleteAdding();
 
             return commitTask;
         }
 
         private Task SaveServices()
         {
-            Task commitTask = StartCommitTask(_serviceThreadwriters, _serviceData, _serviceIndex);
+            Task commitTask = this.StartCommitTask(_serviceThreadwriters, _serviceData, _serviceIndex);
 
             IEnumerable<BaseService> services = World.Services.Values;
 
@@ -332,19 +330,19 @@ namespace Server
 
                     writer.QueueForIndex(service, size);
 
-                    if (_metrics != null)
-                        _metrics.OnServiceSaved(size);
+                    if (this._metrics != null)
+                        this._metrics.OnServiceSaved(size);
 
                     return writer;
                 },
-                    (writer) =>
-                    {
-                        writer.Flush();
+                (writer) =>
+                {
+                    writer.Flush();
 
-                        _serviceThreadwriters.Add(writer);
-                    });
+                    this._serviceThreadwriters.Add(writer);
+                });
 
-            _serviceThreadwriters.CompleteAdding();
+            this._serviceThreadwriters.CompleteAdding();
 
             return commitTask;
         }
@@ -353,7 +351,7 @@ namespace Server
         {
             Item item;
 
-            while (_decayBag.TryTake(out item))
+            while (this._decayBag.TryTake(out item))
             {
                 if (item.OnDecay())
                 {
@@ -364,51 +362,51 @@ namespace Server
 
         private void OpenFiles()
         {
-            _itemData = new SequentialFileWriter(World.ItemDataPath, _metrics);
-            _itemIndex = new SequentialFileWriter(World.ItemIndexPath, _metrics);
+            this._itemData = new SequentialFileWriter(World.ItemDataPath, this._metrics);
+            this._itemIndex = new SequentialFileWriter(World.ItemIndexPath, this._metrics);
 
-            _mobileData = new SequentialFileWriter(World.MobileDataPath, _metrics);
-            _mobileIndex = new SequentialFileWriter(World.MobileIndexPath, _metrics);
+            this._mobileData = new SequentialFileWriter(World.MobileDataPath, this._metrics);
+            this._mobileIndex = new SequentialFileWriter(World.MobileIndexPath, this._metrics);
 
-            _guildData = new SequentialFileWriter(World.GuildDataPath, _metrics);
-            _guildIndex = new SequentialFileWriter(World.GuildIndexPath, _metrics);
+            this._guildData = new SequentialFileWriter(World.GuildDataPath, this._metrics);
+            this._guildIndex = new SequentialFileWriter(World.GuildIndexPath, this._metrics);
 
-            _coreData = new SequentialFileWriter(World.CoresDataPath, _metrics);
-            _coreIndex = new SequentialFileWriter(World.CoreIndexPath, _metrics);
+            this._coreData = new SequentialFileWriter(World.CoresDataPath, this._metrics);
+            this._coreIndex = new SequentialFileWriter(World.CoreIndexPath, this._metrics);
 
-            _moduleData = new SequentialFileWriter(World.ModulesDataPath, _metrics);
-            _moduleIndex = new SequentialFileWriter(World.ModuleIndexPath, _metrics);
+            this._moduleData = new SequentialFileWriter(World.ModulesDataPath, this._metrics);
+            this._moduleIndex = new SequentialFileWriter(World.ModuleIndexPath, this._metrics);
 
-            _serviceData = new SequentialFileWriter(World.ServicesDataPath, _metrics);
-            _serviceIndex = new SequentialFileWriter(World.ServiceIndexPath, _metrics);
+            this._serviceData = new SequentialFileWriter(World.ServicesDataPath, this._metrics);
+            this._serviceIndex = new SequentialFileWriter(World.ServiceIndexPath, this._metrics);
 
-            WriteCount(_itemIndex, World.Items.Count);
-            WriteCount(_mobileIndex, World.Mobiles.Count);
-            WriteCount(_guildIndex, BaseGuild.List.Count);
-            WriteCount(_coreIndex, World.Cores.Count);
-            WriteCount(_moduleIndex, World.Modules.Count);
-            WriteCount(_serviceIndex, World.Services.Count);
+            this.WriteCount(_itemIndex, World.Items.Count);
+            this.WriteCount(_mobileIndex, World.Mobiles.Count);
+            this.WriteCount(_guildIndex, BaseGuild.List.Count);
+            this.WriteCount(_coreIndex, World.Cores.Count);
+            this.WriteCount(_moduleIndex, World.Modules.Count);
+            this.WriteCount(_serviceIndex, World.Services.Count);
         }
 
         private void CloseFiles()
         {
-            _itemData.Close();
-            _itemIndex.Close();
+            this._itemData.Close();
+            this._itemIndex.Close();
 
-            _mobileData.Close();
-            _mobileIndex.Close();
+            this._mobileData.Close();
+            this._mobileIndex.Close();
 
-            _guildData.Close();
-            _guildIndex.Close();
+            this._guildData.Close();
+            this._guildIndex.Close();
 
-            _coreData.Close();
-            _coreIndex.Close();
+            this._coreData.Close();
+            this._coreIndex.Close();
 
-            _moduleData.Close();
-            _moduleIndex.Close();
+            this._moduleData.Close();
+            this._moduleIndex.Close();
 
-            _serviceData.Close();
-            _serviceIndex.Close();
+            this._serviceData.Close();
+            this._serviceIndex.Close();
         }
 
         private void WriteCount(SequentialFileWriter indexFile, int count)
@@ -426,11 +424,11 @@ namespace Server
 
         private void SaveTypeDatabases()
         {
-            SaveTypeDatabase(World.ItemTypesPath, World.m_ItemTypes);
-            SaveTypeDatabase(World.MobileTypesPath, World.m_MobileTypes);
-            SaveTypeDatabase(World.CoreTypesPath, World._CoreTypes);
-            SaveTypeDatabase(World.ModuleTypesPath, World._ModuleTypes);
-            SaveTypeDatabase(World.ServiceTypesPath, World._ServiceTypes);
+            this.SaveTypeDatabase(World.ItemTypesPath, World.m_ItemTypes);
+            this.SaveTypeDatabase(World.MobileTypesPath, World.m_MobileTypes);
+            this.SaveTypeDatabase(World.CoreTypesPath, World._CoreTypes);
+            this.SaveTypeDatabase(World.ModuleTypesPath, World._ModuleTypes);
+            this.SaveTypeDatabase(World.ServiceTypesPath, World._ServiceTypes);
         }
 
         private void SaveTypeDatabase(string path, List<Type> types)

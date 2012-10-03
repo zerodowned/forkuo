@@ -1,50 +1,52 @@
 using System;
-using Server;
 using Server.Guilds;
 using Server.Prompts;
 
 namespace Server.Gumps
 {
-	public class GuildTitlePrompt : Prompt
-	{
-		private Mobile m_Leader, m_Target;
-		private Guild m_Guild;
+    public class GuildTitlePrompt : Prompt
+    {
+        private readonly Mobile m_Leader;
 
-		public GuildTitlePrompt( Mobile leader, Mobile target, Guild g )
-		{
-			m_Leader = leader;
-			m_Target = target;
-			m_Guild = g;
-		}
+        private readonly Mobile m_Target;
 
-		public override void OnCancel( Mobile from )
-		{
-			if ( GuildGump.BadLeader( m_Leader, m_Guild ) )
-				return;
-			else if ( m_Target.Deleted || !m_Guild.IsMember( m_Target ) )
-				return;
+        private readonly Guild m_Guild;
 
-			GuildGump.EnsureClosed( m_Leader );
-			m_Leader.SendGump( new GuildmasterGump( m_Leader, m_Guild ) );
-		}
+        public GuildTitlePrompt(Mobile leader, Mobile target, Guild g)
+        {
+            this.m_Leader = leader;
+            this.m_Target = target;
+            this.m_Guild = g;
+        }
 
-		public override void OnResponse( Mobile from, string text )
-		{
-			if ( GuildGump.BadLeader( m_Leader, m_Guild ) )
-				return;
-			else if ( m_Target.Deleted || !m_Guild.IsMember( m_Target ) )
-				return;
+        public override void OnCancel(Mobile from)
+        {
+            if (GuildGump.BadLeader(this.m_Leader, this.m_Guild))
+                return;
+            else if (this.m_Target.Deleted || !this.m_Guild.IsMember(this.m_Target))
+                return;
 
-			text = text.Trim();
+            GuildGump.EnsureClosed(this.m_Leader);
+            this.m_Leader.SendGump(new GuildmasterGump(this.m_Leader, this.m_Guild));
+        }
 
-			if ( text.Length > 20 )
-				text = text.Substring( 0, 20  );
+        public override void OnResponse(Mobile from, string text)
+        {
+            if (GuildGump.BadLeader(this.m_Leader, this.m_Guild))
+                return;
+            else if (this.m_Target.Deleted || !this.m_Guild.IsMember(this.m_Target))
+                return;
 
-			if ( text.Length > 0 )
-				m_Target.GuildTitle = text;
+            text = text.Trim();
 
-			GuildGump.EnsureClosed( m_Leader );
-			m_Leader.SendGump( new GuildmasterGump( m_Leader, m_Guild ) );
-		}
-	}
+            if (text.Length > 20)
+                text = text.Substring(0, 20);
+
+            if (text.Length > 0)
+                this.m_Target.GuildTitle = text;
+
+            GuildGump.EnsureClosed(this.m_Leader);
+            this.m_Leader.SendGump(new GuildmasterGump(this.m_Leader, this.m_Guild));
+        }
+    }
 }

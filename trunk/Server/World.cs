@@ -1,18 +1,17 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Threading;
-using System.Diagnostics;
-using Server.Network;
-using Server.Guilds;
 using CustomsFramework;
+using Server.Guilds;
+using Server.Network;
 
 namespace Server
 {
     public static class World
     {
-
         private static Dictionary<Serial, Mobile> m_Mobiles;
         private static Dictionary<Serial, Item> m_Items;
         private static Dictionary<CustomSerial, BaseCore> _Cores;
@@ -23,14 +22,32 @@ namespace Server
         private static bool m_Loaded;
 
         private static bool m_Saving;
-        private static ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
+        private static readonly ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
 
         private static Queue<IEntity> _addQueue, _deleteQueue;
         private static Queue<ICustomsEntity> _CustomsAddQueue, _CustomsDeleteQueue;
 
-        public static bool Saving { get { return m_Saving; } }
-        public static bool Loaded { get { return m_Loaded; } }
-        public static bool Loading { get { return m_Loading; } }
+        public static bool Saving
+        {
+            get
+            {
+                return m_Saving;
+            }
+        }
+        public static bool Loaded
+        {
+            get
+            {
+                return m_Loaded;
+            }
+        }
+        public static bool Loading
+        {
+            get
+            {
+                return m_Loading;
+            }
+        }
 
         public readonly static string MobileIndexPath = Path.Combine("Saves/Mobiles/", "Mobiles.idx");
         public readonly static string MobileTypesPath = Path.Combine("Saves/Mobiles/", "Mobiles.tdb");
@@ -70,27 +87,42 @@ namespace Server
 
         public static Dictionary<Serial, Mobile> Mobiles
         {
-            get { return m_Mobiles; }
+            get
+            {
+                return m_Mobiles;
+            }
         }
 
         public static Dictionary<Serial, Item> Items
         {
-            get { return m_Items; }
+            get
+            {
+                return m_Items;
+            }
         }
 
         public static Dictionary<CustomSerial, BaseCore> Cores
         {
-            get { return _Cores; }
+            get
+            {
+                return _Cores;
+            }
         }
 
         public static Dictionary<CustomSerial, BaseModule> Modules
         {
-            get { return _Modules; }
+            get
+            {
+                return _Modules;
+            }
         }
 
         public static Dictionary<CustomSerial, BaseService> Services
         {
-            get { return _Services; }
+            get
+            {
+                return _Services;
+            }
         }
 
         public static bool OnDelete(IEntity entity)
@@ -164,15 +196,15 @@ namespace Server
 
         private sealed class GuildEntry : IEntityEntry
         {
-            private BaseGuild m_Guild;
-            private long m_Position;
-            private int m_Length;
+            private readonly BaseGuild m_Guild;
+            private readonly long m_Position;
+            private readonly int m_Length;
 
             public BaseGuild Guild
             {
                 get
                 {
-                    return m_Guild;
+                    return this.m_Guild;
                 }
             }
 
@@ -180,7 +212,7 @@ namespace Server
             {
                 get
                 {
-                    return m_Guild == null ? 0 : m_Guild.Id;
+                    return this.m_Guild == null ? 0 : this.m_Guild.Id;
                 }
             }
 
@@ -196,7 +228,7 @@ namespace Server
             {
                 get
                 {
-                    return m_Position;
+                    return this.m_Position;
                 }
             }
 
@@ -204,31 +236,31 @@ namespace Server
             {
                 get
                 {
-                    return m_Length;
+                    return this.m_Length;
                 }
             }
 
             public GuildEntry(BaseGuild g, long pos, int length)
             {
-                m_Guild = g;
-                m_Position = pos;
-                m_Length = length;
+                this.m_Guild = g;
+                this.m_Position = pos;
+                this.m_Length = length;
             }
         }
 
         private sealed class ItemEntry : IEntityEntry
         {
-            private Item m_Item;
-            private int m_TypeID;
-            private string m_TypeName;
-            private long m_Position;
-            private int m_Length;
+            private readonly Item m_Item;
+            private readonly int m_TypeID;
+            private readonly string m_TypeName;
+            private readonly long m_Position;
+            private readonly int m_Length;
 
             public Item Item
             {
                 get
                 {
-                    return m_Item;
+                    return this.m_Item;
                 }
             }
 
@@ -236,7 +268,7 @@ namespace Server
             {
                 get
                 {
-                    return m_Item == null ? Serial.MinusOne : m_Item.Serial;
+                    return this.m_Item == null ? Serial.MinusOne : this.m_Item.Serial;
                 }
             }
 
@@ -244,7 +276,7 @@ namespace Server
             {
                 get
                 {
-                    return m_TypeID;
+                    return this.m_TypeID;
                 }
             }
 
@@ -252,7 +284,7 @@ namespace Server
             {
                 get
                 {
-                    return m_TypeName;
+                    return this.m_TypeName;
                 }
             }
 
@@ -260,7 +292,7 @@ namespace Server
             {
                 get
                 {
-                    return m_Position;
+                    return this.m_Position;
                 }
             }
 
@@ -268,33 +300,33 @@ namespace Server
             {
                 get
                 {
-                    return m_Length;
+                    return this.m_Length;
                 }
             }
 
             public ItemEntry(Item item, int typeID, string typeName, long pos, int length)
             {
-                m_Item = item;
-                m_TypeID = typeID;
-                m_TypeName = typeName;
-                m_Position = pos;
-                m_Length = length;
+                this.m_Item = item;
+                this.m_TypeID = typeID;
+                this.m_TypeName = typeName;
+                this.m_Position = pos;
+                this.m_Length = length;
             }
         }
 
         private sealed class MobileEntry : IEntityEntry
         {
-            private Mobile m_Mobile;
-            private int m_TypeID;
-            private string m_TypeName;
-            private long m_Position;
-            private int m_Length;
+            private readonly Mobile m_Mobile;
+            private readonly int m_TypeID;
+            private readonly string m_TypeName;
+            private readonly long m_Position;
+            private readonly int m_Length;
 
             public Mobile Mobile
             {
                 get
                 {
-                    return m_Mobile;
+                    return this.m_Mobile;
                 }
             }
 
@@ -302,7 +334,7 @@ namespace Server
             {
                 get
                 {
-                    return m_Mobile == null ? Serial.MinusOne : m_Mobile.Serial;
+                    return this.m_Mobile == null ? Serial.MinusOne : this.m_Mobile.Serial;
                 }
             }
 
@@ -310,7 +342,7 @@ namespace Server
             {
                 get
                 {
-                    return m_TypeID;
+                    return this.m_TypeID;
                 }
             }
 
@@ -318,7 +350,7 @@ namespace Server
             {
                 get
                 {
-                    return m_TypeName;
+                    return this.m_TypeName;
                 }
             }
 
@@ -326,7 +358,7 @@ namespace Server
             {
                 get
                 {
-                    return m_Position;
+                    return this.m_Position;
                 }
             }
 
@@ -334,33 +366,33 @@ namespace Server
             {
                 get
                 {
-                    return m_Length;
+                    return this.m_Length;
                 }
             }
 
             public MobileEntry(Mobile mobile, int typeID, string typeName, long pos, int length)
             {
-                m_Mobile = mobile;
-                m_TypeID = typeID;
-                m_TypeName = typeName;
-                m_Position = pos;
-                m_Length = length;
+                this.m_Mobile = mobile;
+                this.m_TypeID = typeID;
+                this.m_TypeName = typeName;
+                this.m_Position = pos;
+                this.m_Length = length;
             }
         }
 
         public sealed class CoreEntry : ICustomsEntry
         {
-            private BaseCore _Core;
-            private int _TypeID;
-            private string _TypeName;
-            private long _Position;
-            private int _Length;
+            private readonly BaseCore _Core;
+            private readonly int _TypeID;
+            private readonly string _TypeName;
+            private readonly long _Position;
+            private readonly int _Length;
 
             public BaseCore Core
             {
                 get
                 {
-                    return _Core;
+                    return this._Core;
                 }
             }
 
@@ -368,7 +400,7 @@ namespace Server
             {
                 get
                 {
-                    return _Core == null ? CustomSerial.MinusOne : _Core.Serial;
+                    return this._Core == null ? CustomSerial.MinusOne : this._Core.Serial;
                 }
             }
 
@@ -376,7 +408,7 @@ namespace Server
             {
                 get
                 {
-                    return _TypeID;
+                    return this._TypeID;
                 }
             }
 
@@ -384,7 +416,7 @@ namespace Server
             {
                 get
                 {
-                    return _TypeName;
+                    return this._TypeName;
                 }
             }
 
@@ -392,7 +424,7 @@ namespace Server
             {
                 get
                 {
-                    return _Position;
+                    return this._Position;
                 }
             }
 
@@ -400,33 +432,33 @@ namespace Server
             {
                 get
                 {
-                    return _Length;
+                    return this._Length;
                 }
             }
 
             public CoreEntry(BaseCore core, int typeID, string typeName, long pos, int length)
             {
-                _Core = core;
-                _TypeID = typeID;
-                _TypeName = typeName;
-                _Position = pos;
-                _Length = length;
+                this._Core = core;
+                this._TypeID = typeID;
+                this._TypeName = typeName;
+                this._Position = pos;
+                this._Length = length;
             }
         }
 
         private sealed class ModuleEntry : ICustomsEntry
         {
-            private BaseModule _Module;
-            private int _TypeID;
-            private string _TypeName;
-            private long _Position;
-            private int _Length;
+            private readonly BaseModule _Module;
+            private readonly int _TypeID;
+            private readonly string _TypeName;
+            private readonly long _Position;
+            private readonly int _Length;
 
             public BaseModule Module
             {
                 get
                 {
-                    return _Module;
+                    return this._Module;
                 }
             }
 
@@ -434,7 +466,7 @@ namespace Server
             {
                 get
                 {
-                    return _Modules == null ? CustomSerial.MinusOne : _Module.Serial;
+                    return _Modules == null ? CustomSerial.MinusOne : this._Module.Serial;
                 }
             }
 
@@ -442,7 +474,7 @@ namespace Server
             {
                 get
                 {
-                    return _TypeID;
+                    return this._TypeID;
                 }
             }
 
@@ -450,7 +482,7 @@ namespace Server
             {
                 get
                 {
-                    return _TypeName;
+                    return this._TypeName;
                 }
             }
 
@@ -458,7 +490,7 @@ namespace Server
             {
                 get
                 {
-                    return _Position;
+                    return this._Position;
                 }
             }
 
@@ -466,33 +498,33 @@ namespace Server
             {
                 get
                 {
-                    return _Length;
+                    return this._Length;
                 }
             }
 
             public ModuleEntry(BaseModule module, int typeID, string typeName, long pos, int length)
             {
-                _Module = module;
-                _TypeID = typeID;
-                _TypeName = typeName;
-                _Position = pos;
-                _Length = length;
+                this._Module = module;
+                this._TypeID = typeID;
+                this._TypeName = typeName;
+                this._Position = pos;
+                this._Length = length;
             }
         }
 
         private sealed class ServiceEntry : ICustomsEntry
         {
-            private BaseService _Service;
-            private int _TypeID;
-            private string _TypeName;
-            private long _Position;
-            private int _Length;
+            private readonly BaseService _Service;
+            private readonly int _TypeID;
+            private readonly string _TypeName;
+            private readonly long _Position;
+            private readonly int _Length;
 
             public BaseService Service
             {
                 get
                 {
-                    return _Service;
+                    return this._Service;
                 }
             }
 
@@ -500,7 +532,7 @@ namespace Server
             {
                 get
                 {
-                    return _Services == null ? CustomSerial.MinusOne : _Service.Serial;
+                    return _Services == null ? CustomSerial.MinusOne : this._Service.Serial;
                 }
             }
 
@@ -508,7 +540,7 @@ namespace Server
             {
                 get
                 {
-                    return _TypeID;
+                    return this._TypeID;
                 }
             }
 
@@ -516,7 +548,7 @@ namespace Server
             {
                 get
                 {
-                    return _TypeName;
+                    return this._TypeName;
                 }
             }
 
@@ -524,7 +556,7 @@ namespace Server
             {
                 get
                 {
-                    return _Position;
+                    return this._Position;
                 }
             }
 
@@ -532,17 +564,17 @@ namespace Server
             {
                 get
                 {
-                    return _Length;
+                    return this._Length;
                 }
             }
 
             public ServiceEntry(BaseService service, int typeID, string typeName, long pos, int length)
             {
-                _Service = service;
-                _TypeID = typeID;
-                _TypeName = typeName;
-                _Position = pos;
-                _Length = length;
+                this._Service = service;
+                this._TypeID = typeID;
+                this._TypeName = typeName;
+                this._Position = pos;
+                this._Length = length;
             }
         }
 
@@ -550,7 +582,10 @@ namespace Server
 
         public static string LoadingType
         {
-            get { return m_LoadingType; }
+            get
+            {
+                return m_LoadingType;
+            }
         }
 
         private static readonly Type[] _CustomSerialTypeArray = new Type[1] { typeof(CustomSerial) };
@@ -626,7 +661,6 @@ namespace Server
             _deleteQueue = new Queue<IEntity>();
             _CustomsAddQueue = new Queue<ICustomsEntity>();
             _CustomsDeleteQueue = new Queue<ICustomsEntity>();
-
 
             int mobileCount = 0, itemCount = 0, guildCount = 0, coreCount = 0, moduleCount = 0, serviceCount = 0;
 
@@ -1237,7 +1271,7 @@ namespace Server
                             {
                                 if (failedMobiles)
                                 {
-                                    for (int i = 0; i < mobiles.Count; )
+                                    for (int i = 0; i < mobiles.Count;)
                                     {
                                         if (mobiles[i].TypeID == failedTypeID)
                                             mobiles.RemoveAt(i);
@@ -1247,7 +1281,7 @@ namespace Server
                                 }
                                 else if (failedItems)
                                 {
-                                    for (int i = 0; i < items.Count; )
+                                    for (int i = 0; i < items.Count;)
                                     {
                                         if (items[i].TypeID == failedTypeID)
                                             items.RemoveAt(i);
@@ -1257,7 +1291,7 @@ namespace Server
                                 }
                                 else if (failedCores)
                                 {
-                                    for (int i = 0; i < cores.Count; )
+                                    for (int i = 0; i < cores.Count;)
                                     {
                                         if (cores[i].TypeID == failedTypeID)
                                             cores.RemoveAt(i);
@@ -1267,7 +1301,7 @@ namespace Server
                                 }
                                 else if (failedModules)
                                 {
-                                    for (int i = 0; i < modules.Count; )
+                                    for (int i = 0; i < modules.Count;)
                                     {
                                         if (modules[i].TypeID == failedTypeID)
                                             modules.RemoveAt(i);
@@ -1277,7 +1311,7 @@ namespace Server
                                 }
                                 else if (failedServices)
                                 {
-                                    for (int i = 0; i < services.Count; )
+                                    for (int i = 0; i < services.Count;)
                                     {
                                         if (services[i].TypeID == failedTypeID)
                                             services.RemoveAt(i);
@@ -1439,11 +1473,10 @@ namespace Server
         private static void AppendSafetyLog(string action, ICustomsEntity entity)
         {
             string message = String.Format("Warning: Attempted to {1} {2} during world save." +
-                "{0}This action could cause inconsistent state." +
-                "{0}It is strongly advised that the offending scripts be corrected.",
+                                           "{0}This action could cause inconsistent state." +
+                                           "{0}It is strongly advised that the offending scripts be corrected.",
                 Environment.NewLine,
-                action, entity
-            );
+                action, entity);
 
             AppendSafetyLog(message);
         }
@@ -1451,18 +1484,16 @@ namespace Server
         private static void AppendSafetyLog(string action, IEntity entity)
         {
             string message = String.Format("Warning: Attempted to {1} {2} during world save." +
-                "{0}This action could cause inconsistent state." +
-                "{0}It is strongly advised that the offending scripts be corrected.",
+                                           "{0}This action could cause inconsistent state." +
+                                           "{0}It is strongly advised that the offending scripts be corrected.",
                 Environment.NewLine,
-                action, entity
-            );
+                action, entity);
 
             AppendSafetyLog(message);
         }
 
         private static void AppendSafetyLog(string message)
         {
-
             Console.WriteLine(message);
 
             try
@@ -1586,7 +1617,6 @@ namespace Server
                 Directory.CreateDirectory("Saves/Modules/");
             if (!Directory.Exists("Saves/Services/"))
                 Directory.CreateDirectory("Saves/Services/");
-
 
             /*using ( SaveMetrics metrics = new SaveMetrics() ) {*/
             strategy.Save(null, permitBackgroundWrite);

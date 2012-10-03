@@ -1,71 +1,81 @@
 using System;
-using System.Collections;
 using Server.Items;
-using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a frost troll corpse" )]
-	public class FrostTroll : BaseCreature
-	{
-		[Constructable]
-		public FrostTroll() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Name = "a frost troll";
-			Body = 55;
-			BaseSoundID = 461;
+    [CorpseName("a frost troll corpse")]
+    public class FrostTroll : BaseCreature
+    {
+        [Constructable]
+        public FrostTroll() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            this.Name = "a frost troll";
+            this.Body = 55;
+            this.BaseSoundID = 461;
 
-			SetStr( 227, 265 );
-			SetDex( 66, 85 );
-			SetInt( 46, 70 );
+            this.SetStr(227, 265);
+            this.SetDex(66, 85);
+            this.SetInt(46, 70);
 
-			SetHits( 140, 156 );
+            this.SetHits(140, 156);
 
-			SetDamage( 14, 20 );
+            this.SetDamage(14, 20);
 
-			SetDamageType( ResistanceType.Physical, 75 );
-			SetDamageType( ResistanceType.Cold, 25 );
+            this.SetDamageType(ResistanceType.Physical, 75);
+            this.SetDamageType(ResistanceType.Cold, 25);
 
-			SetResistance( ResistanceType.Physical, 45, 55 );
-			SetResistance( ResistanceType.Cold, 40, 50 );
-			SetResistance( ResistanceType.Poison, 5, 10 );
-			SetResistance( ResistanceType.Energy, 5, 10 );
+            this.SetResistance(ResistanceType.Physical, 45, 55);
+            this.SetResistance(ResistanceType.Cold, 40, 50);
+            this.SetResistance(ResistanceType.Poison, 5, 10);
+            this.SetResistance(ResistanceType.Energy, 5, 10);
 
-			SetSkill( SkillName.MagicResist, 65.1, 80.0 );
-			SetSkill( SkillName.Tactics, 80.1, 100.0 );
-			SetSkill( SkillName.Wrestling, 80.1, 100.0 );
+            this.SetSkill(SkillName.MagicResist, 65.1, 80.0);
+            this.SetSkill(SkillName.Tactics, 80.1, 100.0);
+            this.SetSkill(SkillName.Wrestling, 80.1, 100.0);
 
-			Fame = 4000;
-			Karma = -4000;
+            this.Fame = 4000;
+            this.Karma = -4000;
 
-			VirtualArmor = 50;
+            this.VirtualArmor = 50;
 
-			PackItem( new DoubleAxe() ); // TODO: Weapon??
-		}
+            this.PackItem(new DoubleAxe()); // TODO: Weapon??
+        }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average );
-			AddLoot( LootPack.Gems );
-		}
+        public override void GenerateLoot()
+        {
+            this.AddLoot(LootPack.Average);
+            this.AddLoot(LootPack.Gems);
+        }
 
-		public override int Meat{ get{ return 2; } }
-		public override int TreasureMapLevel{ get{ return 1; } }
+        public override int Meat
+        {
+            get
+            {
+                return 2;
+            }
+        }
+        public override int TreasureMapLevel
+        {
+            get
+            {
+                return 1;
+            }
+        }
 
-		public FrostTroll( Serial serial ) : base( serial )
-		{
-		}
+        public FrostTroll(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write((int)0);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+            int version = reader.ReadInt();
+        }
+    }
 }

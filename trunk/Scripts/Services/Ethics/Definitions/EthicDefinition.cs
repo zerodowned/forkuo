@@ -1,39 +1,67 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Server.Ethics
 {
-	public class EthicDefinition
-	{
-		private int m_PrimaryHue;
+    public class EthicDefinition
+    {
+        private readonly int m_PrimaryHue;
 
-		private TextDefinition m_Title;
-		private TextDefinition m_Adjunct;
+        private readonly TextDefinition m_Title;
+        private readonly TextDefinition m_Adjunct;
 
-		private TextDefinition m_JoinPhrase;
+        private readonly TextDefinition m_JoinPhrase;
 
-		private Power[] m_Powers;
+        private readonly Power[] m_Powers;
 
-		public int PrimaryHue { get { return m_PrimaryHue; } }
+        public int PrimaryHue
+        {
+            get
+            {
+                return this.m_PrimaryHue;
+            }
+        }
 
-		public TextDefinition Title { get { return m_Title; } }
-		public TextDefinition Adjunct { get { return m_Adjunct; } }
+        public TextDefinition Title
+        {
+            get
+            {
+                return this.m_Title;
+            }
+        }
+        public TextDefinition Adjunct
+        {
+            get
+            {
+                return this.m_Adjunct;
+            }
+        }
 
-		public TextDefinition JoinPhrase { get { return m_JoinPhrase; } }
+        public TextDefinition JoinPhrase
+        {
+            get
+            {
+                return this.m_JoinPhrase;
+            }
+        }
 
-		public Power[] Powers { get { return m_Powers; } }
+        public Power[] Powers
+        {
+            get
+            {
+                return this.m_Powers;
+            }
+        }
 
-		public EthicDefinition( int primaryHue, TextDefinition title, TextDefinition adjunct, TextDefinition joinPhrase, Power[] powers )
-		{
-			m_PrimaryHue = primaryHue;
+        public EthicDefinition(int primaryHue, TextDefinition title, TextDefinition adjunct, TextDefinition joinPhrase, Power[] powers)
+        {
+            this.m_PrimaryHue = primaryHue;
 
-			m_Title = title;
-			m_Adjunct = adjunct;
+            this.m_Title = title;
+            this.m_Adjunct = adjunct;
 
-			m_JoinPhrase = joinPhrase;
+            this.m_JoinPhrase = joinPhrase;
 
-			m_Powers = powers;
-		}
-	}
+            this.m_Powers = powers;
+        }
+    }
 }

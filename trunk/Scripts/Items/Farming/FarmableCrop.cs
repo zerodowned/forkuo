@@ -1,94 +1,92 @@
 using System;
-using Server;
 using Server.Network;
-using Server.Regions;
 
 namespace Server.Items
 {
-	public abstract class FarmableCrop : Item
-	{
-		private bool m_Picked;
+    public abstract class FarmableCrop : Item
+    {
+        private bool m_Picked;
 
-		public abstract Item GetCropObject();
-		public abstract int GetPickedID();
+        public abstract Item GetCropObject();
 
-		public FarmableCrop( int itemID ) : base( itemID )
-		{
-			Movable = false;
-		}
+        public abstract int GetPickedID();
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			Map map = this.Map;
-			Point3D loc = this.Location;
+        public FarmableCrop(int itemID) : base(itemID)
+        {
+            this.Movable = false;
+        }
 
-			if ( Parent != null || Movable || IsLockedDown || IsSecure || map == null || map == Map.Internal )
-				return;
+        public override void OnDoubleClick(Mobile from)
+        {
+            Map map = this.Map;
+            Point3D loc = this.Location;
 
-			if ( !from.InRange( loc, 2 ) || !from.InLOS( this ) )
-				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
-			else if ( !m_Picked )
-				OnPicked( from, loc, map );
-		}
+            if (this.Parent != null || this.Movable || this.IsLockedDown || this.IsSecure || map == null || map == Map.Internal)
+                return;
 
-		public virtual void OnPicked( Mobile from, Point3D loc, Map map )
-		{
-			ItemID = GetPickedID();
+            if (!from.InRange(loc, 2) || !from.InLOS(this))
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            else if (!this.m_Picked)
+                this.OnPicked(from, loc, map);
+        }
 
-			Item spawn = GetCropObject();
+        public virtual void OnPicked(Mobile from, Point3D loc, Map map)
+        {
+            this.ItemID = this.GetPickedID();
 
-			if ( spawn != null )
-				spawn.MoveToWorld( loc, map );
+            Item spawn = this.GetCropObject();
 
-			m_Picked = true;
+            if (spawn != null)
+                spawn.MoveToWorld(loc, map);
 
-			Unlink();
+            this.m_Picked = true;
 
-			Timer.DelayCall( TimeSpan.FromMinutes( 5.0 ), new TimerCallback( Delete ) );
-		}
+            this.Unlink();
 
-		public void Unlink()
-		{
-			ISpawner se = this.Spawner;
+            Timer.DelayCall(TimeSpan.FromMinutes(5.0), new TimerCallback(Delete));
+        }
 
-			if ( se != null )
-			{
-				this.Spawner.Remove( this );
-				this.Spawner = null;
-			}
+        public void Unlink()
+        {
+            ISpawner se = this.Spawner;
 
-		}
+            if (se != null)
+            {
+                this.Spawner.Remove(this);
+                this.Spawner = null;
+            }
+        }
 
-		public FarmableCrop( Serial serial ) : base( serial )
-		{
-		}
+        public FarmableCrop(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
+            writer.WriteEncodedInt(0); // version
 
-			writer.Write( m_Picked );
-		}
+            writer.Write(this.m_Picked);
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
+            int version = reader.ReadEncodedInt();
 
-			switch ( version )
-			{
-				case 0:
-					m_Picked = reader.ReadBool();
-					break;
-			}
-			if ( m_Picked )
-			{
-				Unlink();
-				Delete();
-			}
-		}
-	}
+            switch ( version )
+            {
+                case 0:
+                    this.m_Picked = reader.ReadBool();
+                    break;
+            }
+            if (this.m_Picked)
+            {
+                this.Unlink();
+                this.Delete();
+            }
+        }
+    }
 }

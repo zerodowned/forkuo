@@ -1,59 +1,91 @@
 using System;
-using System.Collections;
-using Server;
-using Server.Engines;
-using Server.Engines.Help;
 
 namespace Server.Engines.Reports
 {
-	public class ResponseInfo : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "rs", new ConstructCallback( Construct ) );
+    public class ResponseInfo : PersistableObject
+    {
+        #region Type Identification
+        public static readonly PersistableType ThisTypeID = new PersistableType("rs", new ConstructCallback(Construct));
 
-		private static PersistableObject Construct()
-		{
-			return new ResponseInfo();
-		}
+        private static PersistableObject Construct()
+        {
+            return new ResponseInfo();
+        }
 
-		public override PersistableType TypeID{ get{ return ThisTypeID; } }
-		#endregion
+        public override PersistableType TypeID
+        {
+            get
+            {
+                return ThisTypeID;
+            }
+        }
+        #endregion
 
-		private DateTime m_TimeStamp;
+        private DateTime m_TimeStamp;
 
-		private string m_SentBy;
-		private string m_Message;
+        private string m_SentBy;
+        private string m_Message;
 
-		public DateTime TimeStamp{ get{ return m_TimeStamp; } set{ m_TimeStamp = value; } }
+        public DateTime TimeStamp
+        {
+            get
+            {
+                return this.m_TimeStamp;
+            }
+            set
+            {
+                this.m_TimeStamp = value;
+            }
+        }
 
-		public string SentBy{ get{ return m_SentBy; } set{ m_SentBy = value; } }
-		public string Message{ get{ return m_Message; } set{ m_Message = value; } }
+        public string SentBy
+        {
+            get
+            {
+                return this.m_SentBy;
+            }
+            set
+            {
+                this.m_SentBy = value;
+            }
+        }
+        public string Message
+        {
+            get
+            {
+                return this.m_Message;
+            }
+            set
+            {
+                this.m_Message = value;
+            }
+        }
 
-		public ResponseInfo()
-		{
-		}
+        public ResponseInfo()
+        {
+        }
 
-		public ResponseInfo( string sentBy, string message )
-		{
-			m_TimeStamp = DateTime.Now;
-			m_SentBy = sentBy;
-			m_Message = message;
-		}
+        public ResponseInfo(string sentBy, string message)
+        {
+            this.m_TimeStamp = DateTime.Now;
+            this.m_SentBy = sentBy;
+            this.m_Message = message;
+        }
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetDateTime( "t", m_TimeStamp );
+        public override void SerializeAttributes(PersistanceWriter op)
+        {
+            op.SetDateTime("t", this.m_TimeStamp);
 
-			op.SetString( "s", m_SentBy );
-			op.SetString( "m", m_Message );
-		}
+            op.SetString("s", this.m_SentBy);
+            op.SetString("m", this.m_Message);
+        }
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			m_TimeStamp = ip.GetDateTime( "t" );
+        public override void DeserializeAttributes(PersistanceReader ip)
+        {
+            this.m_TimeStamp = ip.GetDateTime("t");
 
-			m_SentBy = ip.GetString( "s" );
-			m_Message = ip.GetString( "m" );
-		}
-	}
+            this.m_SentBy = ip.GetString("s");
+            this.m_Message = ip.GetString("m");
+        }
+    }
 }

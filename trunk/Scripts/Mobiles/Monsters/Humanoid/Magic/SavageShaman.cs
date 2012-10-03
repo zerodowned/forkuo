@@ -1,290 +1,308 @@
 using System;
 using System.Collections;
-using Server;
-using Server.Misc;
 using Server.Items;
 using Server.Spells;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a savage corpse" )]
-	public class SavageShaman : BaseCreature
-	{
-		[Constructable]
-		public SavageShaman() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Name = NameList.RandomName( "savage shaman" );
+    [CorpseName("a savage corpse")]
+    public class SavageShaman : BaseCreature
+    {
+        [Constructable]
+        public SavageShaman() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            this.Name = NameList.RandomName("savage shaman");
 
-			if ( Utility.RandomBool() )
-				Body = 184;
-			else
-				Body = 183;
+            if (Utility.RandomBool())
+                this.Body = 184;
+            else
+                this.Body = 183;
 
-			SetStr( 126, 145 );
-			SetDex( 91, 110 );
-			SetInt( 161, 185 );
+            this.SetStr(126, 145);
+            this.SetDex(91, 110);
+            this.SetInt(161, 185);
 
-			SetDamage( 4, 10 );
+            this.SetDamage(4, 10);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+            this.SetDamageType(ResistanceType.Physical, 100);
 
-			SetResistance( ResistanceType.Physical, 30, 40 );
-			SetResistance( ResistanceType.Fire, 20, 30 );
-			SetResistance( ResistanceType.Cold, 20, 30 );
-			SetResistance( ResistanceType.Poison, 20, 30 );
-			SetResistance( ResistanceType.Energy, 40, 50 );
+            this.SetResistance(ResistanceType.Physical, 30, 40);
+            this.SetResistance(ResistanceType.Fire, 20, 30);
+            this.SetResistance(ResistanceType.Cold, 20, 30);
+            this.SetResistance(ResistanceType.Poison, 20, 30);
+            this.SetResistance(ResistanceType.Energy, 40, 50);
 
-			SetSkill( SkillName.EvalInt, 77.5, 100.0 );
-			SetSkill( SkillName.Fencing, 62.5, 85.0 );
-			SetSkill( SkillName.Macing, 62.5, 85.0 );
-			SetSkill( SkillName.Magery, 72.5, 95.0 );
-			SetSkill( SkillName.Meditation, 77.5, 100.0 );
-			SetSkill( SkillName.MagicResist, 77.5, 100.0 );
-			SetSkill( SkillName.Swords, 62.5, 85.0 );
-			SetSkill( SkillName.Tactics, 62.5, 85.0 );
-			SetSkill( SkillName.Wrestling, 62.5, 85.0 );
+            this.SetSkill(SkillName.EvalInt, 77.5, 100.0);
+            this.SetSkill(SkillName.Fencing, 62.5, 85.0);
+            this.SetSkill(SkillName.Macing, 62.5, 85.0);
+            this.SetSkill(SkillName.Magery, 72.5, 95.0);
+            this.SetSkill(SkillName.Meditation, 77.5, 100.0);
+            this.SetSkill(SkillName.MagicResist, 77.5, 100.0);
+            this.SetSkill(SkillName.Swords, 62.5, 85.0);
+            this.SetSkill(SkillName.Tactics, 62.5, 85.0);
+            this.SetSkill(SkillName.Wrestling, 62.5, 85.0);
 
-			Fame = 1000;
-			Karma = -1000;
+            this.Fame = 1000;
+            this.Karma = -1000;
 			
-			PackReg( 10, 15 );
-			PackItem( new Bandage( Utility.RandomMinMax( 1, 15 ) ) );
+            this.PackReg(10, 15);
+            this.PackItem(new Bandage(Utility.RandomMinMax(1, 15)));
 
-			if ( 0.1 > Utility.RandomDouble() )
-				PackItem( new TribalBerry() );
+            if (0.1 > Utility.RandomDouble())
+                this.PackItem(new TribalBerry());
 
-			AddItem( new BoneArms() );
-			AddItem( new BoneLegs() );
-			AddItem( new DeerMask() );
-		}
+            this.AddItem(new BoneArms());
+            this.AddItem(new BoneLegs());
+            this.AddItem(new DeerMask());
+        }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average );
+        public override void GenerateLoot()
+        {
+            this.AddLoot(LootPack.Average);
+        }
 
-		}
+        public override int Meat
+        {
+            get
+            {
+                return 1;
+            }
+        }
+        public override bool AlwaysMurderer
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override bool ShowFameTitle
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		public override int Meat{ get{ return 1; } }
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool ShowFameTitle{ get{ return false; } }
+        public override OppositionGroup OppositionGroup
+        {
+            get
+            {
+                return OppositionGroup.SavagesAndOrcs;
+            }
+        }
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.SavagesAndOrcs; }
-		}
+        public override bool IsEnemy(Mobile m)
+        {
+            if (m.BodyMod == 183 || m.BodyMod == 184)
+                return false;
 
-		public override bool IsEnemy( Mobile m )
-		{
-			if ( m.BodyMod == 183 || m.BodyMod == 184 )
-				return false;
+            return base.IsEnemy(m);
+        }
 
-			return base.IsEnemy( m );
-		}
+        public override void AggressiveAction(Mobile aggressor, bool criminal)
+        {
+            base.AggressiveAction(aggressor, criminal);
 
-		public override void AggressiveAction( Mobile aggressor, bool criminal )
-		{
-			base.AggressiveAction( aggressor, criminal );
+            if (aggressor.BodyMod == 183 || aggressor.BodyMod == 184)
+            {
+                AOS.Damage(aggressor, 50, 0, 100, 0, 0, 0);
+                aggressor.BodyMod = 0;
+                aggressor.HueMod = -1;
+                aggressor.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
+                aggressor.PlaySound(0x307);
+                aggressor.SendLocalizedMessage(1040008); // Your skin is scorched as the tribal paint burns away!
 
-			if ( aggressor.BodyMod == 183 || aggressor.BodyMod == 184 )
-			{
-				AOS.Damage( aggressor, 50, 0, 100, 0, 0, 0 );
-				aggressor.BodyMod = 0;
-				aggressor.HueMod = -1;
-				aggressor.FixedParticles( 0x36BD, 20, 10, 5044, EffectLayer.Head );
-				aggressor.PlaySound( 0x307 );
-				aggressor.SendLocalizedMessage( 1040008 ); // Your skin is scorched as the tribal paint burns away!
+                if (aggressor is PlayerMobile)
+                    ((PlayerMobile)aggressor).SavagePaintExpiration = TimeSpan.Zero;
+            }
+        }
 
-				if ( aggressor is PlayerMobile )
-					((PlayerMobile)aggressor).SavagePaintExpiration = TimeSpan.Zero;
-			}
-		}
+        public override void AlterMeleeDamageTo(Mobile to, ref int damage)
+        {
+            if (to is Dragon || to is WhiteWyrm || to is SwampDragon || to is Drake || to is Nightmare || to is Hiryu || to is LesserHiryu || to is Daemon)
+                damage *= 3;
+        }
 
-		public override void AlterMeleeDamageTo( Mobile to, ref int damage )
-		{
-			if ( to is Dragon || to is WhiteWyrm || to is SwampDragon || to is Drake || to is Nightmare || to is Hiryu || to is LesserHiryu || to is Daemon )
-				damage *= 3;
-		}
+        public override void OnGotMeleeAttack(Mobile attacker)
+        {
+            base.OnGotMeleeAttack(attacker);
 
-		public override void OnGotMeleeAttack( Mobile attacker )
-		{
-			base.OnGotMeleeAttack( attacker );
+            if (0.1 > Utility.RandomDouble())
+                this.BeginSavageDance();
+        }
 
-			if ( 0.1 > Utility.RandomDouble() )
-				BeginSavageDance();
-		}
+        public void BeginSavageDance()
+        {
+            if (this.Map == null)
+                return;
 
-		public void BeginSavageDance()
-		{
-			if( this.Map == null )
-				return;
+            ArrayList list = new ArrayList();
 
-			ArrayList list = new ArrayList();
+            foreach (Mobile m in this.GetMobilesInRange(8))
+            {
+                if (m != this && m is SavageShaman)
+                    list.Add(m);
+            }
 
-			foreach ( Mobile m in this.GetMobilesInRange( 8 ) )
-			{
-				if ( m != this && m is SavageShaman )
-					list.Add( m );
-			}
+            this.Animate(111, 5, 1, true, false, 0); // Do a little dance...
 
-			Animate( 111, 5, 1, true, false, 0 ); // Do a little dance...
+            if (this.AIObject != null)
+                this.AIObject.NextMove = DateTime.Now + TimeSpan.FromSeconds(1.0);
 
-			if ( AIObject != null )
-				AIObject.NextMove = DateTime.Now + TimeSpan.FromSeconds( 1.0 );
+            if (list.Count >= 3)
+            {
+                for (int i = 0; i < list.Count; ++i)
+                {
+                    SavageShaman dancer = (SavageShaman)list[i];
 
-			if ( list.Count >= 3 )
-			{
-				for ( int i = 0; i < list.Count; ++i )
-				{
-					SavageShaman dancer = (SavageShaman)list[i];
+                    dancer.Animate(111, 5, 1, true, false, 0); // Get down tonight...
 
-					dancer.Animate( 111, 5, 1, true, false, 0 ); // Get down tonight...
+                    if (dancer.AIObject != null)
+                        dancer.AIObject.NextMove = DateTime.Now + TimeSpan.FromSeconds(1.0);
+                }
 
-					if ( dancer.AIObject != null )
-						dancer.AIObject.NextMove = DateTime.Now + TimeSpan.FromSeconds( 1.0 );
-				}
+                Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerCallback(EndSavageDance));
+            }
+        }
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerCallback( EndSavageDance ) );
-			}
-		}
+        public void EndSavageDance()
+        {
+            if (this.Deleted)
+                return;
 
-		public void EndSavageDance()
-		{
-			if ( Deleted )
-				return;
+            ArrayList list = new ArrayList();
 
-			ArrayList list = new ArrayList();
+            foreach (Mobile m in this.GetMobilesInRange(8))
+                list.Add(m);
 
-			foreach ( Mobile m in this.GetMobilesInRange( 8 ) )
-				list.Add( m );
+            if (list.Count > 0)
+            {
+                switch ( Utility.Random(3) )
+                {
+                    case 0: /* greater heal */
+                        {
+                            foreach (Mobile m in list)
+                            {
+                                bool isFriendly = (m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback);
 
-			if ( list.Count > 0 )
-			{
-				switch ( Utility.Random( 3 ) )
-				{
-					case 0: /* greater heal */
-					{
-						foreach ( Mobile m in list )
-						{
-							bool isFriendly = ( m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback );
+                                if (!isFriendly)
+                                    continue;
 
-							if ( !isFriendly )
-								continue;
+                                if (m.Poisoned || MortalStrike.IsWounded(m) || !this.CanBeBeneficial(m))
+                                    continue;
 
-							if ( m.Poisoned || MortalStrike.IsWounded( m ) || !CanBeBeneficial( m ) )
-								continue;
+                                this.DoBeneficial(m);
 
-							DoBeneficial( m );
+                                // Algorithm: (40% of magery) + (1-10)
 
-							// Algorithm: (40% of magery) + (1-10)
+                                int toHeal = (int)(this.Skills[SkillName.Magery].Value * 0.4);
+                                toHeal += Utility.Random(1, 10);
 
-							int toHeal = (int)(Skills[SkillName.Magery].Value * 0.4);
-							toHeal += Utility.Random( 1, 10 );
+                                m.Heal(toHeal, this);
 
-							m.Heal( toHeal, this );
+                                m.FixedParticles(0x376A, 9, 32, 5030, EffectLayer.Waist);
+                                m.PlaySound(0x202);
+                            }
 
-							m.FixedParticles( 0x376A, 9, 32, 5030, EffectLayer.Waist );
-							m.PlaySound( 0x202 );
-						}
+                            break;
+                        }
+                    case 1: /* lightning */
+                        {
+                            foreach (Mobile m in list)
+                            {
+                                bool isFriendly = (m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback);
 
-						break;
-					}
-					case 1: /* lightning */
-					{
-						foreach ( Mobile m in list )
-						{
-							bool isFriendly = ( m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback );
+                                if (isFriendly)
+                                    continue;
 
-							if ( isFriendly )
-								continue;
+                                if (!this.CanBeHarmful(m))
+                                    continue;
 
-							if ( !CanBeHarmful( m ) )
-								continue;
+                                this.DoHarmful(m);
 
-							DoHarmful( m );
+                                double damage;
 
-							double damage;
+                                if (Core.AOS)
+                                {
+                                    int baseDamage = 6 + (int)(this.Skills[SkillName.EvalInt].Value / 5.0);
 
-							if ( Core.AOS )
-							{
-								int baseDamage = 6 + (int)(Skills[SkillName.EvalInt].Value / 5.0);
+                                    damage = Utility.RandomMinMax(baseDamage, baseDamage + 3);
+                                }
+                                else
+                                {
+                                    damage = Utility.Random(12, 9);
+                                }
 
-								damage = Utility.RandomMinMax( baseDamage, baseDamage + 3 );
-							}
-							else
-							{
-								damage = Utility.Random( 12, 9 );
-							}
+                                m.BoltEffect(0);
 
-							m.BoltEffect( 0 );
+                                SpellHelper.Damage(TimeSpan.FromSeconds(0.25), m, this, damage, 0, 0, 0, 0, 100);
+                            }
 
-							SpellHelper.Damage( TimeSpan.FromSeconds( 0.25 ), m, this, damage, 0, 0, 0, 0, 100 );
-						}
+                            break;
+                        }
+                    case 2: /* poison */
+                        {
+                            foreach (Mobile m in list)
+                            {
+                                bool isFriendly = (m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback);
 
-						break;
-					}
-					case 2: /* poison */
-					{
-						foreach ( Mobile m in list )
-						{
-							bool isFriendly = ( m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback );
+                                if (isFriendly)
+                                    continue;
 
-							if ( isFriendly )
-								continue;
+                                if (!this.CanBeHarmful(m))
+                                    continue;
 
-							if ( !CanBeHarmful( m ) )
-								continue;
+                                this.DoHarmful(m);
 
-							DoHarmful( m );
+                                if (m.Spell != null)
+                                    m.Spell.OnCasterHurt();
 
-							if ( m.Spell != null )
-								m.Spell.OnCasterHurt();
+                                m.Paralyzed = false;
 
-							m.Paralyzed = false;
+                                double total = this.Skills[SkillName.Magery].Value + this.Skills[SkillName.Poisoning].Value;
 
-							double total = Skills[SkillName.Magery].Value + Skills[SkillName.Poisoning].Value;
+                                double dist = this.GetDistanceToSqrt(m);
 
-							double dist = GetDistanceToSqrt( m );
+                                if (dist >= 3.0)
+                                    total -= (dist - 3.0) * 10.0;
 
-							if ( dist >= 3.0 )
-								total -= (dist - 3.0) * 10.0;
+                                int level;
 
-							int level;
+                                if (total >= 200.0 && Utility.Random(1, 100) <= 10)
+                                    level = 3;
+                                else if (total > 170.0)
+                                    level = 2;
+                                else if (total > 130.0)
+                                    level = 1;
+                                else
+                                    level = 0;
 
-							if ( total >= 200.0 && Utility.Random( 1, 100 ) <= 10 )
-								level = 3;
-							else if ( total > 170.0 )
-								level = 2;
-							else if ( total > 130.0 )
-								level = 1;
-							else
-								level = 0;
+                                m.ApplyPoison(this, Poison.GetPoison(level));
 
-							m.ApplyPoison( this, Poison.GetPoison( level ) );
+                                m.FixedParticles(0x374A, 10, 15, 5021, EffectLayer.Waist);
+                                m.PlaySound(0x474);
+                            }
 
-							m.FixedParticles( 0x374A, 10, 15, 5021, EffectLayer.Waist );
-							m.PlaySound( 0x474 );
-						}
+                            break;
+                        }
+                }
+            }
+        }
 
-						break;
-					}
-				}
-			}
-		}
+        public SavageShaman(Serial serial) : base(serial)
+        {
+        }
 
-		public SavageShaman( Serial serial ) : base( serial )
-		{
-		}
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write((int)0);
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+            int version = reader.ReadInt();
+        }
+    }
 }

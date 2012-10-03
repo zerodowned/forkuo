@@ -21,11 +21,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _AccountsPerIP;
+                return this._AccountsPerIP;
             }
             set
             {
-                _AccountsPerIP = value;
+                this._AccountsPerIP = value;
             }
         }
 
@@ -34,11 +34,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _HousesPerAccount;
+                return this._HousesPerAccount;
             }
             set
             {
-                _HousesPerAccount = value;
+                this._HousesPerAccount = value;
             }
         }
 
@@ -47,11 +47,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _MaxHousesPerAccount;
+                return this._MaxHousesPerAccount;
             }
             set
             {
-                _MaxHousesPerAccount = value;
+                this._MaxHousesPerAccount = value;
             }
         }
 
@@ -60,11 +60,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _AutoAccountCreation;
+                return this._AutoAccountCreation;
             }
             set
             {
-                _AutoAccountCreation = value;
+                this._AutoAccountCreation = value;
             }
         }
 
@@ -73,11 +73,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _RestrictDeletion;
+                return this._RestrictDeletion;
             }
             set
             {
-                _RestrictDeletion = value;
+                this._RestrictDeletion = value;
             }
         }
 
@@ -86,11 +86,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return _DeleteDelay;
+                return this._DeleteDelay;
             }
             set
             {
-                _DeleteDelay = value;
+                this._DeleteDelay = value;
             }
         }
 
@@ -99,11 +99,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_PasswordProtection;
+                return this.m_PasswordProtection;
             }
             set
             {
-                m_PasswordProtection = value;
+                this.m_PasswordProtection = value;
             }
         }
         #endregion
@@ -113,13 +113,13 @@ namespace CustomsFramework.Systems.ShardControl
             bool restrictDeletion = true, TimeSpan deleteDelay = TimeSpan.FromDays(7.0),
             PasswordProtection passwordProtection = PasswordProtection.NewCrypt)
         {
-            _AccountsPerIP = accountsPerIP;
-            _HousesPerAccount = housesPerAccount;
-            _MaxHousesPerAccount = maxHousesPerAccount;
-            _AutoAccountCreation = autoAccountCreation;
-            _RestrictDeletion = restrictDeletion;
-            _DeleteDelay = deleteDelay;
-            m_PasswordProtection = passwordProtection;
+            this._AccountsPerIP = accountsPerIP;
+            this._HousesPerAccount = housesPerAccount;
+            this._MaxHousesPerAccount = maxHousesPerAccount;
+            this._AutoAccountCreation = autoAccountCreation;
+            this._RestrictDeletion = restrictDeletion;
+            this._DeleteDelay = deleteDelay;
+            this.m_PasswordProtection = passwordProtection;
         }
 
         public override void Serialize(GenericWriter writer)
@@ -127,18 +127,18 @@ namespace CustomsFramework.Systems.ShardControl
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(_AccountsPerIP);
-            writer.Write(_HousesPerAccount);
-            writer.Write(_MaxHousesPerAccount);
-            writer.Write(_AutoAccountCreation);
-            writer.Write(_RestrictDeletion);
-            writer.Write(_DeleteDelay);
-            writer.Write((byte)m_PasswordProtection);
+            writer.Write(this._AccountsPerIP);
+            writer.Write(this._HousesPerAccount);
+            writer.Write(this._MaxHousesPerAccount);
+            writer.Write(this._AutoAccountCreation);
+            writer.Write(this._RestrictDeletion);
+            writer.Write(this._DeleteDelay);
+            writer.Write((byte)this.m_PasswordProtection);
         }
 
         public AccountSettings(GenericReader reader)
         {
-            Deserialize(reader);
+            this.Deserialize(reader);
         }
 
         protected sealed override void Deserialize(GenericReader reader)
@@ -149,13 +149,13 @@ namespace CustomsFramework.Systems.ShardControl
             {
                 case 0:
                     {
-                        _AccountsPerIP = reader.ReadInt();
-                        _HousesPerAccount = reader.ReadInt();
-                        _MaxHousesPerAccount = reader.ReadInt();
-                        _AutoAccountCreation = reader.ReadBool();
-                        _RestrictDeletion = reader.ReadBool();
-                        _DeleteDelay = reader.ReadTimeSpan();
-                        m_PasswordProtection = (PasswordProtection)reader.ReadByte();
+                        this._AccountsPerIP = reader.ReadInt();
+                        this._HousesPerAccount = reader.ReadInt();
+                        this._MaxHousesPerAccount = reader.ReadInt();
+                        this._AutoAccountCreation = reader.ReadBool();
+                        this._RestrictDeletion = reader.ReadBool();
+                        this._DeleteDelay = reader.ReadTimeSpan();
+                        this.m_PasswordProtection = (PasswordProtection)reader.ReadByte();
                         break;
                     }
             }

@@ -1,25 +1,23 @@
 using System;
-using Server;
 using Server.Targeting;
-using Server.Network;
 
 namespace Server.Engines.BulkOrders
 {
-	public class SmallBODTarget : Target
-	{
-		private SmallBOD m_Deed;
+    public class SmallBODTarget : Target
+    {
+        private readonly SmallBOD m_Deed;
 
-		public SmallBODTarget( SmallBOD deed ) : base( 18, false, TargetFlags.None )
-		{
-			m_Deed = deed;
-		}
+        public SmallBODTarget(SmallBOD deed) : base(18, false, TargetFlags.None)
+        {
+            this.m_Deed = deed;
+        }
 
-		protected override void OnTarget( Mobile from, object targeted )
-		{
-			if ( m_Deed.Deleted || !m_Deed.IsChildOf( from.Backpack ) )
-				return;
+        protected override void OnTarget(Mobile from, object targeted)
+        {
+            if (this.m_Deed.Deleted || !this.m_Deed.IsChildOf(from.Backpack))
+                return;
 
-			m_Deed.EndCombine( from, targeted );
-		}
-	}
+            this.m_Deed.EndCombine(from, targeted);
+        }
+    }
 }

@@ -13,15 +13,13 @@ namespace CustomsFramework.Systems.VIPSystem
         }
 
         [Constructable(AccessLevel.Developer)]
-        public VIPFreeHouseDecorationDeed()
-            : base()
+        public VIPFreeHouseDecorationDeed() : base()
         {
-            Hue = 2213;
+            this.Hue = 2213;
             this.Bonuses.FreeHouseDecoration.Enabled = true;
         }
 
-        public VIPFreeHouseDecorationDeed(Serial serial)
-            : base(serial)
+        public VIPFreeHouseDecorationDeed(Serial serial) : base(serial)
         {
         }
 
@@ -42,7 +40,6 @@ namespace CustomsFramework.Systems.VIPSystem
             {
                 case 0:
                     {
-
                         break;
                     }
             }

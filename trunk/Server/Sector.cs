@@ -1,319 +1,407 @@
 /***************************************************************************
- *                                 Sector.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: Sector.cs 24 2006-06-16 22:31:18Z krrios $
- *
- ***************************************************************************/
+*                                 Sector.cs
+*                            -------------------
+*   begin                : May 1, 2002
+*   copyright            : (C) The RunUO Software Team
+*   email                : info@runuo.com
+*
+*   $Id: Sector.cs 24 2006-06-16 22:31:18Z krrios $
+*
+***************************************************************************/
 
 /***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+*
+*   This program is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation; either version 2 of the License, or
+*   (at your option) any later version.
+*
+***************************************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Items;
 using Server.Network;
 
-namespace Server {
-	public class RegionRect : IComparable {
-		private Region m_Region;
-		private Rectangle3D m_Rect;
+namespace Server
+{
+    public class RegionRect : IComparable
+    {
+        private readonly Region m_Region;
+        private readonly Rectangle3D m_Rect;
 
-		public Region Region { get { return m_Region; } }
-		public Rectangle3D Rect { get { return m_Rect; } }
+        public Region Region
+        {
+            get
+            {
+                return this.m_Region;
+            }
+        }
+        public Rectangle3D Rect
+        {
+            get
+            {
+                return this.m_Rect;
+            }
+        }
 
-		public RegionRect( Region region, Rectangle3D rect ) {
-			m_Region = region;
-			m_Rect = rect;
-		}
+        public RegionRect(Region region, Rectangle3D rect)
+        {
+            this.m_Region = region;
+            this.m_Rect = rect;
+        }
 
-		public bool Contains( Point3D loc ) {
-			return m_Rect.Contains( loc );
-		}
+        public bool Contains(Point3D loc)
+        {
+            return this.m_Rect.Contains(loc);
+        }
 
-		int IComparable.CompareTo( object obj ) {
-			if ( obj == null )
-				return 1;
+        int IComparable.CompareTo(object obj)
+        {
+            if (obj == null)
+                return 1;
 
-			RegionRect regRect = obj as RegionRect;
+            RegionRect regRect = obj as RegionRect;
 
-			if ( regRect == null )
-				throw new ArgumentException( "obj is not a RegionRect", "obj" );
+            if (regRect == null)
+                throw new ArgumentException("obj is not a RegionRect", "obj");
 
-			return ( ( IComparable ) m_Region ).CompareTo( regRect.m_Region );
-		}
-	}
+            return ((IComparable)this.m_Region).CompareTo(regRect.m_Region);
+        }
+    }
 
+    public class Sector
+    {
+        private readonly int m_X;
 
-	public class Sector {
-		private int m_X, m_Y;
-		private Map m_Owner;
-		private List<Mobile> m_Mobiles;
-		private List<Mobile> m_Players;
-		private List<Item> m_Items;
-		private List<NetState> m_Clients;
-		private List<BaseMulti> m_Multis;
-		private List<RegionRect> m_RegionRects;
-		private bool m_Active;
+        private readonly int m_Y;
 
-		// TODO: Can we avoid this?
-		private static List<Mobile> m_DefaultMobileList = new List<Mobile>();
-		private static List<Item> m_DefaultItemList = new List<Item>();
-		private static List<NetState> m_DefaultClientList = new List<NetState>();
-		private static List<BaseMulti> m_DefaultMultiList = new List<BaseMulti>();
-		private static List<RegionRect> m_DefaultRectList = new List<RegionRect>();
+        private readonly Map m_Owner;
+        private List<Mobile> m_Mobiles;
+        private List<Mobile> m_Players;
+        private List<Item> m_Items;
+        private List<NetState> m_Clients;
+        private List<BaseMulti> m_Multis;
+        private List<RegionRect> m_RegionRects;
+        private bool m_Active;
 
-		public Sector( int x, int y, Map owner ) {
-			m_X = x;
-			m_Y = y;
-			m_Owner = owner;
-			m_Active = false;
-		}
+        // TODO: Can we avoid this?
+        private static readonly List<Mobile> m_DefaultMobileList = new List<Mobile>();
+        private static readonly List<Item> m_DefaultItemList = new List<Item>();
+        private static readonly List<NetState> m_DefaultClientList = new List<NetState>();
+        private static readonly List<BaseMulti> m_DefaultMultiList = new List<BaseMulti>();
+        private static readonly List<RegionRect> m_DefaultRectList = new List<RegionRect>();
 
-		private void Add<T>( ref List<T> list, T value ) {
-			if ( list == null ) {
-				list = new List<T>();
-			}
+        public Sector(int x, int y, Map owner)
+        {
+            this.m_X = x;
+            this.m_Y = y;
+            this.m_Owner = owner;
+            this.m_Active = false;
+        }
 
-			list.Add( value );
-		}
+        private void Add<T>(ref List<T> list, T value)
+        {
+            if (list == null)
+            {
+                list = new List<T>();
+            }
 
-		private void Remove<T>( ref List<T> list, T value ) {
-			if ( list != null ) {
-				list.Remove( value );
+            list.Add(value);
+        }
 
-				if ( list.Count == 0 ) {
-					list = null;
-				}
-			}
-		}
+        private void Remove<T>(ref List<T> list, T value)
+        {
+            if (list != null)
+            {
+                list.Remove(value);
 
-		private void Replace<T>( ref List<T> list, T oldValue, T newValue ) {
-			if ( oldValue != null && newValue != null ) {
-				int index = ( list != null ? list.IndexOf( oldValue ) : -1 );
+                if (list.Count == 0)
+                {
+                    list = null;
+                }
+            }
+        }
 
-				if ( index >= 0 ) {
-					list[index] = newValue;
-				} else {
-					Add( ref list, newValue );
-				}
-			} else if ( oldValue != null ) {
-				Remove( ref list, oldValue );
-			} else if ( newValue != null ) {
-				Add( ref list, newValue );
-			}
-		}
+        private void Replace<T>(ref List<T> list, T oldValue, T newValue)
+        {
+            if (oldValue != null && newValue != null)
+            {
+                int index = (list != null ? list.IndexOf(oldValue) : -1);
 
-		public void OnClientChange( NetState oldState, NetState newState ) {
-			Replace( ref m_Clients, oldState, newState );
-		}
+                if (index >= 0)
+                {
+                    list[index] = newValue;
+                }
+                else
+                {
+                    this.Add(ref list, newValue);
+                }
+            }
+            else if (oldValue != null)
+            {
+                this.Remove(ref list, oldValue);
+            }
+            else if (newValue != null)
+            {
+                this.Add(ref list, newValue);
+            }
+        }
 
-		public void OnEnter( Item item ) {
-			Add( ref m_Items, item );
-		}
+        public void OnClientChange(NetState oldState, NetState newState)
+        {
+            this.Replace(ref m_Clients, oldState, newState);
+        }
 
-		public void OnLeave( Item item ) {
-			Remove( ref m_Items, item );
-		}
+        public void OnEnter(Item item)
+        {
+            this.Add(ref m_Items, item);
+        }
 
-		public void OnEnter( Mobile mob ) {
-			Add( ref m_Mobiles, mob );
+        public void OnLeave(Item item)
+        {
+            this.Remove(ref m_Items, item);
+        }
 
-			if ( mob.NetState != null ) {
-				Add( ref m_Clients, mob.NetState );
-			}
+        public void OnEnter(Mobile mob)
+        {
+            this.Add(ref m_Mobiles, mob);
 
-			if ( mob.Player ) {
-				if ( m_Players == null ) {
-					m_Owner.ActivateSectors( m_X, m_Y );
-				}
+            if (mob.NetState != null)
+            {
+                this.Add(ref m_Clients, mob.NetState);
+            }
 
-				Add( ref m_Players, mob );
-			}
-		}
+            if (mob.Player)
+            {
+                if (this.m_Players == null)
+                {
+                    this.m_Owner.ActivateSectors(this.m_X, this.m_Y);
+                }
 
-		public void OnLeave( Mobile mob ) {
-			Remove( ref m_Mobiles, mob );
+                this.Add(ref m_Players, mob);
+            }
+        }
 
-			if ( mob.NetState != null ) {
-				Remove( ref m_Clients, mob.NetState );
-			}
+        public void OnLeave(Mobile mob)
+        {
+            this.Remove(ref m_Mobiles, mob);
 
-			if ( mob.Player && m_Players != null ) {
-				Remove( ref m_Players, mob );
+            if (mob.NetState != null)
+            {
+                this.Remove(ref m_Clients, mob.NetState);
+            }
 
-				if ( m_Players == null ) {
-					m_Owner.DeactivateSectors( m_X, m_Y );
-				}
-			}
-		}
+            if (mob.Player && this.m_Players != null)
+            {
+                this.Remove(ref m_Players, mob);
 
-		public void OnEnter( Region region, Rectangle3D rect ) {
-			Add( ref m_RegionRects, new RegionRect( region, rect ) );
+                if (this.m_Players == null)
+                {
+                    this.m_Owner.DeactivateSectors(this.m_X, this.m_Y);
+                }
+            }
+        }
 
-			m_RegionRects.Sort();
+        public void OnEnter(Region region, Rectangle3D rect)
+        {
+            this.Add(ref m_RegionRects, new RegionRect(region, rect));
 
-			UpdateMobileRegions();
-		}
+            this.m_RegionRects.Sort();
 
-		public void OnLeave( Region region ) {
-			if ( m_RegionRects != null ) {
-				for ( int i = m_RegionRects.Count - 1; i >= 0; i-- ) {
-					RegionRect regRect = m_RegionRects[i];
+            this.UpdateMobileRegions();
+        }
 
-					if ( regRect.Region == region ) {
-						m_RegionRects.RemoveAt( i );
-					}
-				}
+        public void OnLeave(Region region)
+        {
+            if (this.m_RegionRects != null)
+            {
+                for (int i = this.m_RegionRects.Count - 1; i >= 0; i--)
+                {
+                    RegionRect regRect = this.m_RegionRects[i];
 
-				if ( m_RegionRects.Count == 0 ) {
-					m_RegionRects = null;
-				}
-			}
+                    if (regRect.Region == region)
+                    {
+                        this.m_RegionRects.RemoveAt(i);
+                    }
+                }
 
-			UpdateMobileRegions();
-		}
+                if (this.m_RegionRects.Count == 0)
+                {
+                    this.m_RegionRects = null;
+                }
+            }
 
-		private void UpdateMobileRegions() {
-			if ( m_Mobiles != null ) {
-				List<Mobile> sandbox = new List<Mobile>( m_Mobiles );
+            this.UpdateMobileRegions();
+        }
 
-				foreach ( Mobile mob in sandbox ) {
-					mob.UpdateRegion();
-				}
-			}
-		}
+        private void UpdateMobileRegions()
+        {
+            if (this.m_Mobiles != null)
+            {
+                List<Mobile> sandbox = new List<Mobile>(this.m_Mobiles);
 
-		public void OnMultiEnter( BaseMulti multi ) {
-			Add( ref m_Multis, multi );
-		}
+                foreach (Mobile mob in sandbox)
+                {
+                    mob.UpdateRegion();
+                }
+            }
+        }
 
-		public void OnMultiLeave( BaseMulti multi ) {
-			Remove( ref m_Multis, multi );
-		}
+        public void OnMultiEnter(BaseMulti multi)
+        {
+            this.Add(ref m_Multis, multi);
+        }
 
-		public void Activate() {
-			if ( !Active && m_Owner != Map.Internal ) {
-				if ( m_Items != null ) {
-					foreach ( Item item in m_Items ) {
-						item.OnSectorActivate();
-					}
-				}
+        public void OnMultiLeave(BaseMulti multi)
+        {
+            this.Remove(ref m_Multis, multi);
+        }
 
-				if ( m_Mobiles != null ) {
-					foreach ( Mobile mob in m_Mobiles ) {
-						mob.OnSectorActivate();
-					}
-				}
+        public void Activate()
+        {
+            if (!this.Active && this.m_Owner != Map.Internal)
+            {
+                if (this.m_Items != null)
+                {
+                    foreach (Item item in this.m_Items)
+                    {
+                        item.OnSectorActivate();
+                    }
+                }
 
-				m_Active = true;
-			}
-		}
+                if (this.m_Mobiles != null)
+                {
+                    foreach (Mobile mob in this.m_Mobiles)
+                    {
+                        mob.OnSectorActivate();
+                    }
+                }
 
-		public void Deactivate() {
-			if ( Active ) {
-				if ( m_Items != null ) {
-					foreach ( Item item in m_Items ) {
-						item.OnSectorDeactivate();
-					}
-				}
+                this.m_Active = true;
+            }
+        }
 
-				if ( m_Mobiles != null ) {
-					foreach ( Mobile mob in m_Mobiles ) {
-						mob.OnSectorDeactivate();
-					}
-				}
+        public void Deactivate()
+        {
+            if (this.Active)
+            {
+                if (this.m_Items != null)
+                {
+                    foreach (Item item in this.m_Items)
+                    {
+                        item.OnSectorDeactivate();
+                    }
+                }
 
-				m_Active = false;
-			}
-		}
+                if (this.m_Mobiles != null)
+                {
+                    foreach (Mobile mob in this.m_Mobiles)
+                    {
+                        mob.OnSectorDeactivate();
+                    }
+                }
 
-		public List<RegionRect> RegionRects {
-			get {
-				if ( m_RegionRects == null )
-					return m_DefaultRectList;
+                this.m_Active = false;
+            }
+        }
 
-				return m_RegionRects;
-			}
-		}
+        public List<RegionRect> RegionRects
+        {
+            get
+            {
+                if (this.m_RegionRects == null)
+                    return m_DefaultRectList;
 
-		public List<BaseMulti> Multis {
-			get {
-				if ( m_Multis == null )
-					return m_DefaultMultiList;
+                return this.m_RegionRects;
+            }
+        }
 
-				return m_Multis;
-			}
-		}
+        public List<BaseMulti> Multis
+        {
+            get
+            {
+                if (this.m_Multis == null)
+                    return m_DefaultMultiList;
 
-		public List<Mobile> Mobiles {
-			get {
-				if ( m_Mobiles == null )
-					return m_DefaultMobileList;
+                return this.m_Multis;
+            }
+        }
 
-				return m_Mobiles;
-			}
-		}
+        public List<Mobile> Mobiles
+        {
+            get
+            {
+                if (this.m_Mobiles == null)
+                    return m_DefaultMobileList;
 
-		public List<Item> Items {
-			get {
-				if ( m_Items == null )
-					return m_DefaultItemList;
+                return this.m_Mobiles;
+            }
+        }
 
-				return m_Items;
-			}
-		}
+        public List<Item> Items
+        {
+            get
+            {
+                if (this.m_Items == null)
+                    return m_DefaultItemList;
 
-		public List<NetState> Clients {
-			get {
-				if ( m_Clients == null )
-					return m_DefaultClientList;
+                return this.m_Items;
+            }
+        }
 
-				return m_Clients;
-			}
-		}
+        public List<NetState> Clients
+        {
+            get
+            {
+                if (this.m_Clients == null)
+                    return m_DefaultClientList;
 
-		public List<Mobile> Players {
-			get {
-				if ( m_Players == null )
-					return m_DefaultMobileList;
+                return this.m_Clients;
+            }
+        }
 
-				return m_Players;
-			}
-		}
+        public List<Mobile> Players
+        {
+            get
+            {
+                if (this.m_Players == null)
+                    return m_DefaultMobileList;
 
-		public bool Active {
-			get {
-				return ( m_Active && m_Owner != Map.Internal );
-			}
-		}
+                return this.m_Players;
+            }
+        }
 
-		public Map Owner {
-			get {
-				return m_Owner;
-			}
-		}
+        public bool Active
+        {
+            get
+            {
+                return (this.m_Active && this.m_Owner != Map.Internal);
+            }
+        }
 
-		public int X {
-			get {
-				return m_X;
-			}
-		}
+        public Map Owner
+        {
+            get
+            {
+                return this.m_Owner;
+            }
+        }
 
-		public int Y {
-			get {
-				return m_Y;
-			}
-		}
-	}
+        public int X
+        {
+            get
+            {
+                return this.m_X;
+            }
+        }
+
+        public int Y
+        {
+            get
+            {
+                return this.m_Y;
+            }
+        }
+    }
 }

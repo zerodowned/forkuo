@@ -2,26 +2,50 @@ using System;
 
 namespace Server.Factions
 {
-	public class StrongholdDefinition
-	{
-		private Rectangle2D[] m_Area;
-		private Point3D m_JoinStone;
-		private Point3D m_FactionStone;
-		private Point3D[] m_Monoliths;
+    public class StrongholdDefinition
+    {
+        private readonly Rectangle2D[] m_Area;
+        private readonly Point3D m_JoinStone;
+        private readonly Point3D m_FactionStone;
+        private readonly Point3D[] m_Monoliths;
 
-		public Rectangle2D[] Area{ get{ return m_Area; } }
+        public Rectangle2D[] Area
+        {
+            get
+            {
+                return this.m_Area;
+            }
+        }
 
-		public Point3D JoinStone{ get{ return m_JoinStone; } }
-		public Point3D FactionStone{ get{ return m_FactionStone; } }
+        public Point3D JoinStone
+        {
+            get
+            {
+                return this.m_JoinStone;
+            }
+        }
+        public Point3D FactionStone
+        {
+            get
+            {
+                return this.m_FactionStone;
+            }
+        }
 
-		public Point3D[] Monoliths{ get{ return m_Monoliths; } }
+        public Point3D[] Monoliths
+        {
+            get
+            {
+                return this.m_Monoliths;
+            }
+        }
 
-		public StrongholdDefinition( Rectangle2D[] area, Point3D joinStone, Point3D factionStone, Point3D[] monoliths )
-		{
-			m_Area = area;
-			m_JoinStone = joinStone;
-			m_FactionStone = factionStone;
-			m_Monoliths = monoliths;
-		}
-	}
+        public StrongholdDefinition(Rectangle2D[] area, Point3D joinStone, Point3D factionStone, Point3D[] monoliths)
+        {
+            this.m_Area = area;
+            this.m_JoinStone = joinStone;
+            this.m_FactionStone = factionStone;
+            this.m_Monoliths = monoliths;
+        }
+    }
 }

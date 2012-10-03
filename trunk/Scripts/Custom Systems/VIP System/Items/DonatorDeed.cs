@@ -2,30 +2,53 @@
 {
     public class DonatorDeed : Item
     {
-        public override string DefaultName { get { return "Donator Deeds"; } }
-        public override bool DisplayLootType { get { return false; } }
-        public override bool DisplayWeight { get { return false; } }
-        public override double DefaultWeight { get { return 0.0; } }
-
-        [Constructable]
-        public DonatorDeed()
-            : this(1)
-        { }
-
-        [Constructable]
-        public DonatorDeed(int amount)
-            : base(0x2D51)
+        public override string DefaultName
         {
-            Stackable = true;
-            Amount = amount;
-            LootType = LootType.Blessed;
-            Hue = 1153;
-            Weight = 0.0;
+            get
+            {
+                return "Donator Deeds";
+            }
+        }
+        public override bool DisplayLootType
+        {
+            get
+            {
+                return false;
+            }
+        }
+        public override bool DisplayWeight
+        {
+            get
+            {
+                return false;
+            }
+        }
+        public override double DefaultWeight
+        {
+            get
+            {
+                return 0.0;
+            }
         }
 
-        public DonatorDeed(Serial serial)
-            : base(serial)
-        { }
+        [Constructable]
+        public DonatorDeed() : this(1)
+        {
+        }
+
+        [Constructable]
+        public DonatorDeed(int amount) : base(0x2D51)
+        {
+            this.Stackable = true;
+            this.Amount = amount;
+            this.LootType = LootType.Blessed;
+            this.Hue = 1153;
+            this.Weight = 0.0;
+        }
+
+        public DonatorDeed(Serial serial) : base(serial)
+        {
+        }
 
         public override void Serialize(GenericWriter writer)
         {
@@ -42,36 +65,45 @@
 
             switch (version)
             {
-                case 0: { } break;
+                case 0:
+                    {
+                    }
+                    break;
             }
         }
 
         public override bool StackWith(Mobile from, Item dropped, bool playSound)
         {
             if (dropped is DonatorDeed)
-            { return StackWith(from, (DonatorDeed)dropped, playSound); }
+            {
+                return this.StackWith(from, (DonatorDeed)dropped, playSound);
+            }
 
             return base.StackWith(from, dropped, playSound);
         }
 
         public virtual bool StackWith(Mobile from, DonatorDeed dropped, bool playSound)
         {
-            if (dropped.GetType() == GetType() && dropped.ItemID == ItemID && dropped.Hue == Hue && Amount + dropped.Amount <= 65535)
+            if (dropped.GetType() == this.GetType() && dropped.ItemID == this.ItemID && dropped.Hue == this.Hue && this.Amount + dropped.Amount <= 65535)
             {
-                if (LootType != dropped.LootType)
-                { LootType = dropped.LootType; }
+                if (this.LootType != dropped.LootType)
+                {
+                    this.LootType = dropped.LootType;
+                }
 
-                Amount += dropped.Amount;
+                this.Amount += dropped.Amount;
                 dropped.Delete();
 
                 if (playSound && from != null)
                 {
-                    int soundID = GetDropSound();
+                    int soundID = this.GetDropSound();
 
                     if (soundID == -1)
-                    { soundID = 0x42; }
+                    {
+                        soundID = 0x42;
+                    }
 
-                    from.SendSound(soundID, GetWorldLocation());
+                    from.SendSound(soundID, this.GetWorldLocation());
                 }
 
                 return true;
@@ -84,7 +116,7 @@
         {
             base.GetProperties(list);
 
-            list.Add(1060738, Amount.ToString("#,#")); // Value: ~1_val~
+            list.Add(1060738, this.Amount.ToString("#,#")); // Value: ~1_val~
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -93,83 +125,135 @@
         }
 
         public override bool Equals(object obj)
-        { return base.Equals(obj); }
+        {
+            return base.Equals(obj);
+        }
 
         public override int GetHashCode()
-        { return base.GetHashCode(); }
+        {
+            return base.GetHashCode();
+        }
 
         #region OPERATORS
         public static bool operator ==(DonatorDeed a, DonatorDeed b)
-        { return (a.Amount == b.Amount); }
+        {
+            return (a.Amount == b.Amount);
+        }
 
         public static bool operator !=(DonatorDeed a, DonatorDeed b)
-        { return (a.Amount != b.Amount); }
+        {
+            return (a.Amount != b.Amount);
+        }
 
         public static bool operator <(DonatorDeed a, DonatorDeed b)
-        { return (a.Amount < b.Amount); }
+        {
+            return (a.Amount < b.Amount);
+        }
 
         public static bool operator >(DonatorDeed a, DonatorDeed b)
-        { return (a.Amount > b.Amount); }
+        {
+            return (a.Amount > b.Amount);
+        }
 
         public static DonatorDeed operator -(DonatorDeed a, DonatorDeed b)
-        { return new DonatorDeed(a.Amount - b.Amount); }
+        {
+            return new DonatorDeed(a.Amount - b.Amount);
+        }
 
         public static DonatorDeed operator +(DonatorDeed a, DonatorDeed b)
-        { return new DonatorDeed(a.Amount + b.Amount); }
+        {
+            return new DonatorDeed(a.Amount + b.Amount);
+        }
 
         public static DonatorDeed operator *(DonatorDeed a, DonatorDeed b)
-        { return new DonatorDeed(a.Amount * b.Amount); }
+        {
+            return new DonatorDeed(a.Amount * b.Amount);
+        }
 
         public static DonatorDeed operator /(DonatorDeed a, DonatorDeed b)
-        { return new DonatorDeed(a.Amount / b.Amount); }
+        {
+            return new DonatorDeed(a.Amount / b.Amount);
+        }
 
         public static bool operator ==(DonatorDeed a, int b)
-        { return (a.Amount == b); }
+        {
+            return (a.Amount == b);
+        }
 
         public static bool operator !=(DonatorDeed a, int b)
-        { return (a.Amount != b); }
+        {
+            return (a.Amount != b);
+        }
 
         public static bool operator <(DonatorDeed a, int b)
-        { return (a.Amount < b); }
+        {
+            return (a.Amount < b);
+        }
 
         public static bool operator >(DonatorDeed a, int b)
-        { return (a.Amount > b); }
+        {
+            return (a.Amount > b);
+        }
 
         public static DonatorDeed operator -(DonatorDeed a, int b)
-        { return new DonatorDeed(a.Amount - b); }
+        {
+            return new DonatorDeed(a.Amount - b);
+        }
 
         public static DonatorDeed operator +(DonatorDeed a, int b)
-        { return new DonatorDeed(a.Amount + b); }
+        {
+            return new DonatorDeed(a.Amount + b);
+        }
 
         public static DonatorDeed operator *(DonatorDeed a, int b)
-        { return new DonatorDeed(a.Amount * b); }
+        {
+            return new DonatorDeed(a.Amount * b);
+        }
 
         public static DonatorDeed operator /(DonatorDeed a, int b)
-        { return new DonatorDeed(a.Amount / b); }
+        {
+            return new DonatorDeed(a.Amount / b);
+        }
 
         public static bool operator ==(int a, DonatorDeed b)
-        { return (a == b.Amount); }
+        {
+            return (a == b.Amount);
+        }
 
         public static bool operator !=(int a, DonatorDeed b)
-        { return (a != b.Amount); }
+        {
+            return (a != b.Amount);
+        }
 
         public static bool operator <(int a, DonatorDeed b)
-        { return (a < b.Amount); }
+        {
+            return (a < b.Amount);
+        }
 
         public static bool operator >(int a, DonatorDeed b)
-        { return (a > b.Amount); }
+        {
+            return (a > b.Amount);
+        }
 
         public static int operator -(int a, DonatorDeed b)
-        { return a - b.Amount; }
+        {
+            return a - b.Amount;
+        }
 
         public static int operator +(int a, DonatorDeed b)
-        { return a + b.Amount; }
+        {
+            return a + b.Amount;
+        }
 
         public static int operator *(int a, DonatorDeed b)
-        { return a * b.Amount; }
+        {
+            return a * b.Amount;
+        }
 
         public static int operator /(int a, DonatorDeed b)
-        { return a / b.Amount; }
+        {
+            return a / b.Amount;
+        }
         #endregion OPERATORS
     }
 }

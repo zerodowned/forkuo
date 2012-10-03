@@ -1,307 +1,350 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Server;
 using Server.Multis;
-using Server.Regions;
 
 namespace Server.Items
 {
-	public abstract class BaseAddonContainer : BaseContainer, IChopable, IAddon
-	{
-		public override bool DisplayWeight { get { return false; } }
-
-		[Hue, CommandProperty( AccessLevel.GameMaster )]
-		public override int Hue
-		{
-			get
-			{
-				return base.Hue;
-			}
-			set
-			{
-				if ( base.Hue != value )
-				{
-					base.Hue = value;
-
-					if ( !Deleted && this.ShareHue && m_Components != null )
-					{
-						Hue = value;
-
-						foreach ( AddonContainerComponent c in m_Components )
-							c.Hue = value;
-					}
-				}
-			}
-		}
-
-		private CraftResource m_Resource;
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public CraftResource Resource
-		{
-			get { return m_Resource; }
-			set
-			{
-				if ( m_Resource != value )
-				{
-					m_Resource = value;
-					Hue = CraftResources.GetHue( m_Resource );
-
-					InvalidateProperties();
-				}
-			}
-		}
-
-		Item IAddon.Deed
-		{
-			get { return this.Deed; }
-		}
-
-		public virtual bool RetainDeedHue { get { return false; } }
-		public virtual bool NeedsWall { get { return false; } }
-		public virtual bool ShareHue { get { return true; } }
-		public virtual Point3D WallPosition { get { return Point3D.Zero; } }
-		public virtual BaseAddonContainerDeed Deed { get { return null; } }
-
-		private List<AddonContainerComponent> m_Components;
-
-		public List<AddonContainerComponent> Components
-		{
-			get { return m_Components; }
-		}
-
-		public BaseAddonContainer( int itemID ) : base( itemID )
-		{
-			AddonComponent.ApplyLightTo( this );
-
-			m_Components = new List<AddonContainerComponent>();
-		}
-
-		public BaseAddonContainer( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void OnLocationChange( Point3D oldLoc )
-		{
-			base.OnLocationChange( oldLoc );
-
-			if ( Deleted )
-				return;
-
-			foreach ( AddonContainerComponent c in m_Components )
-				c.Location = new Point3D( X + c.Offset.X, Y + c.Offset.Y, Z + c.Offset.Z );
-		}
-
-		public override void OnMapChange()
-		{
-			base.OnMapChange();
-
-			if ( Deleted )
-				return;
-
-			foreach ( AddonContainerComponent c in m_Components )
-				c.Map = Map;
-		}
-
-		public override void OnDelete()
-		{
-			BaseHouse house = BaseHouse.FindHouseAt( this );
-
-			if ( house != null )
-				house.Addons.Remove( this );
+    public abstract class BaseAddonContainer : BaseContainer, IChopable, IAddon
+    {
+        public override bool DisplayWeight
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        public override int Hue
+        {
+            get
+            {
+                return base.Hue;
+            }
+            set
+            {
+                if (base.Hue != value)
+                {
+                    base.Hue = value;
+
+                    if (!this.Deleted && this.ShareHue && this.m_Components != null)
+                    {
+                        this.Hue = value;
+
+                        foreach (AddonContainerComponent c in this.m_Components)
+                            c.Hue = value;
+                    }
+                }
+            }
+        }
+
+        private CraftResource m_Resource;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public CraftResource Resource
+        {
+            get
+            {
+                return this.m_Resource;
+            }
+            set
+            {
+                if (this.m_Resource != value)
+                {
+                    this.m_Resource = value;
+                    this.Hue = CraftResources.GetHue(this.m_Resource);
+
+                    this.InvalidateProperties();
+                }
+            }
+        }
+
+        Item IAddon.Deed
+        {
+            get
+            {
+                return this.Deed;
+            }
+        }
+
+        public virtual bool RetainDeedHue
+        {
+            get
+            {
+                return false;
+            }
+        }
+        public virtual bool NeedsWall
+        {
+            get
+            {
+                return false;
+            }
+        }
+        public virtual bool ShareHue
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public virtual Point3D WallPosition
+        {
+            get
+            {
+                return Point3D.Zero;
+            }
+        }
+        public virtual BaseAddonContainerDeed Deed
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        private List<AddonContainerComponent> m_Components;
+
+        public List<AddonContainerComponent> Components
+        {
+            get
+            {
+                return this.m_Components;
+            }
+        }
 
-			base.OnDelete();
-		}
+        public BaseAddonContainer(int itemID) : base(itemID)
+        {
+            AddonComponent.ApplyLightTo(this);
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+            this.m_Components = new List<AddonContainerComponent>();
+        }
 
-			if ( !CraftResources.IsStandard( m_Resource ) )
-				list.Add( CraftResources.GetLocalizationNumber( m_Resource ) );
-		}
+        public BaseAddonContainer(Serial serial) : base(serial)
+        {
+        }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+        public override void OnLocationChange(Point3D oldLoc)
+        {
+            base.OnLocationChange(oldLoc);
 
-			foreach ( AddonContainerComponent c in m_Components )
-				c.Delete();
-		}
+            if (this.Deleted)
+                return;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+            foreach (AddonContainerComponent c in this.m_Components)
+                c.Location = new Point3D(this.X + c.Offset.X, this.Y + c.Offset.Y, this.Z + c.Offset.Z);
+        }
 
-			writer.Write( (int) 0 ); // version
+        public override void OnMapChange()
+        {
+            base.OnMapChange();
 
-			writer.WriteItemList<AddonContainerComponent>( m_Components );
-			writer.Write( (int) m_Resource );
-		}
+            if (this.Deleted)
+                return;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+            foreach (AddonContainerComponent c in this.m_Components)
+                c.Map = this.Map;
+        }
 
-			int version = reader.ReadInt();
+        public override void OnDelete()
+        {
+            BaseHouse house = BaseHouse.FindHouseAt(this);
 
-			m_Components = reader.ReadStrongItemList<AddonContainerComponent>();
-			m_Resource = (CraftResource) reader.ReadInt();
+            if (house != null)
+                house.Addons.Remove(this);
 
-			AddonComponent.ApplyLightTo( this );
-		}
+            base.OnDelete();
+        }
 
-		public virtual void DropItemsToGround()
-		{
-			for ( int i = Items.Count - 1; i >= 0; i-- )
-				Items[ i ].MoveToWorld( Location );
-		}
+        public override void GetProperties(ObjectPropertyList list)
+        {
+            base.GetProperties(list);
 
-		public void AddComponent( AddonContainerComponent c, int x, int y, int z )
-		{
-			if ( Deleted )
-				return;
+            if (!CraftResources.IsStandard(this.m_Resource))
+                list.Add(CraftResources.GetLocalizationNumber(this.m_Resource));
+        }
 
-			m_Components.Add( c );
+        public override void OnAfterDelete()
+        {
+            base.OnAfterDelete();
 
-			c.Addon = this;
-			c.Offset = new Point3D( x, y, z );
-			c.MoveToWorld( new Point3D( X + x, Y + y, Z + z ), Map );
-		}
+            foreach (AddonContainerComponent c in this.m_Components)
+                c.Delete();
+        }
 
-		public AddonFitResult CouldFit( IPoint3D p, Map map, Mobile from, ref BaseHouse house )
-		{
-			if ( Deleted )
-				return AddonFitResult.Blocked;
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			foreach ( AddonContainerComponent c in m_Components )
-			{
-				Point3D p3D = new Point3D( p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z );
+            writer.Write((int)0); // version
 
-				if ( !map.CanFit( p3D.X, p3D.Y, p3D.Z, c.ItemData.Height, false, true, ( c.Z == 0 ) ) )
-					return AddonFitResult.Blocked;
-				else if ( !BaseAddon.CheckHouse( from, p3D, map, c.ItemData.Height, ref house ) )
-					return AddonFitResult.NotInHouse;
+            writer.WriteItemList<AddonContainerComponent>(this.m_Components);
+            writer.Write((int)this.m_Resource);
+        }
 
-				if ( c.NeedsWall )
-				{
-					Point3D wall = c.WallPosition;
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-					if ( !BaseAddon.IsWall( p3D.X + wall.X, p3D.Y + wall.Y, p3D.Z + wall.Z, map ) )
-						return AddonFitResult.NoWall;
-				}
-			}
+            int version = reader.ReadInt();
 
-			Point3D p3 = new Point3D( p.X, p.Y, p.Z );
+            this.m_Components = reader.ReadStrongItemList<AddonContainerComponent>();
+            this.m_Resource = (CraftResource)reader.ReadInt();
 
-			if ( !map.CanFit( p3.X, p3.Y, p3.Z, ItemData.Height, false, true, ( Z == 0 ) ) )
-				return AddonFitResult.Blocked;
-			else if ( !BaseAddon.CheckHouse( from, p3, map, ItemData.Height, ref house ) )
-				return AddonFitResult.NotInHouse;
+            AddonComponent.ApplyLightTo(this);
+        }
 
-			if ( NeedsWall )
-			{
-				Point3D wall = WallPosition;
+        public virtual void DropItemsToGround()
+        {
+            for (int i = this.Items.Count - 1; i >= 0; i--)
+                this.Items[i].MoveToWorld(this.Location);
+        }
 
-				if ( !BaseAddon.IsWall( p3.X + wall.X, p3.Y + wall.Y, p3.Z + wall.Z, map ) )
-					return AddonFitResult.NoWall;
-			}
+        public void AddComponent(AddonContainerComponent c, int x, int y, int z)
+        {
+            if (this.Deleted)
+                return;
 
-			if ( house != null )
-			{
-				ArrayList doors = house.Doors;
+            this.m_Components.Add(c);
 
-				for ( int i = 0; i < doors.Count; ++i )
-				{
-					BaseDoor door = doors[ i ] as BaseDoor;
+            c.Addon = this;
+            c.Offset = new Point3D(x, y, z);
+            c.MoveToWorld(new Point3D(this.X + x, this.Y + y, this.Z + z), this.Map);
+        }
 
-					if ( door != null && door.Open )
-						return AddonFitResult.DoorsNotClosed;
+        public AddonFitResult CouldFit(IPoint3D p, Map map, Mobile from, ref BaseHouse house)
+        {
+            if (this.Deleted)
+                return AddonFitResult.Blocked;
 
-					Point3D doorLoc = door.GetWorldLocation();
-					int doorHeight = door.ItemData.CalcHeight;
+            foreach (AddonContainerComponent c in this.m_Components)
+            {
+                Point3D p3D = new Point3D(p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z);
 
-					foreach ( AddonContainerComponent c in m_Components )
-					{
-						Point3D addonLoc = new Point3D( p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z );
-						int addonHeight = c.ItemData.CalcHeight;
+                if (!map.CanFit(p3D.X, p3D.Y, p3D.Z, c.ItemData.Height, false, true, (c.Z == 0)))
+                    return AddonFitResult.Blocked;
+                else if (!BaseAddon.CheckHouse(from, p3D, map, c.ItemData.Height, ref house))
+                    return AddonFitResult.NotInHouse;
 
-						if ( Utility.InRange( doorLoc, addonLoc, 1 ) && ( addonLoc.Z == doorLoc.Z || ( ( addonLoc.Z + addonHeight ) > doorLoc.Z && ( doorLoc.Z + doorHeight ) > addonLoc.Z ) ) )
-							return AddonFitResult.DoorTooClose;
-					}
+                if (c.NeedsWall)
+                {
+                    Point3D wall = c.WallPosition;
 
-					Point3D addonLo = new Point3D( p.X, p.Y, p.Z );
-					int addonHeigh = ItemData.CalcHeight;
+                    if (!BaseAddon.IsWall(p3D.X + wall.X, p3D.Y + wall.Y, p3D.Z + wall.Z, map))
+                        return AddonFitResult.NoWall;
+                }
+            }
 
-					if ( Utility.InRange( doorLoc, addonLo, 1 ) && ( addonLo.Z == doorLoc.Z || ( ( addonLo.Z + addonHeigh ) > doorLoc.Z && ( doorLoc.Z + doorHeight ) > addonLo.Z ) ) )
-						return AddonFitResult.DoorTooClose;
-				}
-			}
+            Point3D p3 = new Point3D(p.X, p.Y, p.Z);
 
-			return AddonFitResult.Valid;
-		}
+            if (!map.CanFit(p3.X, p3.Y, p3.Z, this.ItemData.Height, false, true, (this.Z == 0)))
+                return AddonFitResult.Blocked;
+            else if (!BaseAddon.CheckHouse(from, p3, map, this.ItemData.Height, ref house))
+                return AddonFitResult.NotInHouse;
 
-		public bool CouldFit( IPoint3D p, Map map )
-		{
-			BaseHouse house = null;
+            if (this.NeedsWall)
+            {
+                Point3D wall = this.WallPosition;
 
-			return ( CouldFit( p, map, null, ref house ) == AddonFitResult.Valid );
-		}
+                if (!BaseAddon.IsWall(p3.X + wall.X, p3.Y + wall.Y, p3.Z + wall.Z, map))
+                    return AddonFitResult.NoWall;
+            }
 
-		public virtual void OnChop( Mobile from )
-		{
-			BaseHouse house = BaseHouse.FindHouseAt( this );
+            if (house != null)
+            {
+                ArrayList doors = house.Doors;
 
-			if ( house != null && house.IsOwner( from ) )
-			{
-				if ( !IsSecure )
-				{
-					Effects.PlaySound( GetWorldLocation(), Map, 0x3B3 );
-					from.SendLocalizedMessage( 500461 ); // You destroy the item.
+                for (int i = 0; i < doors.Count; ++i)
+                {
+                    BaseDoor door = doors[i] as BaseDoor;
 
-					int hue = 0;
+                    if (door != null && door.Open)
+                        return AddonFitResult.DoorsNotClosed;
 
-					if ( RetainDeedHue )
-					{
-						for ( int i = 0; hue == 0 && i < m_Components.Count; ++i )
-						{
-							AddonContainerComponent c = m_Components[ i ];
+                    Point3D doorLoc = door.GetWorldLocation();
+                    int doorHeight = door.ItemData.CalcHeight;
 
-							if ( c.Hue != 0 )
-								hue = c.Hue;
-						}
-					}
+                    foreach (AddonContainerComponent c in this.m_Components)
+                    {
+                        Point3D addonLoc = new Point3D(p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z);
+                        int addonHeight = c.ItemData.CalcHeight;
 
-					DropItemsToGround();
+                        if (Utility.InRange(doorLoc, addonLoc, 1) && (addonLoc.Z == doorLoc.Z || ((addonLoc.Z + addonHeight) > doorLoc.Z && (doorLoc.Z + doorHeight) > addonLoc.Z)))
+                            return AddonFitResult.DoorTooClose;
+                    }
 
-					Delete();
+                    Point3D addonLo = new Point3D(p.X, p.Y, p.Z);
+                    int addonHeigh = this.ItemData.CalcHeight;
 
-					house.Addons.Remove( this );
+                    if (Utility.InRange(doorLoc, addonLo, 1) && (addonLo.Z == doorLoc.Z || ((addonLo.Z + addonHeigh) > doorLoc.Z && (doorLoc.Z + doorHeight) > addonLo.Z)))
+                        return AddonFitResult.DoorTooClose;
+                }
+            }
 
-					BaseAddonContainerDeed deed = Deed;
+            return AddonFitResult.Valid;
+        }
 
-					if ( deed != null )
-					{
-						deed.Resource = Resource;
+        public bool CouldFit(IPoint3D p, Map map)
+        {
+            BaseHouse house = null;
 
-						if ( RetainDeedHue )
-							deed.Hue = hue;
+            return (this.CouldFit(p, map, null, ref house) == AddonFitResult.Valid);
+        }
 
-						from.AddToBackpack( deed );
-					}
-				}
-				else
-					from.SendLocalizedMessage( 1074870 ); // This item must be unlocked/unsecured before re-deeding it.
-			}
-		}
+        public virtual void OnChop(Mobile from)
+        {
+            BaseHouse house = BaseHouse.FindHouseAt(this);
 
-		public virtual void OnComponentLoaded( AddonContainerComponent c )
-		{
-		}
+            if (house != null && house.IsOwner(from))
+            {
+                if (!this.IsSecure)
+                {
+                    Effects.PlaySound(this.GetWorldLocation(), this.Map, 0x3B3);
+                    from.SendLocalizedMessage(500461); // You destroy the item.
 
-		public virtual void OnComponentUsed( AddonContainerComponent c, Mobile from )
-		{
-		}
-	}
+                    int hue = 0;
+
+                    if (this.RetainDeedHue)
+                    {
+                        for (int i = 0; hue == 0 && i < this.m_Components.Count; ++i)
+                        {
+                            AddonContainerComponent c = this.m_Components[i];
+
+                            if (c.Hue != 0)
+                                hue = c.Hue;
+                        }
+                    }
+
+                    this.DropItemsToGround();
+
+                    this.Delete();
+
+                    house.Addons.Remove(this);
+
+                    BaseAddonContainerDeed deed = this.Deed;
+
+                    if (deed != null)
+                    {
+                        deed.Resource = this.Resource;
+
+                        if (this.RetainDeedHue)
+                            deed.Hue = hue;
+
+                        from.AddToBackpack(deed);
+                    }
+                }
+                else
+                    from.SendLocalizedMessage(1074870); // This item must be unlocked/unsecured before re-deeding it.
+            }
+        }
+
+        public virtual void OnComponentLoaded(AddonContainerComponent c)
+        {
+        }
+
+        public virtual void OnComponentUsed(AddonContainerComponent c, Mobile from)
+        {
+        }
+    }
 }

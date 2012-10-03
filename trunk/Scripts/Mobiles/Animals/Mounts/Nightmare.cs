@@ -1,123 +1,157 @@
 using System;
-using Server;
 using Server.Items;
-using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a nightmare corpse" )]
-	public class Nightmare : BaseMount
-	{
-		[Constructable]
-		public Nightmare() : this( "a nightmare" )
-		{
-		}
+    [CorpseName("a nightmare corpse")]
+    public class Nightmare : BaseMount
+    {
+        [Constructable]
+        public Nightmare() : this("a nightmare")
+        {
+        }
 
-		[Constructable]
-		public Nightmare( string name ) : base( name, 0x74, 0x3EA7, AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			BaseSoundID = 0xA8;
+        [Constructable]
+        public Nightmare(string name) : base(name, 0x74, 0x3EA7, AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            this.BaseSoundID = 0xA8;
 
-			SetStr( 496, 525 );
-			SetDex( 86, 105 );
-			SetInt( 86, 125 );
+            this.SetStr(496, 525);
+            this.SetDex(86, 105);
+            this.SetInt(86, 125);
 
-			SetHits( 298, 315 );
+            this.SetHits(298, 315);
 
-			SetDamage( 16, 22 );
+            this.SetDamage(16, 22);
 
-			SetDamageType( ResistanceType.Physical, 40 );
-			SetDamageType( ResistanceType.Fire, 40 );
-			SetDamageType( ResistanceType.Energy, 20 );
+            this.SetDamageType(ResistanceType.Physical, 40);
+            this.SetDamageType(ResistanceType.Fire, 40);
+            this.SetDamageType(ResistanceType.Energy, 20);
 
-			SetResistance( ResistanceType.Physical, 55, 65 );
-			SetResistance( ResistanceType.Fire, 30, 40 );
-			SetResistance( ResistanceType.Cold, 30, 40 );
-			SetResistance( ResistanceType.Poison, 30, 40 );
-			SetResistance( ResistanceType.Energy, 20, 30 );
+            this.SetResistance(ResistanceType.Physical, 55, 65);
+            this.SetResistance(ResistanceType.Fire, 30, 40);
+            this.SetResistance(ResistanceType.Cold, 30, 40);
+            this.SetResistance(ResistanceType.Poison, 30, 40);
+            this.SetResistance(ResistanceType.Energy, 20, 30);
 
-			SetSkill( SkillName.EvalInt, 10.4, 50.0 );
-			SetSkill( SkillName.Magery, 10.4, 50.0 );
-			SetSkill( SkillName.MagicResist, 85.3, 100.0 );
-			SetSkill( SkillName.Tactics, 97.6, 100.0 );
-			SetSkill( SkillName.Wrestling, 80.5, 92.5 );
+            this.SetSkill(SkillName.EvalInt, 10.4, 50.0);
+            this.SetSkill(SkillName.Magery, 10.4, 50.0);
+            this.SetSkill(SkillName.MagicResist, 85.3, 100.0);
+            this.SetSkill(SkillName.Tactics, 97.6, 100.0);
+            this.SetSkill(SkillName.Wrestling, 80.5, 92.5);
 
-			Fame = 14000;
-			Karma = -14000;
+            this.Fame = 14000;
+            this.Karma = -14000;
 
-			VirtualArmor = 60;
+            this.VirtualArmor = 60;
 
-			Tamable = true;
-			ControlSlots = 2;
-			MinTameSkill = 95.1;
+            this.Tamable = true;
+            this.ControlSlots = 2;
+            this.MinTameSkill = 95.1;
 
-			switch ( Utility.Random( 3 ) )
-			{
-				case 0:
-				{
-					BodyValue = 116;
-					ItemID = 16039;
-					break;
-				}
-				case 1:
-				{
-					BodyValue = 178;
-					ItemID = 16041;
-					break;
-				}
-				case 2:
-				{
-					BodyValue = 179;
-					ItemID = 16055;
-					break;
-				}
-			}
+            switch ( Utility.Random(3) )
+            {
+                case 0:
+                    {
+                        this.BodyValue = 116;
+                        this.ItemID = 16039;
+                        break;
+                    }
+                case 1:
+                    {
+                        this.BodyValue = 178;
+                        this.ItemID = 16041;
+                        break;
+                    }
+                case 2:
+                    {
+                        this.BodyValue = 179;
+                        this.ItemID = 16055;
+                        break;
+                    }
+            }
 
-			PackItem( new SulfurousAsh( Utility.RandomMinMax( 3, 5 ) ) );
-		}
+            this.PackItem(new SulfurousAsh(Utility.RandomMinMax(3, 5)));
+        }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Rich );
-			AddLoot( LootPack.Average );
-			AddLoot( LootPack.LowScrolls );
-			AddLoot( LootPack.Potions );
-		}
+        public override void GenerateLoot()
+        {
+            this.AddLoot(LootPack.Rich);
+            this.AddLoot(LootPack.Average);
+            this.AddLoot(LootPack.LowScrolls);
+            this.AddLoot(LootPack.Potions);
+        }
 
-		public override int GetAngerSound()
-		{
-			if ( !Controlled )
-				return 0x16A;
+        public override int GetAngerSound()
+        {
+            if (!this.Controlled)
+                return 0x16A;
 
-			return base.GetAngerSound();
-		}
+            return base.GetAngerSound();
+        }
 
-		public override bool HasBreath{ get{ return true; } } // fire breath enabled
-		public override int Meat{ get{ return 5; } }
-		public override int Hides{ get{ return 10; } }
-		public override HideType HideType{ get{ return HideType.Barbed; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
-		public override bool CanAngerOnTame { get { return true; } }
+        public override bool HasBreath
+        {
+            get
+            {
+                return true;
+            }
+        }// fire breath enabled
+        public override int Meat
+        {
+            get
+            {
+                return 5;
+            }
+        }
+        public override int Hides
+        {
+            get
+            {
+                return 10;
+            }
+        }
+        public override HideType HideType
+        {
+            get
+            {
+                return HideType.Barbed;
+            }
+        }
+        public override FoodType FavoriteFood
+        {
+            get
+            {
+                return FoodType.Meat;
+            }
+        }
+        public override bool CanAngerOnTame
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-		public Nightmare( Serial serial ) : base( serial )
-		{
-		}
+        public Nightmare(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+            writer.Write((int)0); // version
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+            int version = reader.ReadInt();
 
-			if ( BaseSoundID == 0x16A )
-				BaseSoundID = 0xA8;
-		}
-	}
+            if (this.BaseSoundID == 0x16A)
+                this.BaseSoundID = 0xA8;
+        }
+    }
 }

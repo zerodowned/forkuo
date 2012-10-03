@@ -35,11 +35,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_SavesEnabled;
+                return this.m_SavesEnabled;
             }
             set
             {
-                m_SavesEnabled = value;
+                this.m_SavesEnabled = value;
             }
         }
 
@@ -48,32 +48,31 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_SaveAccessLevel;
+                return this.m_SaveAccessLevel;
             }
             set
             {
-                m_SaveAccessLevel = value;
+                this.m_SaveAccessLevel = value;
             }
         }
-
 
         [CommandProperty(AccessLevel.Administrator, true)]
         public SaveStrategy SaveStrategy
         {
             get
             {
-                return m_SaveStrategy;
+                return this.m_SaveStrategy;
             }
             set
             {
                 if (!Core.MultiProcessor && !(value is StandardSaveStrategy))
-                    m_SaveStrategy = new StandardSaveStrategy();
+                    this.m_SaveStrategy = new StandardSaveStrategy();
                 else
                 {
                     if (Core.ProcessorCount == 2 && (value is DualSaveStrategy || value is DynamicSaveStrategy))
-                        m_SaveStrategy = value;
+                        this.m_SaveStrategy = value;
                     else if (Core.ProcessorCount > 2)
-                        m_SaveStrategy = value;
+                        this.m_SaveStrategy = value;
                 }
             }
         }
@@ -83,11 +82,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_AllowBackgroundWrite;
+                return this.m_AllowBackgroundWrite;
             }
             set
             {
-                m_AllowBackgroundWrite = value;
+                this.m_AllowBackgroundWrite = value;
             }
         }
 
@@ -96,11 +95,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_SaveDelay;
+                return this.m_SaveDelay;
             }
             set
             {
-                m_SaveDelay = value;
+                this.m_SaveDelay = value;
             }
         }
 
@@ -110,7 +109,7 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_WarningDelays;
+                return this.m_WarningDelays;
             }
         }
 
@@ -119,11 +118,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_NoIOHour;
+                return this.m_NoIOHour;
             }
             set
             {
-                m_NoIOHour = value;
+                this.m_NoIOHour = value;
             }
         }
 
@@ -132,11 +131,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_EnableEmergencyBackups;
+                return this.m_EnableEmergencyBackups;
             }
             set
             {
-                m_EnableEmergencyBackups = value;
+                this.m_EnableEmergencyBackups = value;
             }
         }
 
@@ -145,11 +144,11 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_EmergencyBackupHour;
+                return this.m_EmergencyBackupHour;
             }
             set
             {
-                m_EmergencyBackupHour = value;
+                this.m_EmergencyBackupHour = value;
             }
         }
 
@@ -158,32 +157,32 @@ namespace CustomsFramework.Systems.ShardControl
         {
             get
             {
-                return m_CompressionLevel;
+                return this.m_CompressionLevel;
             }
             set
             {
-                m_CompressionLevel = value;
+                this.m_CompressionLevel = value;
             }
         }
         #endregion
 
         public SaveSettings(bool savesEnabled = true, AccessLevel saveAccessLevel = AccessLevel.Administrator,
-            SaveStrategy saveStrategy = SaveStrategy.Acquire(),  bool allowBackgroundWrite = false,
+            SaveStrategy saveStrategy = SaveStrategy.Acquire(), bool allowBackgroundWrite = false,
             TimeSpan saveDelay = TimeSpan.FromHours(1.0), int noIOHour = -1,
-            List<TimeSpan> warningDelays = new List<TimeSpan>(){TimeSpan.FromMinutes(1.0), TimeSpan.FromSeconds(30.0)},
+            List<TimeSpan> warningDelays = new List<TimeSpan>() { TimeSpan.FromMinutes(1.0), TimeSpan.FromSeconds(30.0) },
             bool enableEmergencyBackups = true, int emergencyBackupHour = 3,
             CompressionLevel compressionLevel = CompressionLevel.Normal)
         {
-            m_SavesEnabled = savesEnabled;
-            m_SaveAccessLevel = saveAccessLevel;
-            m_SaveStrategy = saveStrategy;
-            m_AllowBackgroundWrite = allowBackgroundWrite;
-            m_SaveDelay = saveDelay;
-            m_WarningDelays = warningDelays;
-            m_NoIOHour = noIOHour;
-            m_EnableEmergencyBackups = enableEmergencyBackups;
-            m_EmergencyBackupHour = emergencyBackupHour;
-            m_CompressionLevel = compressionLevel;
+            this.m_SavesEnabled = savesEnabled;
+            this.m_SaveAccessLevel = saveAccessLevel;
+            this.m_SaveStrategy = saveStrategy;
+            this.m_AllowBackgroundWrite = allowBackgroundWrite;
+            this.m_SaveDelay = saveDelay;
+            this.m_WarningDelays = warningDelays;
+            this.m_NoIOHour = noIOHour;
+            this.m_EnableEmergencyBackups = enableEmergencyBackups;
+            this.m_EmergencyBackupHour = emergencyBackupHour;
+            this.m_CompressionLevel = compressionLevel;
         }
 
         public override void Serialize(GenericWriter writer)
@@ -191,29 +190,29 @@ namespace CustomsFramework.Systems.ShardControl
             Utilities.WriteVersion(writer, 0);
 
             // Version 0
-            writer.Write(m_SavesEnabled);
-            writer.Write((byte)m_SaveAccessLevel);
-            writer.Write((byte)Utilities.GetSaveType(m_SaveStrategy));
-            writer.Write(m_AllowBackgroundWrite);
-            writer.Write(m_SaveDelay);
+            writer.Write(this.m_SavesEnabled);
+            writer.Write((byte)this.m_SaveAccessLevel);
+            writer.Write((byte)Utilities.GetSaveType(this.m_SaveStrategy));
+            writer.Write(this.m_AllowBackgroundWrite);
+            writer.Write(this.m_SaveDelay);
 
-            writer.Write(m_WarningDelays.Count);
+            writer.Write(this.m_WarningDelays.Count);
 
-            for (int i = 0; i < m_WarningDelays.Count; i++)
+            for (int i = 0; i < this.m_WarningDelays.Count; i++)
             {
-                writer.Write(m_WarningDelays[i]);
+                writer.Write(this.m_WarningDelays[i]);
             }
 
-            writer.Write(m_NoIOHour);
+            writer.Write(this.m_NoIOHour);
 
-            writer.Write(m_EnableEmergencyBackups);
-            writer.Write(m_EmergencyBackupHour);
-            writer.Write((byte)m_CompressionLevel);
+            writer.Write(this.m_EnableEmergencyBackups);
+            writer.Write(this.m_EmergencyBackupHour);
+            writer.Write((byte)this.m_CompressionLevel);
         }
 
         public SaveSettings(GenericReader reader)
         {
-            Deserialize(reader);
+            this.Deserialize(reader);
         }
 
         protected sealed override void Deserialize(GenericReader reader)
@@ -224,25 +223,25 @@ namespace CustomsFramework.Systems.ShardControl
             {
                 case 0:
                     {
-                        m_SavesEnabled = reader.ReadBool();
-                        m_SaveAccessLevel = (AccessLevel)reader.ReadByte();
-                        m_SaveStrategy = Utilities.GetSaveStrategy((SaveStrategyTypes)reader.ReadByte());
-                        m_AllowBackgroundWrite = reader.ReadBool();
-                        m_SaveDelay = reader.ReadTimeSpan();
+                        this.m_SavesEnabled = reader.ReadBool();
+                        this.m_SaveAccessLevel = (AccessLevel)reader.ReadByte();
+                        this.m_SaveStrategy = Utilities.GetSaveStrategy((SaveStrategyTypes)reader.ReadByte());
+                        this.m_AllowBackgroundWrite = reader.ReadBool();
+                        this.m_SaveDelay = reader.ReadTimeSpan();
 
-                        m_WarningDelays = new List<TimeSpan>();
+                        this.m_WarningDelays = new List<TimeSpan>();
                         int count = reader.ReadInt();
 
                         for (int i = 0; i < count; i++)
                         {
-                            m_WarningDelays.Add(reader.ReadTimeSpan());
+                            this.m_WarningDelays.Add(reader.ReadTimeSpan());
                         }
 
-                        m_NoIOHour = reader.ReadInt();
+                        this.m_NoIOHour = reader.ReadInt();
 
-                        m_EnableEmergencyBackups = reader.ReadBool();
-                        m_EmergencyBackupHour = reader.ReadInt();
-                        m_CompressionLevel = (CompressionLevel)reader.ReadByte();
+                        this.m_EnableEmergencyBackups = reader.ReadBool();
+                        this.m_EmergencyBackupHour = reader.ReadInt();
+                        this.m_CompressionLevel = (CompressionLevel)reader.ReadByte();
                         break;
                     }
             }

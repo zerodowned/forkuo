@@ -19,10 +19,10 @@ namespace Server.Misc
 
     public class AccountHandler
     {
-        private static int MaxAccountsPerIP = 1;
-        private static bool AutoAccountCreation = true;
-        private static bool RestrictDeletion = !TestCenter.Enabled;
-        private static TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
+        private static readonly int MaxAccountsPerIP = 1;
+        private static readonly bool AutoAccountCreation = true;
+        private static readonly bool RestrictDeletion = !TestCenter.Enabled;
+        private static readonly TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
 
         public static PasswordProtection ProtectPasswords = PasswordProtection.NewCrypt;
 
@@ -30,41 +30,47 @@ namespace Server.Misc
 
         public static AccessLevel LockdownLevel
         {
-            get { return m_LockdownLevel; }
-            set { m_LockdownLevel = value; }
+            get
+            {
+                return m_LockdownLevel;
+            }
+            set
+            {
+                m_LockdownLevel = value;
+            }
         }
 
-        private static CityInfo[] StartingCities = new CityInfo[]
-			{
-				new CityInfo( "New Haven",	"New Haven Bank",	1150168, 3667,	2625,	0  ),
-				new CityInfo( "Yew",		"The Empath Abbey",	1075072, 633,	858,	0  ),
-				new CityInfo( "Minoc",		"The Barnacle",		1075073, 2476,	413,	15 ),
-				new CityInfo( "Britain",	"The Wayfarer's Inn",	1075074, 1602,	1591,	20 ),
-				new CityInfo( "Moonglow",	"The Scholars Inn",	1075075, 4408,	1168,	0  ),
-				new CityInfo( "Trinsic",	"The Traveler's Inn",	1075076, 1845,	2745,	0  ),
-				new CityInfo( "Jhelom",		"The Mercenary Inn",	1075078, 1374,	3826,	0  ),
-				new CityInfo( "Skara Brae",	"The Falconer's Inn",	1075079, 618,	2234,	0  ),
-				new CityInfo( "Vesper",		"The Ironwood Inn",	1075080, 2771,	976,	0  )
-			};
+        private static readonly CityInfo[] StartingCities = new CityInfo[]
+        {
+            new CityInfo("New Haven",	"New Haven Bank",	1150168, 3667,	2625,	0),
+            new CityInfo("Yew", "The Empath Abbey",	1075072, 633,	858,	0),
+            new CityInfo("Minoc", "The Barnacle", 1075073, 2476,	413,	15),
+            new CityInfo("Britain",	"The Wayfarer's Inn",	1075074, 1602,	1591,	20),
+            new CityInfo("Moonglow",	"The Scholars Inn",	1075075, 4408,	1168,	0),
+            new CityInfo("Trinsic",	"The Traveler's Inn",	1075076, 1845,	2745,	0),
+            new CityInfo("Jhelom", "The Mercenary Inn",	1075078, 1374,	3826,	0),
+            new CityInfo("Skara Brae",	"The Falconer's Inn",	1075079, 618,	2234,	0),
+            new CityInfo("Vesper", "The Ironwood Inn",	1075080, 2771,	976,	0)
+        };
 
         /* Old Haven/Magincia Locations
-            new CityInfo( "Britain", "Sweet Dreams Inn", 1496, 1628, 10 );
-            // ..
-            // Trinsic
-            new CityInfo( "Magincia", "The Great Horns Tavern", 3734, 2222, 20 ),
-            // Jhelom
-            // ..
-            new CityInfo( "Haven", "Buckler's Hideaway", 3667, 2625, 0 )
+        new CityInfo( "Britain", "Sweet Dreams Inn", 1496, 1628, 10 );
+        // ..
+        // Trinsic
+        new CityInfo( "Magincia", "The Great Horns Tavern", 3734, 2222, 20 ),
+        // Jhelom
+        // ..
+        new CityInfo( "Haven", "Buckler's Hideaway", 3667, 2625, 0 )
 
-            if ( Core.AOS )
-            {
-                //CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3618, 2591, 0 );
-                CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3503, 2574, 14 );
-                StartingCities[StartingCities.Length - 1] = haven;
-            }
+        if ( Core.AOS )
+        {
+        //CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3618, 2591, 0 );
+        CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3503, 2574, 14 );
+        StartingCities[StartingCities.Length - 1] = haven;
+        }
         */
 
-        private static bool PasswordCommandEnabled = false;
+        private static readonly bool PasswordCommandEnabled = false;
 
         public static void Initialize()
         {
@@ -153,12 +159,11 @@ namespace Server.Misc
                         from.SendMessage("Your IP address does not match that which created this account.  A page has been entered into the help system on your behalf.");
 
                         from.SendLocalizedMessage(501234, "", 0x35); /* The next available Counselor/Game Master will respond as soon as possible.
-																	    * Please check your Journal for messages every few minutes.
-																	    */
+                        * Please check your Journal for messages every few minutes.
+                        */
 
                         PageQueue.Enqueue(new PageEntry(from, String.Format("[Automated: Change Password]<br>Desired password: {0}<br>Current IP address: {1}<br>Account IP address: {2}", pass, ipAddress, accessList[0]), PageType.Account));
                     }
-
                 }
             }
             catch
@@ -253,9 +258,9 @@ namespace Server.Misc
         }
 
         private static readonly char[] m_ForbiddenChars = new char[]
-		{
-			'<', '>', ':', '"', '/', '\\', '|', '?', '*'
-		};
+        {
+            '<', '>', ':', '"', '/', '\\', '|', '?', '*'
+        };
 
         private static bool IsForbiddenChar(char c)
         {

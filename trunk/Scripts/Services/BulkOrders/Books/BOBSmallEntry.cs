@@ -2,100 +2,161 @@ using System;
 
 namespace Server.Engines.BulkOrders
 {
-	public class BOBSmallEntry
-	{
-		private Type m_ItemType;
-		private bool m_RequireExceptional;
-		private BODType m_DeedType;
-		private BulkMaterialType m_Material;
-		private int m_AmountCur, m_AmountMax;
-		private int m_Number;
-		private int m_Graphic;
-		private int m_Price;
+    public class BOBSmallEntry
+    {
+        private readonly Type m_ItemType;
+        private readonly bool m_RequireExceptional;
+        private readonly BODType m_DeedType;
+        private readonly BulkMaterialType m_Material;
+        private readonly int m_AmountCur;
 
-		public Type ItemType{ get{ return m_ItemType; } }
-		public bool RequireExceptional{ get{ return m_RequireExceptional; } }
-		public BODType DeedType{ get{ return m_DeedType; } }
-		public BulkMaterialType Material{ get{ return m_Material; } }
-		public int AmountCur{ get{ return m_AmountCur; } }
-		public int AmountMax{ get{ return m_AmountMax; } }
-		public int Number{ get{ return m_Number; } }
-		public int Graphic{ get{ return m_Graphic; } }
-		public int Price{ get{ return m_Price; } set{ m_Price = value; } }
+        private readonly int m_AmountMax;
 
-		public Item Reconstruct()
-		{
-			SmallBOD bod = null;
+        private readonly int m_Number;
+        private readonly int m_Graphic;
+        private int m_Price;
 
-			if ( m_DeedType == BODType.Smith )
-				bod = new SmallSmithBOD( m_AmountCur, m_AmountMax, m_ItemType, m_Number, m_Graphic, m_RequireExceptional, m_Material );
-			else if ( m_DeedType == BODType.Tailor )
-				bod = new SmallTailorBOD( m_AmountCur, m_AmountMax, m_ItemType, m_Number, m_Graphic, m_RequireExceptional, m_Material );
+        public Type ItemType
+        {
+            get
+            {
+                return this.m_ItemType;
+            }
+        }
+        public bool RequireExceptional
+        {
+            get
+            {
+                return this.m_RequireExceptional;
+            }
+        }
+        public BODType DeedType
+        {
+            get
+            {
+                return this.m_DeedType;
+            }
+        }
+        public BulkMaterialType Material
+        {
+            get
+            {
+                return this.m_Material;
+            }
+        }
+        public int AmountCur
+        {
+            get
+            {
+                return this.m_AmountCur;
+            }
+        }
+        public int AmountMax
+        {
+            get
+            {
+                return this.m_AmountMax;
+            }
+        }
+        public int Number
+        {
+            get
+            {
+                return this.m_Number;
+            }
+        }
+        public int Graphic
+        {
+            get
+            {
+                return this.m_Graphic;
+            }
+        }
+        public int Price
+        {
+            get
+            {
+                return this.m_Price;
+            }
+            set
+            {
+                this.m_Price = value;
+            }
+        }
 
-			return bod;
-		}
+        public Item Reconstruct()
+        {
+            SmallBOD bod = null;
 
-		public BOBSmallEntry( SmallBOD bod )
-		{
-			m_ItemType = bod.Type;
-			m_RequireExceptional = bod.RequireExceptional;
+            if (this.m_DeedType == BODType.Smith)
+                bod = new SmallSmithBOD(this.m_AmountCur, this.m_AmountMax, this.m_ItemType, this.m_Number, this.m_Graphic, this.m_RequireExceptional, this.m_Material);
+            else if (this.m_DeedType == BODType.Tailor)
+                bod = new SmallTailorBOD(this.m_AmountCur, this.m_AmountMax, this.m_ItemType, this.m_Number, this.m_Graphic, this.m_RequireExceptional, this.m_Material);
 
-			if ( bod is SmallTailorBOD )
-				m_DeedType = BODType.Tailor;
-			else if ( bod is SmallSmithBOD )
-				m_DeedType = BODType.Smith;
+            return bod;
+        }
 
-			m_Material = bod.Material;
-			m_AmountCur = bod.AmountCur;
-			m_AmountMax = bod.AmountMax;
-			m_Number = bod.Number;
-			m_Graphic = bod.Graphic;
-		}
+        public BOBSmallEntry(SmallBOD bod)
+        {
+            this.m_ItemType = bod.Type;
+            this.m_RequireExceptional = bod.RequireExceptional;
 
-		public BOBSmallEntry( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+            if (bod is SmallTailorBOD)
+                this.m_DeedType = BODType.Tailor;
+            else if (bod is SmallSmithBOD)
+                this.m_DeedType = BODType.Smith;
 
-			switch ( version )
-			{
-				case 0:
-				{
-					string type = reader.ReadString();
+            this.m_Material = bod.Material;
+            this.m_AmountCur = bod.AmountCur;
+            this.m_AmountMax = bod.AmountMax;
+            this.m_Number = bod.Number;
+            this.m_Graphic = bod.Graphic;
+        }
 
-					if ( type != null )
-						m_ItemType = ScriptCompiler.FindTypeByFullName( type );
+        public BOBSmallEntry(GenericReader reader)
+        {
+            int version = reader.ReadEncodedInt();
 
-					m_RequireExceptional = reader.ReadBool();
+            switch ( version )
+            {
+                case 0:
+                    {
+                        string type = reader.ReadString();
 
-					m_DeedType = (BODType)reader.ReadEncodedInt();
+                        if (type != null)
+                            this.m_ItemType = ScriptCompiler.FindTypeByFullName(type);
 
-					m_Material = (BulkMaterialType)reader.ReadEncodedInt();
-					m_AmountCur = reader.ReadEncodedInt();
-					m_AmountMax = reader.ReadEncodedInt();
-					m_Number = reader.ReadEncodedInt();
-					m_Graphic = reader.ReadEncodedInt();
-					m_Price = reader.ReadEncodedInt();
+                        this.m_RequireExceptional = reader.ReadBool();
 
-					break;
-				}
-			}
-		}
+                        this.m_DeedType = (BODType)reader.ReadEncodedInt();
 
-		public void Serialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( 0 ); // version
+                        this.m_Material = (BulkMaterialType)reader.ReadEncodedInt();
+                        this.m_AmountCur = reader.ReadEncodedInt();
+                        this.m_AmountMax = reader.ReadEncodedInt();
+                        this.m_Number = reader.ReadEncodedInt();
+                        this.m_Graphic = reader.ReadEncodedInt();
+                        this.m_Price = reader.ReadEncodedInt();
 
-			writer.Write( m_ItemType == null ? null : m_ItemType.FullName );
+                        break;
+                    }
+            }
+        }
 
-			writer.Write( (bool) m_RequireExceptional );
+        public void Serialize(GenericWriter writer)
+        {
+            writer.WriteEncodedInt(0); // version
 
-			writer.WriteEncodedInt( (int) m_DeedType );
-			writer.WriteEncodedInt( (int) m_Material );
-			writer.WriteEncodedInt( (int) m_AmountCur );
-			writer.WriteEncodedInt( (int) m_AmountMax );
-			writer.WriteEncodedInt( (int) m_Number );
-			writer.WriteEncodedInt( (int) m_Graphic );
-			writer.WriteEncodedInt( (int) m_Price );
-		}
-	}
+            writer.Write(this.m_ItemType == null ? null : this.m_ItemType.FullName);
+
+            writer.Write((bool)this.m_RequireExceptional);
+
+            writer.WriteEncodedInt((int)this.m_DeedType);
+            writer.WriteEncodedInt((int)this.m_Material);
+            writer.WriteEncodedInt((int)this.m_AmountCur);
+            writer.WriteEncodedInt((int)this.m_AmountMax);
+            writer.WriteEncodedInt((int)this.m_Number);
+            writer.WriteEncodedInt((int)this.m_Graphic);
+            writer.WriteEncodedInt((int)this.m_Price);
+        }
+    }
 }
